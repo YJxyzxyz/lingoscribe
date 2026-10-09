@@ -1,0 +1,9 @@
+# Normalize text in Git and retain CRLF for Windows command scripts.
+* text=auto
+*.md text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf

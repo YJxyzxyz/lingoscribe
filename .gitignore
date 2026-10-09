@@ -1,0 +1,64 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+*.mobileprovision
+*.provisionprofile
+*.jks
+*.keystore
+key.properties
+keystore.properties
+local.properties
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+*.iml
+*.swp
+*.swo
+
+# Dependencies and generated output (keep dependency lockfiles tracked)
+node_modules/
+.expo/
+.next/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+coverage/
+build/
+dist/
+*.log
+
+# Android / Gradle
+.gradle/
+.kotlin/
+.cxx/
+.externalNativeBuild/
+captures/
+*.apk
+*.aab
+
+# iOS / Xcode / CocoaPods / Swift Package Manager
+Pods/
+DerivedData/
+.build/
+.swiftpm/
+xcuserdata/
+*.xcuserstate
+*.ipa
+*.xcarchive/
+*.dSYM/
+*.dSYM.zip
+**/Flutter/ephemeral/
+**/Flutter/Generated.xcconfig
+**/Flutter/flutter_export_environment.sh
+ios/.symlinks/
+ios/Flutter/App.framework/
+ios/Flutter/Flutter.framework/
