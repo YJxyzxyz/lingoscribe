@@ -76,6 +76,7 @@ void main() {
       expect(value.contains('/'), false);
       expect(value.contains(':'), false);
       expect(safeExportName('  ... '), 'LingoScribe');
+      expect(safeExportName('CON'), '_CON');
     },
   );
 }

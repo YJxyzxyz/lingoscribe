@@ -57,5 +57,15 @@ class TranscriptRepository {
 
   Future<void> delete(String id) async =>
       database.delete('transcripts', where: 'id = ?', whereArgs: [id]);
+  Future<Transcript?> get(String id) async {
+    final rows = await database.query(
+      'transcripts',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    return rows.isEmpty ? null : Transcript.fromRow(rows.single);
+  }
+
   Future<void> close() => database.close();
 }

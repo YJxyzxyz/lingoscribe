@@ -7,11 +7,17 @@ import 'ui/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  for (final asset in ['WHISPER_LICENSE.txt', 'MODEL_LICENSE.txt']) {
+  for (final asset in [
+    'WHISPER_LICENSE.txt',
+    'MODEL_LICENSE.txt',
+    'SILERO_LICENSE.txt',
+  ]) {
     LicenseRegistry.addLicense(() async* {
       yield LicenseEntryWithLineBreaks([
         asset == 'WHISPER_LICENSE.txt'
             ? 'whisper.cpp / ggml'
+            : asset == 'SILERO_LICENSE.txt'
+            ? 'Silero VAD'
             : 'OpenAI Whisper models',
       ], await rootBundle.loadString('assets/licenses/$asset'));
     });

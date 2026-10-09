@@ -1,0 +1,41 @@
+{
+  "platform": "nt",
+  "fixtureKind": "synthetic",
+  "language": "auto",
+  "prompt": "",
+  "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+  "audioSha256": "bccff78f1a8361c07d328c190a4843d63d73d308e43b6999b0227adb5279a7d2",
+  "elapsedSeconds": 25.184,
+  "durationMs": 11555,
+  "realTimeFactor": 2.179,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 2440,
+      "text": "今天我們討論產品發布。"
+    },
+    {
+      "startMs": 2820,
+      "endMs": 6820,
+      "text": " Please review the Android release and export the transcript."
+    },
+    {
+      "startMs": 6840,
+      "endMs": 8840,
+      "text": "请检查离线转写。"
+    },
+    {
+      "startMs": 9150,
+      "endMs": 11010,
+      "text": "然后保存结果"
+    }
+  ],
+  "checks": [
+    "actual_inference",
+    "timestamp_bounds",
+    "invalid_wav",
+    "cancellation",
+    "digital_silence",
+    "truncated_wav"
+  ]
+}

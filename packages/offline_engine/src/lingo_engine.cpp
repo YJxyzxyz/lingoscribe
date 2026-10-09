@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <cstdio>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -14,10 +15,11 @@
 
 namespace {
 struct Job {
-    std::string model, wav, language, prompt, result;
+    std::string model, wav, language, prompt, result, vad;
     int threads;
     std::atomic<bool> cancel{false};
     std::atomic<int> progress{0};
+    std::atomic<int> phase{0};
     double completed = 0, chunk = 0, total = 1;
 };
 std::string quote(const std::string &s) {
@@ -76,7 +78,9 @@ void quiet(enum ggml_log_level, const char *, void *) {}
 bool abort_job(void *p) { return static_cast<Job *>(p)->cancel.load(); }
 void progress(whisper_context *, whisper_state *, int value, void *p) {
     auto *j = static_cast<Job *>(p);
-    j->progress.store(std::clamp(int((j->completed + j->chunk * value / 100.0) / j->total * 100), 0, 99));
+    const int next = std::clamp(int((j->completed + j->chunk * value / 100.0) / j->total * 100), 0, 99);
+    int current = j->progress.load();
+    while (next > current && !j->progress.compare_exchange_weak(current, next)) {}
 }
 }
 
@@ -104,6 +108,12 @@ int32_t ls_job_run(void *handle) {
         std::unique_ptr<whisper_context, decltype(&whisper_free)> ctx(
             whisper_init_from_file_with_params(j->model.c_str(), cp), &whisper_free);
         if (!ctx) throw std::runtime_error("Unable to load model; check model integrity and available memory");
+        std::unique_ptr<whisper_vad_context, decltype(&whisper_vad_free)> vad(nullptr, &whisper_vad_free);
+        if (!j->vad.empty()) {
+            auto vp = whisper_vad_default_context_params(); vp.n_threads = std::min(j->threads, 2); vp.use_gpu = false;
+            vad.reset(whisper_vad_init_from_file_with_params(j->vad.c_str(), vp));
+            if (!vad) throw std::runtime_error("Unable to load bundled speech detector");
+        }
         if (j->language != "auto" && whisper_lang_id(j->language.c_str()) < 0) throw std::runtime_error("Unsupported language");
         j->total = wav.samples;
         std::ostringstream json;
@@ -132,15 +142,35 @@ int32_t ls_job_run(void *handle) {
                 }
                 wav.f.seekg(-std::streamoff((count - used) * 2), std::ios::cur);
             }
-            j->completed = position; j->chunk = used;
-            double energy = 0;
-            for (uint32_t i = 0; i < used; ++i) energy += double(pcm[i]) * pcm[i];
-            if (energy / used < 1e-8) {
-                // Do not hallucinate speech on digital silence or inaudible PCM.
-                position += used;
-                j->progress.store(std::min(99, int(position / j->total * 100)));
-                continue;
+            struct Segment { int64_t begin, end; std::string text; };
+            std::vector<Segment> segments;
+            std::vector<std::pair<uint32_t, uint32_t>> speech;
+            if (vad) {
+                j->phase.store(4);
+                whisper_vad_reset_state(vad.get());
+                for (uint32_t window = 0; window < used; window += 16000 * 30) {
+                    if (j->cancel.load()) throw std::runtime_error("cancelled");
+                    const uint32_t length = std::min(16000u * 30u, used - window);
+                    if (!whisper_vad_detect_speech_no_reset(vad.get(), pcm.data() + window, int(length)))
+                        throw std::runtime_error("Speech detection failed");
+                    auto vp = whisper_vad_default_params(); vp.speech_pad_ms = 80; vp.min_silence_duration_ms = 300;
+                    std::unique_ptr<whisper_vad_segments, decltype(&whisper_vad_free_segments)> detected(
+                        whisper_vad_segments_from_probs(vad.get(), vp), &whisper_vad_free_segments);
+                    if (!detected) throw std::runtime_error("Speech interval extraction failed");
+                    for (int i = 0; i < whisper_vad_segments_n_segments(detected.get()); ++i) {
+                        const uint32_t a = window + uint32_t(std::max(0.0f, whisper_vad_segments_get_segment_t0(detected.get(), i)) * 160);
+                        const uint32_t b = std::min(used, window + uint32_t(std::max(0.0f, whisper_vad_segments_get_segment_t1(detected.get(), i)) * 160));
+                        if (b > a) speech.push_back({a, b});
+                    }
+                }
+                if (speech.empty()) { position += used; continue; }
             }
+            auto decode = [&](uint32_t spanStart, uint32_t spanCount) {
+            j->completed = position + spanStart; j->chunk = spanCount;
+            double energy = 0;
+            for (uint32_t i = spanStart; i < spanStart + spanCount; ++i) energy += double(pcm[i]) * pcm[i];
+            if (energy / spanCount < 1e-8) return;
+            if (j->cancel.load()) throw std::runtime_error("cancelled");
             auto params = whisper_full_default_params(WHISPER_SAMPLING_BEAM_SEARCH);
             params.n_threads = j->threads;
             params.beam_search.beam_size = 3;
@@ -152,28 +182,79 @@ int32_t ls_job_run(void *handle) {
             params.suppress_nst = true;
             params.abort_callback = abort_job; params.abort_callback_user_data = j;
             params.progress_callback = progress; params.progress_callback_user_data = j;
-            if (whisper_full(ctx.get(), params, pcm.data(), int(used)) != 0) {
+            if (whisper_full(ctx.get(), params, pcm.data() + spanStart, int(spanCount)) != 0) {
                 if (j->cancel.load()) throw std::runtime_error("cancelled");
                 throw std::runtime_error("Whisper inference failed");
             }
             for (int i = 0; i < whisper_full_n_segments(ctx.get()); ++i) {
                 std::string text = whisper_full_get_segment_text(ctx.get(), i);
+#ifdef LS_DEV_DIAGNOSTICS
+                std::fprintf(stderr, "LOCAL_QA_ONLY segment=%d t0=%lld t1=%lld text=%s\n", i,
+                    (long long)whisper_full_get_segment_t0(ctx.get(), i),
+                    (long long)whisper_full_get_segment_t1(ctx.get(), i), text.c_str());
+#endif
                 if (text.find_first_not_of(" \t\r\n") == std::string::npos) continue;
-                int64_t begin = position / 16 + whisper_full_get_segment_t0(ctx.get(), i) * 10;
-                int64_t end = position / 16 + whisper_full_get_segment_t1(ctx.get(), i) * 10;
-                begin = std::max(begin, lastEnd);
-                end = std::min(std::max(end, begin), int64_t((position + used) / 16));
+                int64_t begin = (position + spanStart) / 16 + whisper_full_get_segment_t0(ctx.get(), i) * 10;
+                int64_t end = (position + spanStart) / 16 + whisper_full_get_segment_t1(ctx.get(), i) * 10;
+                begin = std::max(begin, int64_t((position + spanStart) / 16));
+                end = std::min(end, int64_t((position + spanStart + spanCount) / 16));
+                if (end <= begin) continue;
+                if (vad) {
+                    const uint32_t a = uint32_t(std::max<int64_t>(0, begin * 16 - position));
+                    const uint32_t b = std::min(used, uint32_t(std::max<int64_t>(0, end * 16 - position)));
+                    uint32_t overlap = 0;
+                    for (const auto &voice : speech) {
+                        if (std::min(b, voice.second) > std::max(a, voice.first)) overlap += std::min(b, voice.second) - std::max(a, voice.first);
+                    }
+                    if (overlap < 1600) continue;
+                }
+                segments.push_back({begin, end, std::move(text)});
+            }
+            };
+            j->phase.store(1);
+            decode(0, used);
+            // A large model can omit another language while leaving a timestamp gap.
+            // Only revisit uncovered intervals containing audible signal: the common
+            // successful path stays one inference pass, and original segments are retained.
+            if (j->language == "auto" && !segments.empty()) {
+                const auto primary = segments;
+                int64_t cursor = position / 16;
+                const int64_t chunkEnd = (position + used) / 16;
+                for (size_t gap = 0; gap <= primary.size(); ++gap) {
+                    const int64_t next = gap < primary.size() ? primary[gap].begin : chunkEnd;
+                    if (next - cursor >= 1000) {
+                        const uint32_t a = std::min(used, uint32_t(std::max<int64_t>(0, cursor * 16 - position)));
+                        const uint32_t b = std::min(used, uint32_t(std::max<int64_t>(0, next * 16 - position)));
+                        uint32_t audible = 0;
+                        if (vad) {
+                            for (const auto &voice : speech) {
+                                if (std::min(b, voice.second) > std::max(a, voice.first)) audible += std::min(b, voice.second) - std::max(a, voice.first);
+                            }
+                        } else for (uint32_t f = a; f + 320 <= b; f += 320) {
+                            double energy = 0;
+                            for (uint32_t k = f; k < f + 320; ++k) energy += double(pcm[k]) * pcm[k];
+                            if (energy / 320 > 1e-5) audible += 320;
+                        }
+                        if (audible >= 4800) { j->phase.store(2); decode(a, b - a); }
+                    }
+                    if (gap < primary.size()) cursor = std::max(cursor, primary[gap].end);
+                }
+            }
+            std::stable_sort(segments.begin(), segments.end(), [](const Segment &a, const Segment &b) { return a.begin < b.begin; });
+            for (const auto &segment : segments) {
+                const auto begin = std::max(lastEnd, segment.begin);
+                const auto end = segment.end;
                 if (end <= begin) continue;
                 if (!first) json << ',';
                 first = false;
-                json << "{\"startMs\":" << begin << ",\"endMs\":" << end << ",\"text\":" << quote(text) << '}';
+                json << "{\"startMs\":" << begin << ",\"endMs\":" << end << ",\"text\":" << quote(segment.text) << '}';
                 lastEnd = end;
             }
             position += used;
         }
         if (j->cancel.load()) throw std::runtime_error("cancelled");
         json << "],\"durationMs\":" << wav.samples / 16 << '}';
-        j->result = json.str(); j->progress.store(100);
+        j->result = json.str(); j->progress.store(100); j->phase.store(3);
         return 0;
     } catch (const std::exception &e) {
         j->result = "{\"error\":" + quote(e.what()) + "}";
@@ -184,6 +265,13 @@ int32_t ls_job_run(void *handle) {
     }
 }
 int32_t ls_job_progress(void *j) { return j ? static_cast<Job *>(j)->progress.load() : 0; }
+int32_t ls_job_phase(void *j) { return j ? static_cast<Job *>(j)->phase.load() : 0; }
+void *ls_job_create_v2(const char *model, const char *wav, const char *language, const char *prompt, const char *vad, int32_t threads) {
+    auto *job = static_cast<Job *>(ls_job_create(model, wav, language, prompt, threads));
+    try { if (job && vad) job->vad = vad; }
+    catch (...) { delete job; return nullptr; }
+    return job;
+}
 void ls_job_cancel(void *j) { if (j) static_cast<Job *>(j)->cancel.store(true); }
 const char *ls_job_result(void *j) { return j ? static_cast<Job *>(j)->result.c_str() : "{\"error\":\"Invalid job\"}"; }
 void ls_job_free(void *j) { delete static_cast<Job *>(j); }

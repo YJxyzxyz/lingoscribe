@@ -1,0 +1,36 @@
+{
+  "platform": "nt",
+  "fixtureKind": "synthetic",
+  "language": "zh",
+  "prompt": "以下是简体中文的录音。离线语音转写，时间戳，校对结果。",
+  "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+  "audioSha256": "6953340e542fdedc06db419fbb32aabb813e7393c7d6af5da2d160c4fe40659d",
+  "elapsedSeconds": 4.435,
+  "durationMs": 13285,
+  "realTimeFactor": 0.334,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 3460,
+      "text": "今天我们讨论离线语音转写。"
+    },
+    {
+      "startMs": 3460,
+      "endMs": 8560,
+      "text": "这个应用支持中文和英文,录音不会上传。"
+    },
+    {
+      "startMs": 8560,
+      "endMs": 12560,
+      "text": "请检查时间戳,然后保存校对结果。"
+    }
+  ],
+  "checks": [
+    "actual_inference",
+    "timestamp_bounds",
+    "invalid_wav",
+    "cancellation",
+    "digital_silence",
+    "truncated_wav"
+  ]
+}

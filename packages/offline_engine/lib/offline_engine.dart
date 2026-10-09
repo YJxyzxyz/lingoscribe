@@ -12,10 +12,12 @@ typedef _CreateNative =
       Pointer<Utf8>,
       Pointer<Utf8>,
       Pointer<Utf8>,
+      Pointer<Utf8>,
       Int32,
     );
 typedef _Create =
     Pointer<Void> Function(
+      Pointer<Utf8>,
       Pointer<Utf8>,
       Pointer<Utf8>,
       Pointer<Utf8>,
@@ -39,15 +41,16 @@ class _Bindings {
             Platform.environment['LINGO_ENGINE_LIBRARY'] ??
                 'offline_engine.dll',
           );
-    create = lib.lookupFunction<_CreateNative, _Create>('ls_job_create');
+    create = lib.lookupFunction<_CreateNative, _Create>('ls_job_create_v2');
     run = lib.lookupFunction<_IntNative, _Int>('ls_job_run');
     progress = lib.lookupFunction<_IntNative, _Int>('ls_job_progress');
+    phase = lib.lookupFunction<_IntNative, _Int>('ls_job_phase');
     cancel = lib.lookupFunction<_VoidNative, _Void>('ls_job_cancel');
     result = lib.lookupFunction<_ResultNative, _Result>('ls_job_result');
     free = lib.lookupFunction<_VoidNative, _Void>('ls_job_free');
   }
   late final _Create create;
-  late final _Int run, progress;
+  late final _Int run, progress, phase;
   late final _Void cancel, free;
   late final _Result result;
 }
@@ -80,7 +83,9 @@ class OfflineEngine {
     required String wav,
     String language = 'auto',
     String prompt = '',
+    String vad = '',
     void Function(double)? onProgress,
+    void Function(int)? onPhase,
   }) async {
     if (_job != null) throw StateError('已有转写任务正在运行');
     final bindings = _bindings ??= _Bindings();
@@ -89,6 +94,7 @@ class OfflineEngine {
       wav,
       language,
       prompt,
+      vad,
     ].map((s) => s.toNativeUtf8()).toList();
     late Pointer<Void> job;
     try {
@@ -97,6 +103,7 @@ class OfflineEngine {
         strings[1],
         strings[2],
         strings[3],
+        strings[4],
         Platform.numberOfProcessors.clamp(1, 4),
       );
     } finally {
@@ -107,10 +114,10 @@ class OfflineEngine {
     if (job == nullptr) throw StateError('无法分配转写任务');
     _job = job;
     final address = job.address;
-    final timer = Timer.periodic(
-      const Duration(milliseconds: 400),
-      (_) => onProgress?.call(bindings.progress(job) / 100),
-    );
+    final timer = Timer.periodic(const Duration(milliseconds: 400), (_) {
+      onProgress?.call(bindings.progress(job) / 100);
+      onPhase?.call(bindings.phase(job));
+    });
     try {
       // Static function avoids capturing unsendable native bindings in this isolate.
       final code = await _dispatchNative(address);

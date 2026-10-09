@@ -1,0 +1,21 @@
+{
+  "platform": "nt",
+  "fixtureKind": "emulator",
+  "language": "auto",
+  "prompt": "",
+  "vadSha256": "2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "1dc25a5f6dcb353cd8737d3c84541ed49e8168c028c360496ccf74494fd2bffc",
+  "elapsedSeconds": 1.397,
+  "durationMs": 190208,
+  "realTimeFactor": 0.007,
+  "segments": [],
+  "checks": [
+    "neural_speech_detection_and_no_text",
+    "timestamp_bounds",
+    "invalid_wav",
+    "cancellation",
+    "digital_silence",
+    "truncated_wav"
+  ]
+}

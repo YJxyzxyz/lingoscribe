@@ -114,6 +114,8 @@ class ModelManager extends ChangeNotifier {
       }
       sink = part.openWrite();
       var received = 0;
+      final clock = Stopwatch()..start();
+      var lastNotified = 0;
       await for (final chunk in response.stream.timeout(
         const Duration(seconds: 45),
       )) {
@@ -122,7 +124,10 @@ class ModelManager extends ChangeNotifier {
         if (received > model.bytes) throw const FormatException('模型文件大小异常');
         sink.add(chunk);
         progress = received / model.bytes;
-        notifyListeners();
+        if (clock.elapsedMilliseconds - lastNotified >= 100) {
+          lastNotified = clock.elapsedMilliseconds;
+          notifyListeners();
+        }
       }
       await sink.flush();
       await sink.close();

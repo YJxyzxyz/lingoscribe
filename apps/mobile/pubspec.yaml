@@ -34,3 +34,5 @@ flutter:
   assets:
     - assets/licenses/WHISPER_LICENSE.txt
     - assets/licenses/MODEL_LICENSE.txt
+    - assets/licenses/SILERO_LICENSE.txt
+    - assets/models/ggml-silero-v6.2.0.bin

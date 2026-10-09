@@ -1,0 +1,31 @@
+{
+  "platform": "nt",
+  "fixtureKind": "synthetic",
+  "language": "auto",
+  "prompt": "",
+  "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+  "audioSha256": "bccff78f1a8361c07d328c190a4843d63d73d308e43b6999b0227adb5279a7d2",
+  "elapsedSeconds": 6.83,
+  "durationMs": 11555,
+  "realTimeFactor": 0.591,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 2560,
+      "text": "今天我们讨论产品发布"
+    },
+    {
+      "startMs": 7160,
+      "endMs": 10760,
+      "text": "请检查离线转写,然后保存结果"
+    }
+  ],
+  "checks": [
+    "actual_inference",
+    "timestamp_bounds",
+    "invalid_wav",
+    "cancellation",
+    "digital_silence",
+    "truncated_wav"
+  ]
+}

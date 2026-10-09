@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../application/app_controller.dart';
+import '../services/export_service.dart';
 import 'theme.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -81,6 +82,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       const SizedBox(height: 20),
+      ListTile(
+        leading: const Icon(Icons.cleaning_services_outlined),
+        title: const Text('清除临时导出缓存'),
+        subtitle: const Text(
+          '保留录音与资料库，已分享的副本不受影响。',
+          style: TextStyle(fontSize: 12),
+        ),
+        onTap: () async {
+          try {
+            final count = await clearExportCache();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(count == 0 ? '没有临时导出文件' : '已清理 $count 个临时导出文件'),
+                ),
+              );
+            }
+          } catch (e) {
+            if (context.mounted) showError(context, e);
+          }
+        },
+      ),
       ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         leading: const Icon(Icons.code_outlined),

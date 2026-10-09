@@ -186,6 +186,9 @@ class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         private var next = 0L
         private val cutoff = min(1.0, 16000.0 / rate) * 0.94
         fun add(value: Double) {
+            if (rate == 16000) {
+                output(if (value.isFinite()) value else 0.0); input++; next++; return
+            }
             ring[(input % 128).toInt()] = if (value.isFinite()) value else 0.0
             input++
             emit(input - 17.0, Long.MAX_VALUE)

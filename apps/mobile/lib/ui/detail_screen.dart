@@ -10,6 +10,7 @@ import '../domain/transcript.dart';
 import '../services/export_service.dart';
 import 'home_screen.dart';
 import 'theme.dart';
+import 'text_editor_dialog.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({
@@ -30,6 +31,7 @@ class _DetailScreenState extends State<DetailScreen> {
   bool loading = true, bookmarksOnly = false, exporting = false;
   String search = '';
   int _serial = 0;
+  int _revision = -1;
   @override
   void initState() {
     super.initState();
@@ -60,6 +62,9 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   void _refresh() {
+    if (mounted) setState(() {});
+    if (_revision == widget.controller.dataRevision) return;
+    _revision = widget.controller.dataRevision;
     final serial = ++_serial;
     unawaited(
       widget.controller.find(item.id).then((value) {
@@ -80,50 +85,14 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<void> _edit(int index) async {
     final segment = item.segments[index];
-    final text = TextEditingController(text: segment.text);
     final value = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('校对 ${clock(segment.startMs)}'),
-        content: SizedBox(
-          width: 440,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: text,
-                  autofocus: true,
-                  minLines: 3,
-                  maxLines: 8,
-                  maxLength: 10000,
-                  decoration: const InputDecoration(labelText: '转写内容'),
-                ),
-                if (segment.originalText != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(
-                      '原始转写：${segment.originalText}',
-                      style: const TextStyle(color: muted, fontSize: 12),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, text.text),
-            child: const Text('保存'),
-          ),
-        ],
+      builder: (_) => TextEditorDialog(
+        title: '校对 ${clock(segment.startMs)}',
+        initialText: segment.text,
+        originalText: segment.originalText,
       ),
     );
-    text.dispose();
     if (value == null) return;
     final segments = List<Segment>.of(item.segments);
     segments[index] = segment.edit(value.trim());
@@ -145,29 +114,15 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Future<void> _rename() async {
-    final text = TextEditingController(text: item.title);
     final value = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('重命名'),
-        content: TextField(controller: text, maxLength: 120, autofocus: true),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (text.text.trim().isNotEmpty) {
-                Navigator.pop(context, text.text.trim());
-              }
-            },
-            child: const Text('保存'),
-          ),
-        ],
+      builder: (_) => TextEditorDialog(
+        title: '重命名',
+        initialText: item.title,
+        singleLine: true,
+        requireNonempty: true,
       ),
     );
-    text.dispose();
     if (value != null) {
       try {
         await widget.controller.save(item.copyWith(title: value));
@@ -276,6 +231,23 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  Future<void> _newRevision() async {
+    try {
+      await player.pause();
+      final revision = await widget.controller.createRevision(item);
+      if (!mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              DetailScreen(controller: widget.controller, initial: revision),
+        ),
+      );
+    } catch (e) {
+      if (mounted) showError(context, e);
+    }
+  }
+
   Future<void> _play({int? at}) async {
     try {
       if (at != null) await player.seek(Duration(milliseconds: at));
@@ -312,6 +284,8 @@ class _DetailScreenState extends State<DetailScreen> {
             onSelected: (value) {
               if (value == 'rename') {
                 _rename();
+              } else if (value == 'revision') {
+                _newRevision();
               } else {
                 _delete();
               }
@@ -319,8 +293,13 @@ class _DetailScreenState extends State<DetailScreen> {
             itemBuilder: (_) => [
               const PopupMenuItem(value: 'rename', child: Text('重命名')),
               PopupMenuItem(
+                value: 'revision',
+                enabled: !widget.controller.busy,
+                child: const Text('重新转写，保留原稿'),
+              ),
+              PopupMenuItem(
                 value: 'delete',
-                enabled: !running,
+                enabled: !widget.controller.busy,
                 child: const Text('删除音频和转写'),
               ),
             ],
@@ -332,6 +311,7 @@ class _DetailScreenState extends State<DetailScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 760),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
@@ -365,7 +345,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                 style: const TextStyle(fontSize: 12),
                               ),
                             ),
-                            if (widget.controller.phase == '正在设备上转写')
+                            if (widget.controller.phase == '正在设备上转写' ||
+                                widget.controller.phase == '正在检查可能遗漏的语音' ||
+                                widget.controller.phase == '正在检测语音区间')
                               TextButton(
                                 onPressed:
                                     widget.controller.cancelTranscription,

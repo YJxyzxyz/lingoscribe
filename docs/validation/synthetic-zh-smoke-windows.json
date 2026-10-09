@@ -1,0 +1,33 @@
+{
+  "platform": "nt",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "6953340e542fdedc06db419fbb32aabb813e7393c7d6af5da2d160c4fe40659d",
+  "elapsedSeconds": 2.146,
+  "durationMs": 13285,
+  "realTimeFactor": 0.162,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 2880,
+      "text": "今天我們討論離線與音轉寫。"
+    },
+    {
+      "startMs": 3600,
+      "endMs": 8000,
+      "text": "這個應用支持中文和英文,錄音不會上傳。"
+    },
+    {
+      "startMs": 8640,
+      "endMs": 12640,
+      "text": "請檢查時間初,然後保存較對結果。"
+    }
+  ],
+  "checks": [
+    "actual_inference",
+    "timestamp_bounds",
+    "invalid_wav",
+    "cancellation",
+    "digital_silence",
+    "truncated_wav"
+  ]
+}

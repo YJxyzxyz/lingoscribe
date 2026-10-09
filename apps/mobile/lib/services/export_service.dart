@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import '../domain/transcript.dart';
 
 enum ExportFormat { txt, markdown, srt, vtt, json }
@@ -62,7 +65,29 @@ String safeExportName(String title) {
       .replaceAll(RegExp(r'[<>:"/\\|?*\x00-\x1f]'), '_')
       .replaceAll(RegExp(r'[. ]+$'), '')
       .trim();
-  return value.isEmpty
+  final safe =
+      RegExp(
+        r'^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)',
+        caseSensitive: false,
+      ).hasMatch(value)
+      ? '_$value'
+      : value;
+  return safe.isEmpty
       ? 'LingoScribe'
-      : String.fromCharCodes(value.runes.take(60));
+      : String.fromCharCodes(safe.runes.take(60));
+}
+
+Future<int> clearExportCache() async {
+  final directory = Directory(
+    p.join((await getTemporaryDirectory()).path, 'lingoscribe-exports'),
+  );
+  if (!await directory.exists()) return 0;
+  var count = 0;
+  await for (final entity in directory.list(followLinks: false)) {
+    if (entity is File) {
+      await entity.delete();
+      count++;
+    }
+  }
+  return count;
 }

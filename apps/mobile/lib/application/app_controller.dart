@@ -11,6 +11,8 @@ import 'package:uuid/uuid.dart';
 import '../data/transcript_repository.dart';
 import '../domain/transcript.dart';
 import '../services/model_manager.dart';
+import '../services/recording_recovery.dart';
+import '../services/bundled_detector.dart';
 
 class AppController extends ChangeNotifier {
   AppController({
@@ -29,6 +31,7 @@ class AppController extends ChangeNotifier {
   final OfflineEngine engine;
   final AudioRecorder recorder;
   List<Transcript> items = [];
+  int dataRevision = 0;
   String query = '', language = 'auto', prompt = '';
   String? taskId, error, phase;
   double progress = 0, amplitude = -60;
@@ -54,6 +57,22 @@ class AppController extends ChangeNotifier {
     final repository = await TranscriptRepository.open(
       p.join(root.path, 'library.sqlite'),
     );
+    for (final interrupted in await repository.list()) {
+      if (interrupted.status == TranscriptStatus.interrupted &&
+          interrupted.source == 'recording' &&
+          interrupted.audioPath ==
+              p.join(root.path, 'audio', '${interrupted.id}.wav')) {
+        final duration = await recoverRecording(File(interrupted.audioPath));
+        if (duration != null) {
+          await repository.save(
+            interrupted.copyWith(
+              durationMs: duration,
+              error: '任务被中断，音频已恢复或确认可读取，可重试转写。',
+            ),
+          );
+        }
+      }
+    }
     final controller = AppController(
       repository: repository,
       root: root,
@@ -69,7 +88,10 @@ class AppController extends ChangeNotifier {
   }
 
   void _onModelsChanged() {
-    unawaited(preferences.setString('model', models.activeId ?? ''));
+    final selected = models.activeId ?? '';
+    if (preferences.getString('model') != selected) {
+      unawaited(preferences.setString('model', selected));
+    }
     notifyListeners();
   }
 
@@ -98,11 +120,11 @@ class AppController extends ChangeNotifier {
 
   Future<void> save(Transcript value) async {
     await repository.save(value);
+    dataRevision++;
     await refresh();
   }
 
-  Future<Transcript?> find(String id) async =>
-      (await repository.list()).where((t) => t.id == id).firstOrNull;
+  Future<Transcript?> find(String id) => repository.get(id);
   Future<void> remove(Transcript value) async {
     if (value.id == taskId || value.id == recording?.id) {
       throw StateError('请先结束当前任务');
@@ -112,6 +134,7 @@ class AppController extends ChangeNotifier {
     final wav = File(p.join(root.path, 'audio', '${value.id}.normalized.wav'));
     if (await wav.exists()) await wav.delete();
     await repository.delete(value.id);
+    dataRevision++;
     await refresh();
   }
 
@@ -173,17 +196,24 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  bool _changingPause = false;
   Future<void> togglePause() async {
-    if (recording == null) return;
-    if (paused) {
-      await recorder.resume();
-      _watch.start();
-    } else {
-      await recorder.pause();
-      _watch.stop();
+    if (recording == null || _changingPause) return;
+    _changingPause = true;
+    final next = !paused;
+    try {
+      if (next) {
+        await recorder.pause();
+        _watch.stop();
+      } else {
+        await recorder.resume();
+        _watch.start();
+      }
+      paused = next;
+    } finally {
+      _changingPause = false;
+      notifyListeners();
     }
-    paused = !paused;
-    notifyListeners();
   }
 
   bool _stopping = false;
@@ -302,6 +332,7 @@ class AppController extends ChangeNotifier {
     try {
       await save(working);
       await models.verifyActive();
+      final detector = await prepareSpeechDetector(root);
       phase = '正在准备音频';
       notifyListeners();
       final normalized = p.join(
@@ -312,6 +343,7 @@ class AppController extends ChangeNotifier {
       final duration = await engine.normalize(value.audioPath, normalized);
       working = working.copyWith(durationMs: duration);
       await repository.save(working);
+      dataRevision++;
       phase = '正在设备上转写';
       notifyListeners();
       final result = await engine.transcribe(
@@ -319,6 +351,16 @@ class AppController extends ChangeNotifier {
         wav: normalized,
         language: value.language,
         prompt: value.prompt,
+        vad: detector,
+        onPhase: (state) {
+          phase = switch (state) {
+            0 => '正在载入本地模型',
+            2 => '正在检查可能遗漏的语音',
+            4 => '正在检测语音区间',
+            _ => '正在设备上转写',
+          };
+          notifyListeners();
+        },
         onProgress: (fraction) {
           progress = fraction;
           notifyListeners();
@@ -350,6 +392,44 @@ class AppController extends ChangeNotifier {
       taskId = null;
       phase = null;
       notifyListeners();
+    }
+  }
+
+  Future<Transcript> createRevision(Transcript source) async {
+    if (busy) throw StateError('请先结束当前任务');
+    importing = true;
+    phase = '正在准备新转写';
+    notifyListeners();
+    final id = const Uuid().v4();
+    final path = p.join(
+      root.path,
+      'audio',
+      '$id${p.extension(source.audioPath)}',
+    );
+    var persisted = false;
+    try {
+      await File(source.audioPath).copy(path);
+      final revision = Transcript(
+        id: id,
+        title: '${source.title} · 新转写',
+        createdAt: DateTime.now(),
+        audioPath: path,
+        durationMs: source.durationMs,
+        language: language,
+        prompt: prompt,
+        source: source.source,
+      );
+      await save(revision);
+      persisted = true;
+      return revision;
+    } finally {
+      try {
+        if (!persisted && await File(path).exists()) await File(path).delete();
+      } finally {
+        importing = false;
+        phase = null;
+        notifyListeners();
+      }
     }
   }
 

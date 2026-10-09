@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.platform = :ios, '15.0'
   s.swift_version = '5.0'
   s.frameworks = 'AVFoundation', 'Accelerate'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'OTHER_LDFLAGS' => '$(inherited) -Wl,-u,_ls_job_create -Wl,-u,_ls_job_run -Wl,-u,_ls_job_progress -Wl,-u,_ls_job_cancel -Wl,-u,_ls_job_result -Wl,-u,_ls_job_free' }
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'OTHER_LDFLAGS' => '$(inherited) -Wl,-u,_ls_job_create -Wl,-u,_ls_job_create_v2 -Wl,-u,_ls_job_run -Wl,-u,_ls_job_progress -Wl,-u,_ls_job_phase -Wl,-u,_ls_job_cancel -Wl,-u,_ls_job_result -Wl,-u,_ls_job_free' }
 end

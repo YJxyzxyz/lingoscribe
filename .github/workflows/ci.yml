@@ -57,13 +57,18 @@ jobs:
         run: |
           flutter pub get
           flutter build apk --debug --target-platform android-arm64,android-x64
+          mkdir -p build/qa
+          cp build/app/outputs/flutter-apk/app-debug.apk build/qa/lingoscribe-debug.apk
           flutter build appbundle --release --target-platform android-arm64
+          flutter build apk --debug --target-platform android-x64 --target integration_test/native_pipeline_test.dart
+          cp build/app/outputs/flutter-apk/app-debug.apk build/qa/native-pipeline-debug.apk
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: android-debug-and-unsigned-aab
           path: |
-            apps/mobile/build/app/outputs/flutter-apk/app-debug.apk
+            apps/mobile/build/qa/*.apk
             apps/mobile/build/app/outputs/bundle/release/*.aab
+          retention-days: 7
   ios:
     needs: quality
     runs-on: macos-15
@@ -86,3 +91,4 @@ jobs:
         with:
           name: ios-unsigned-app
           path: apps/mobile/build/ios/iphoneos/Runner.app
+          retention-days: 7
