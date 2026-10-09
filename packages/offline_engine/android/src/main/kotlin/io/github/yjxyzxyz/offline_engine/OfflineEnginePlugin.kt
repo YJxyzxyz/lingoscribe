@@ -62,6 +62,9 @@ class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             var rate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
             var channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
             var encoding = AudioFormat.ENCODING_PCM_16BIT
+            if (format.getString(MediaFormat.KEY_MIME) == "audio/raw") {
+                return normalizeRaw(extractor, format, destination)
+            }
             decoder = MediaCodec.createDecoderByType(format.getString(MediaFormat.KEY_MIME)!!)
             decoder.configure(format, null, null, 0)
             decoder.start(); started = true
@@ -132,6 +135,48 @@ class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             if (started) decoder?.stop()
             decoder?.release(); extractor.release()
         }
+    }
+
+    private fun normalizeRaw(extractor: MediaExtractor, format: MediaFormat, destination: String): Long {
+        val rate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+        val channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+        val encoding = if (format.containsKey(MediaFormat.KEY_PCM_ENCODING)) format.getInteger(MediaFormat.KEY_PCM_ENCODING) else AudioFormat.ENCODING_PCM_16BIT
+        require(channels in 1..8 && rate in 8000..192000) { "Unsupported raw audio format" }
+        require(encoding == AudioFormat.ENCODING_PCM_16BIT || encoding == AudioFormat.ENCODING_PCM_FLOAT) { "Only PCM16 and float WAV are supported" }
+        val frameBytes = channels * if (encoding == AudioFormat.ENCODING_PCM_FLOAT) 4 else 2
+        val buffer = java.nio.ByteBuffer.allocateDirect(2 * 1024 * 1024).order(ByteOrder.LITTLE_ENDIAN)
+        var written = 0L
+        BufferedOutputStream(FileOutputStream(destination), 65536).use { out ->
+            out.write(ByteArray(44))
+            val resampler = Resampler(rate) { sample ->
+                check(written < 16000L * 7200) { "Audio exceeds two hours" }
+                val value = (sample.coerceIn(-1.0, 1.0) * 32767).roundToInt()
+                out.write(value and 255); out.write((value shr 8) and 255); written++
+            }
+            while (true) {
+                buffer.clear()
+                val size = extractor.readSampleData(buffer, 0)
+                if (size < 0) break
+                require(size % frameBytes == 0) { "Invalid PCM frame" }
+                buffer.position(0); buffer.limit(size)
+                while (buffer.remaining() >= frameBytes) {
+                    var sample = 0.0
+                    repeat(channels) { sample += if (encoding == AudioFormat.ENCODING_PCM_FLOAT) buffer.float.toDouble() else buffer.short / 32768.0 }
+                    resampler.add(sample / channels)
+                }
+                extractor.advance()
+            }
+            resampler.finish()
+        }
+        require(written > 0) { "No decoded audio" }
+        RandomAccessFile(destination, "rw").use { file ->
+            fun short(value: Int) { file.write(value and 255); file.write((value shr 8) and 255) }
+            fun int(value: Long) { repeat(4) { file.write(((value shr (8 * it)) and 255).toInt()) } }
+            file.seek(0); file.writeBytes("RIFF"); int(36 + written * 2); file.writeBytes("WAVEfmt ")
+            int(16); short(1); short(1); int(16000); int(32000); short(2); short(16)
+            file.writeBytes("data"); int(written * 2)
+        }
+        return written / 16
     }
 
     // Windowed-sinc low-pass resampling prevents aliasing when importing 44.1/48 kHz audio.

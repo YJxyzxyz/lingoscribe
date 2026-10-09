@@ -23,12 +23,15 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - name: Resolve native engine package for reproducible formatting
+        run: |
+          cd ../../packages/offline_engine
+          flutter pub get
       - run: dart format --output=none --set-exit-if-changed lib test ../../packages/offline_engine/lib
       - run: flutter analyze
       - name: Analyze native engine Dart bindings
         run: |
           cd ../../packages/offline_engine
-          flutter pub get
           flutter analyze
       - run: flutter test --coverage --concurrency=1
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
