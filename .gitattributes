@@ -7,3 +7,7 @@
 *.sh text eol=lf
 *.bat text eol=crlf
 *.cmd text eol=crlf
+
+# Preserve vendored source and license notices, including upstream whitespace.
+native/vendor/** -whitespace
+docs/licenses/** -whitespace

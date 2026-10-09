@@ -62,3 +62,10 @@ xcuserdata/
 ios/.symlinks/
 ios/Flutter/App.framework/
 ios/Flutter/Flutter.framework/
+
+# Generated local engine artifacts, tool caches and private export previews
+packages/offline_engine/ios/Frameworks/
+*.dll
+*.so
+*.a
+__pycache__/

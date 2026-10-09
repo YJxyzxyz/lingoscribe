@@ -1,7 +1,30 @@
-# App 项目
+# 聆写 · LingoScribe
 
-用于管理面向 iOS 和 Android 的应用源码、版本变更和发布记录。
-当前已建立 Git 仓库，应用名称、技术栈和构建流程将在开发时补充。
+隐私优先的 iOS / Android 离线语音转写应用。Flutter 共享界面与业务，whisper.cpp 在设备上真实执行多语言转写。
+当前正在完善商业发布验收，未宣称已通过手机性能验证或商店审核。
+
+## 已实现的源码能力
+
+本地录音与暂停、系统音频导入、端侧转写与取消、逐段时间戳回听、文本校对并保留原文、段落标记、本地搜索、TXT/Markdown/SRT/VTT/JSON 导出，以及可验证下载/导入/切换/删除的离线模型。
+无需账号，没有音频上传、广告或统计 SDK；第一次下载模型需要联网，之后可断网使用。
+付费下载是拟定商业模式，尚未配置商店价格和发行账号。
+
+## 开发与验证
+
+固定 Flutter 3.47.7，Java 17；Android 8+、iOS 15+。
+
+```sh
+cd apps/mobile
+flutter pub get
+flutter analyze
+flutter test
+flutter run
+```
+
+iOS 原生库需先在 macOS 运行 `bash tools/build_ios_engine.sh`。Android 原生库由 NDK/CMake 从固定上游源码直接构建。
+正式签名、构建命令和账号需求见 [上架准备](docs/STORE_READINESS.md)。
+产品研究见 [产品决策](docs/PRODUCT.md)，真实验证结果见 [测试说明](docs/TESTING.md)，尚未完成的工作见 [交付状态](docs/STATUS.md)。
+[隐私说明](docs/PRIVACY.md)与[第三方许可](docs/THIRD_PARTY_NOTICES.md)随实际实现更新。
 
 ## 分支约定
 

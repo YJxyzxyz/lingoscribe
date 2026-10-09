@@ -1,0 +1,4 @@
+Copyright (c) 2026 LingoScribe contributors. All rights reserved.
+
+This application's original code is proprietary. No license to redistribute or sell the original application code is granted by publication of this repository.
+Third-party dependencies retain their own licenses. See native/vendor/whisper.cpp/LICENSE and docs/THIRD_PARTY_NOTICES.md.
