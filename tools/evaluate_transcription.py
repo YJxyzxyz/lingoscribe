@@ -85,6 +85,8 @@ def main():
             hypothesis_cn, hypothesis_en, hypothesis_numbers = tokens(hypothesis)
             cn_errors, en_errors = distance(reference_cn, hypothesis_cn), distance(reference_en, hypothesis_en)
             row = {'id': clip['id'], 'kind': clip['kind'], 'source': clip['source'], 'audioSha256': audio_hash,
+                   'license': clip.get('license'), 'datasetLanguage': clip.get('datasetLanguage'),
+                   'speakerId': clip.get('speakerId'),
                    'durationMs': output['durationMs'], 'elapsedSeconds': round(elapsed, 3),
                    'rtf': round(elapsed / (output['durationMs'] / 1000), 3),
                    'chineseReferenceChars': len(reference_cn), 'chineseEditDistance': cn_errors,
@@ -95,10 +97,27 @@ def main():
             if args.include_text:
                 row.update(reference=clip['text'], hypothesis=hypothesis)
             model_results.append(row)
-        results.append({'model': Path(model).name, 'modelSha256': digest(model), 'clips': model_results})
+        aggregates = {}
+        for group in sorted({row.get('datasetLanguage') or 'all' for row in model_results}):
+            group_rows = [row for row in model_results if (row.get('datasetLanguage') or 'all') == group]
+            cn_count = sum(row['chineseReferenceChars'] for row in group_rows)
+            en_count = sum(row['englishReferenceWords'] for row in group_rows)
+            cn_errors = sum(row['chineseEditDistance'] for row in group_rows)
+            en_errors = sum(row['englishEditDistance'] for row in group_rows)
+            duration = sum(row['durationMs'] for row in group_rows) / 1000
+            aggregates[group] = {'clips': len(group_rows), 'durationSeconds': round(duration, 3),
+                                 'chineseReferenceChars': cn_count, 'chineseEditDistance': cn_errors,
+                                 'chineseCER': cn_errors / cn_count if cn_count else None,
+                                 'englishReferenceWords': en_count, 'englishEditDistance': en_errors,
+                                 'englishWER': en_errors / en_count if en_count else None,
+                                 'rtf': round(sum(row['elapsedSeconds'] for row in group_rows) / duration, 3)}
+        results.append({'model': Path(model).name, 'modelSha256': digest(model), 'aggregates': aggregates, 'clips': model_results})
     report = {'engine': library.ls_version().decode(), 'librarySha256': digest(args.library),
               'platform': platform.system(), 'architecture': platform.machine(),
               'vadSha256': digest(args.vad) if args.vad else None, 'results': results,
+              'manifestSha256': digest(args.manifest),
+              'corpusSelection': corpus.get('selection'),
+              'corpusAttribution': corpus.get('attribution'),
               'normalization': 'NFKC, case-insensitive; Han characters for CER, Latin words for WER; punctuation ignored; numbers compared separately; no simplified/traditional conversion',
               'scope': 'Synthetic clips are regression tests, not human accuracy or phone-performance evidence; no memory or power measurement implied'}
     destination = Path(args.report)

@@ -368,7 +368,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get stopAndSave => '结束并保存';
 
   @override
-  String get backgroundPauseExplanation => '退出到后台时会自动暂停。\n保存后可选择模型进行离线转写。';
+  String get backgroundPauseExplanation =>
+      '退出到后台时会自动暂停。\n单次最多两小时，接近上限时自动保存。\n保存后可离线转写。';
 
   @override
   String get settingsHeadline => '按你的方式聆写';

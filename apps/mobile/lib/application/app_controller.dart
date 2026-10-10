@@ -175,6 +175,10 @@ class AppController extends ChangeNotifier {
     );
     await repository.save(value);
     try {
+      // Count startup time and leave room for buffered frames before the engine's two-hour cap.
+      _watch
+        ..reset()
+        ..start();
       await recorder.start(
         const RecordConfig(
           encoder: AudioEncoder.wav,
@@ -190,10 +194,7 @@ class AppController extends ChangeNotifier {
       autoSavedRecording = null;
       recordingLimitError = null;
       paused = false;
-      recordingMs = 0;
-      _watch
-        ..reset()
-        ..start();
+      recordingMs = _watch.elapsedMilliseconds;
       _amplitude = recorder
           .onAmplitudeChanged(const Duration(milliseconds: 100))
           .listen((value) {
@@ -203,7 +204,7 @@ class AppController extends ChangeNotifier {
       _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
         recordingMs = _watch.elapsedMilliseconds;
         notifyListeners();
-        if (recordingMs >= 7200000) {
+        if (recordingMs >= 7195000) {
           _timer?.cancel();
           unawaited(
             stopRecording()
@@ -222,6 +223,7 @@ class AppController extends ChangeNotifier {
       });
       notifyListeners();
     } catch (e) {
+      _watch.stop();
       await repository.delete(id);
       rethrow;
     }

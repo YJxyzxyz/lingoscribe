@@ -32,6 +32,18 @@ python tools/native_smoke.py --library <原生动态库> --model <官方模型.b
 
 参考文本回归工具：`tools/evaluate_transcription.py` 对真实原生输出计算中文字符 CER、英文单词 WER 与实际 RTF。音频需要来源说明；人声语料需要许可或已取得同意的记录。
 默认报告省略参考与转写正文，写入被 Git 忽略的 `build/`；只有明确使用 `--include-text` 时才保存正文。
+真实人声小规模回归使用 HKUST CAiRE 的 [ASCEND 数据集](https://huggingface.co/datasets/CAiRE/ASCEND)，数据许可为 CC-BY-SA-4.0；其 GitHub 工具代码的 MIT 许可不能代替数据许可。
+`tools/prepare_ascend_corpus.py` 校验固定测试 Parquet 的 SHA-256，按预先设定规则选取最多三个说话人、每人每种语言前三条不少于两秒的片段，输出音频和参考清单均留在被忽略的 `build/`。
+实际测试 split 只有两个说话人，选出 18 条、约 66.5 秒音频。此样本不能代表真实用户、长会议或整体准确率。
+两模型实际推理的聚合指标见 `validation/ascend-regression-evaluation.json`：Small 的中文组原始 CER 23.6%，混合组原始中文 CER 47.0%、英文 WER 65.0%；错误包含简繁体差异、语气词省略、英文词误识别和缩写分词差异。
+这些结果显示混合自然对话仍需优化，不能以两个合成片段的良好结果宣传高准确率。后续调参需保留当前基线和失败样例，并用额外语料验证，防止只适配此子集。
+
+```sh
+pip install -r tools/corpus-requirements.txt
+python tools/prepare_ascend_corpus.py <固定ASCEND测试Parquet>
+python tools/evaluate_transcription.py --library <真实原生库> --model <模型.bin> --vad apps/mobile/assets/models/ggml-silero-v6.2.0.bin --manifest build/corpus/ascend/manifest.json --audio-root build/corpus/ascend
+```
+
 `tools/synthetic_corpus.json` 配合本机 Windows TTS 生成器用于合成回归。报告 `validation/synthetic-regression-evaluation.json` 仅包含两个合成片段，不是人声准确率证据。
 原始 CER 不转换简繁体：Base 的一个结果输出了繁体中文，导致较高的原始字面错误率；不能将该数值直接解释成语音识别错误率。参考与输出、规范化规则均已记录，不能隐藏这类差异来夸大效果。
 

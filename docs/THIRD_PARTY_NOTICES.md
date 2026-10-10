@@ -5,7 +5,11 @@
 当前已从本机解析的 lockfile 导出 110 个 Dart 依赖及全部许可，见 `licenses/dart-dependencies.json` 与 `licenses/DART_NOTICES.txt`。
 其中包含开发/测试依赖，不意味着它们全部进入 release 包。
 已从 ARM64 Release runtime classpath 提取 108 个 Maven 依赖的 POM 许可元数据（包括父 POM 继承），见 `licenses/android-dependencies.json`。
-POM 元数据不是完整著作权/NOTICE 审计，最终包的嵌入代码、原生依赖及 iOS CocoaPods 许可仍需复核。
+POM 元数据不是完整著作权/NOTICE 审计，最终包的嵌入代码和新增依赖仍需复核。
+固定 whisper.cpp / ggml 快照已整理 60 个含显式声明的源文件归属，并保留主 MIT、Mozilla、YaRN、Arm/Intel 及可选后端的 Apache / LLVM 许可文本，见 `licenses/NATIVE_NOTICES.txt` 与 `licenses/native-attributions.json`。
+原生声明同步打包并注册到应用许可页；可选后端的声明不表示移动端启用了这些后端。
+iOS CI 另从实际 CocoaPods acknowledgements 导出许可及 Podfile.lock；若出现 Flutter 插件清单以外的原生 Pod，会阻止检查通过，要求补齐打包声明。
+当前 iOS 文件导入仅编译 Document picker，关闭未使用的图库和 Apple Music 入口，避免引入 DKImagePickerController 依赖。
 
 | 组件 | 来源 | 许可 / 处理 |
 | --- | --- | --- |

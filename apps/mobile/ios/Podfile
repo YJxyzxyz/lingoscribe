@@ -1,5 +1,10 @@
 platform :ios, '15.0'
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+# Audio and model imports use UIDocumentPicker through FileType.custom/any.
+# Exclude the unused Photos picker and Apple Music library integration.
+Pod::PICKER_MEDIA = false
+Pod::PICKER_AUDIO = false
+Pod::PICKER_DOCUMENT = true
 project 'Runner', { 'Debug' => :debug, 'Profile' => :release, 'Release' => :release }
 def flutter_root
   path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)

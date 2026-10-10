@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.description = s.summary
   s.homepage = 'https://github.com/YJxyzxyz/lingoscribe'
   s.license = { :type => 'Proprietary', :file => '../LICENSE' }
-  s.author = { 'LingoScribe' => '718005487@qq.com' }
+  s.author = 'LingoScribe contributors'
   s.source = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.resource_bundles = { 'offline_engine_privacy' => ['Classes/PrivacyInfo.xcprivacy'] }

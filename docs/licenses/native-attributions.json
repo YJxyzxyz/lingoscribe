@@ -1,0 +1,525 @@
+[
+  {
+    "path": "cmake/FindFFmpeg.cmake",
+    "attributions": [
+      "# Copyright (c) 2006, Matthias Kretz, <kretz@kde.org>",
+      "# Copyright (c) 2008, Alexander Neundorf, <neundorf@kde.org>",
+      "# Copyright (c) 2011, Michael Jansen, <kde@michael-jansen.biz>"
+    ],
+    "sourceSha256": "bedd2e8a2bcf9349827794d261ec63ab0fabf9ba6d6a71d7e8788e88f82ae944"
+  },
+  {
+    "path": "ggml/include/ggml-cann.h",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+  },
+  {
+    "path": "ggml/include/ggml-sycl.h",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT"
+    ],
+    "sourceSha256": "58429f8045b335f5e740faa2198caf72ba3beb04df0eb970103b932340daca8b"
+  },
+  {
+    "path": "ggml/src/ggml-cann/acl_tensor.cpp",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "b0621fed856a993fd326636a7b9f6ccb2461cb1f35dbd4d6814822745733166e"
+  },
+  {
+    "path": "ggml/src/ggml-cann/acl_tensor.h",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "b13bc74c216d416f1e3819c16270673658c99a437d838ca4b233c5c6f1906b3c"
+  },
+  {
+    "path": "ggml/src/ggml-cann/aclnn_ops.cpp",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "cfc3f4e0aacf8e32ba07087498dca26f13e773448704efae7fea6f0e28d466b0"
+  },
+  {
+    "path": "ggml/src/ggml-cann/aclnn_ops.h",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "c4c8b4d6f88f03f67e04e57b180ad487eaea84724610cad418335afade70b525"
+  },
+  {
+    "path": "ggml/src/ggml-cann/common.h",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "62d6e79993222918dcd89e0f25b8f1366b7062e1e6ba82cab131ab1dc2868bb3"
+  },
+  {
+    "path": "ggml/src/ggml-cann/ggml-cann.cpp",
+    "attributions": [
+      "Copyright (c) 2023-2026 The ggml authors",
+      "The above copyright notice and this permission notice shall be included in",
+      "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"
+    ],
+    "sourceSha256": "26c392f92d28eea3f5ab3f39de068dcf3d9efb0fb62e14d40c9584bea60191e1"
+  },
+  {
+    "path": "ggml/src/ggml-cpu/kleidiai/kernels.cpp",
+    "attributions": [
+      "SPDX-FileCopyrightText: Copyright 2025-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>",
+      "SPDX-License-Identifier: MIT"
+    ],
+    "sourceSha256": "eec4fdb940204c1afcff6f84d312275c32c941e9577585c1fa9d60a6dd017ebe"
+  },
+  {
+    "path": "ggml/src/ggml-cpu/kleidiai/kernels.h",
+    "attributions": [
+      "SPDX-FileCopyrightText: Copyright 2025-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>",
+      "SPDX-License-Identifier: MIT"
+    ],
+    "sourceSha256": "f205ce317c703d021f8625f6eefd822c13e8d6a4e2acdec56eaf870f9bbbb0b4"
+  },
+  {
+    "path": "ggml/src/ggml-cpu/kleidiai/kleidiai.cpp",
+    "attributions": [
+      "SPDX-FileCopyrightText: Copyright 2025-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>",
+      "SPDX-License-Identifier: MIT"
+    ],
+    "sourceSha256": "1b42c193ef1cca6f56a9df6a567ed1da5310b575b96df49ef8a59ad12dae3bdf"
+  },
+  {
+    "path": "ggml/src/ggml-cpu/kleidiai/kleidiai.h",
+    "attributions": [
+      "SPDX-FileCopyrightText: Copyright 2025 Arm Limited and/or its affiliates <open-source-office@arm.com>",
+      "SPDX-License-Identifier: MIT"
+    ],
+    "sourceSha256": "bea31f009d2c471a7f6cd7a0ecf31ecaf08691914305a9ef7f986740e39f0910"
+  },
+  {
+    "path": "ggml/src/ggml-cpu/llamafile/sgemm.cpp",
+    "attributions": [
+      "Copyright 2024 Mozilla Foundation",
+      "The above copyright notice and this permission notice shall be",
+      "NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS"
+    ],
+    "sourceSha256": "e226380b05393302ba91b38d22718d9521700ee2cb7943f83ad316a7a9dcd597"
+  },
+  {
+    "path": "ggml/src/ggml-cpu/ops.cpp",
+    "attributions": [
+      "MIT licensed. Copyright (c) 2023 Jeffrey Quesnelle and Bowen Peng."
+    ],
+    "sourceSha256": "dbffc3df9816cc3f7e5428f9fb9afa13db4ac2979899605a057121bb031ba136"
+  },
+  {
+    "path": "ggml/src/ggml-cuda/rope.cu",
+    "attributions": [
+      "MIT licensed. Copyright (c) 2023 Jeffrey Quesnelle and Bowen Peng."
+    ],
+    "sourceSha256": "21b424e872267180570dfbc86e6ea67d1a3ced0efd5273d0f23d36da3c621905"
+  },
+  {
+    "path": "ggml/src/ggml-metal/kernels/rope.metal",
+    "attributions": [
+      "MIT licensed. Copyright (c) 2023 Jeffrey Quesnelle and Bowen Peng."
+    ],
+    "sourceSha256": "ec29ea430182842124c9bc7e62e1f8a2f48e1afc51d2ded54b96911201588987"
+  },
+  {
+    "path": "ggml/src/ggml-opencl/kernels/rope.cl",
+    "attributions": [
+      "MIT licensed. Copyright (c) 2023 Jeffrey Quesnelle and Bowen Peng."
+    ],
+    "sourceSha256": "53c579e4e75597743694ea8dff6035173464190a447cb59735c50ecc3aade95c"
+  },
+  {
+    "path": "ggml/src/ggml-openvino/openvino/frontend.h",
+    "attributions": [
+      "Copyright (C) 2018-2024 Intel Corporation",
+      "SPDX-License-Identifier: Apache-2.0"
+    ],
+    "sourceSha256": "7b6a02442944aadec80d5ca38d2379dbf5544728d4c58e85f12f733b0d94b8e3"
+  },
+  {
+    "path": "ggml/src/ggml-openvino/openvino/op/gather_matmul.hpp",
+    "attributions": [
+      "Copyright (C) 2018-2026 Intel Corporation",
+      "SPDX-License-Identifier: Apache-2.0"
+    ],
+    "sourceSha256": "54695d980b9a1784e87340c2337c8368074c47981f7eb37486d036b79fe335aa"
+  },
+  {
+    "path": "ggml/src/ggml-openvino/openvino/pass/mark_dequantization_subgraph.h",
+    "attributions": [
+      "Copyright (C) 2018-2026 Intel Corporation",
+      "SPDX-License-Identifier: Apache-2.0"
+    ],
+    "sourceSha256": "1d5a639ef7ab457dca3d9e0180010dcd96ca0f5224ad58d6583c3ec419c89ae7"
+  },
+  {
+    "path": "ggml/src/ggml-openvino/openvino/rt_info/weightless_caching_attributes.hpp",
+    "attributions": [
+      "Copyright (C) 2018-2026 Intel Corporation",
+      "SPDX-License-Identifier: Apache-2.0"
+    ],
+    "sourceSha256": "e9b53eba5e98335e6160641ca36edeed3a08be40042b3106a196d05fbc77b0dc"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/backend.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "1da5e3d5508d76e82bfbb0ad2afcb77c633cb66116dee6e51b9f380fb8136879"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/common.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "020accc1a7f7708f85f7c904e9ff279d00b68829767188fb0e63776397d602b3"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/common.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "9ef1409e3b0e6fba4f0c12568a9187aba367651cc31b06e3fb46102d5ff65caa"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/concat.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "c2cbed5981259f3fe3fe5365c2e0ab4f3605a945561fbea9e8c65a2777af1cde"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/concat.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "7dde2e59d7b6cddad4c47b545fab64efbe06ca40a727496f3dbc08a8972ceb7c"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/conv.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "769cff4286d9880cf393ed88c8959c228689421584c321f1b1fa2ad2752dc50d"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/conv.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "bf14bf4d201a92f2a04b3c93d57b655589d88fe318a2ec71bff8caf0154dd385"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/convert.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "8352bcf4081257b1e97e2cebb003e52d7bc809eff5dfe489f8432f1d24b6ce97"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/dequantize.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "55ad21a2a8c40f46100c49adc0eeab01ce8bb7153e3febe855d072aa871caa5d"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/dmmv.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "4ecfa6dc1aa0b76c491c76ef5a9fe4bd6c9124bb1947d92774885bc73ea89463"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/dpct/helper.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "86dfd3a9e83cddbb37983d5f8b34c3ed6ca0e2cd797a94fb9cfdf4e4ae61c368"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/fattn-buffers.cpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "115c832fe5760192f4f30889264ae8544e5eb385d65653797f2ea961745e3b69"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/fattn-buffers.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "ba95ed1ad1ef76c6bca6d72630c060f0dd9f28d5673dff4d62acc5f626634b2d"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/fattn.cpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "58936069d306de57880e34a3b4927825ede38efe57699ea2492f29a04ec57f1e"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/fattn.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "d553ec91b5413e5c0890743c5246bf90e685322f3b800beb0242b98d9e02c7b8"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/gemm.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "d8ca6cfacbec789e499005b478fab9f4838a63ad31152d9146260fcf94dc9cd8"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/getrows.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "3667253e13287b73b86a05acb9498f249f573ea7abc99d18c4d168a932a90e9d"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/getrows.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "2cdfda536c1d4351bc41e2b9c7798af50c7fe1d093569564517597e6a59ee793"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/ggml-sycl.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "5f61359e870a3e54582cadf213ecd9998cfe42f741bc7d99b2cee62860f0ee39"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/im2col.cpp",
+    "attributions": [
+      "Copyright (C) 2026 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "8f412c76fb0b68335043bdb121feb6fb307e36f052fe5ea0c7dd8455e9456927"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/im2col.hpp",
+    "attributions": [
+      "Copyright (C) 2026 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "5e3dd60141339206183ca0a0f397db0b65a6f8776a1dea463aeabcb80db9b861"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/mmq.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "3e7cc6f2f2ae895efbb85d5eefa468f594081399a25f1d24a34c01519944b24b"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/mmq.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "da88e98e058c55878652f52a68584990d76b2971adb13ddc27b95d7bdef06f0f"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/mmvq.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "8ae065ed9a4176e7d2ea462559685aa7673d873bb0f26982eadd76c70cef2746"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/norm.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "66fb31354938fae6c1f8206239351a151cd15ba408e1f6fc8acbadec752eb964"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/pad.cpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "f6449b6df57d610c70a9a58ba37054ba01ad4a8c08b91ea8b41d6a593f35b786"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/pad.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "752fea37c2691b01f90e453557452fdfb791025b0d2e7772f505f8fc0a22786d"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/pool.cpp",
+    "attributions": [
+      "Copyright (C) 2026 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "feccbcc9f11fa70f432f566cbe6eb1d86a5181d43979092ecddd636e8affa564"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/pool.hpp",
+    "attributions": [
+      "Copyright (C) 2026 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "e4275eca0793e02ab16460d19f15827895fec0e8495b5a0775cf98bbe226f315"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/presets.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "f0a634da7478bca1afb0eff51f95d81cc22233b9dfeecd081a51e90be7c02424"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/quantize.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Codeplay Software Ltd.",
+      "Copyright (C) 2025 Intel Corporation"
+    ],
+    "sourceSha256": "0897642347d0a974f39b4ef1738be73dda4731974a98bdfa1af273c8ebf6679c"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/quants.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Codeplay Software Ltd.",
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "1e094e840db40f231aa47da2c0c768b40f57a840c3126fab53847990b94583d3"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/roll.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "fd5871666cd128dc6e08defe0ce0b2acb7a81029a948911449356f563a061223"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/rope.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "c5e6a7116b2e6121af30f406980b16c0854d84b65e371705eb4396f7854f4505"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/softmax.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "4104bf526fce651ab99d7fcb94cdb61a2503ec68be9dd4dd4c378aa589f23b62"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/tsembd.cpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "00b89636ca6cc800faf2bc9e284b678d25209941164019c3077381c5bfbbdae4"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/tsembd.hpp",
+    "attributions": [
+      "Copyright (C) 2024 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "4e5633ed5f815f37de70c4f50d9fc03e135add66af727d92ed5a1d8bc175e606"
+  },
+  {
+    "path": "ggml/src/ggml-sycl/vecdotq.hpp",
+    "attributions": [
+      "Copyright (C) 2025 Intel Corporation",
+      "SPDX-License-Identifier: MIT",
+      "SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception"
+    ],
+    "sourceSha256": "52abc55bc4d49fa421cfdf118afc4850a391d2824d9cd06fc223f66c687a9a66"
+  }
+]

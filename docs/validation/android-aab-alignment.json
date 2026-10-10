@@ -1,10 +1,10 @@
 {
   "artifact": "app-release.aab",
-  "sha256": "028147847d0cc5feb10ec3a5ebd124d6bad305ef1d3d00073606d6a7bb01f21f",
+  "sha256": "dc9436afe8aded5389750351f26bf41c95fec0d12a6a4041aa05e10f72d24cf5",
   "libraries": [
     {
       "path": "base/lib/arm64-v8a/libapp.so",
-      "sha256": "297878949f246298a04430d6809feb3fdc98c8e92fa67d5a389264d4c1238827",
+      "sha256": "2e09e8f662402a4184e8d6b9827720a1c57eb26123ad1129647054944a2ce3ec",
       "loadSegments": [
         {
           "offset": 0,
@@ -12,13 +12,13 @@
           "alignment": 65536
         },
         {
-          "offset": 2686976,
-          "virtualAddress": 2686976,
+          "offset": 2752512,
+          "virtualAddress": 2752512,
           "alignment": 65536
         },
         {
-          "offset": 6881280,
-          "virtualAddress": 6881280,
+          "offset": 6946816,
+          "virtualAddress": 6946816,
           "alignment": 65536
         }
       ],

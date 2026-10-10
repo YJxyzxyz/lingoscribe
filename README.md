@@ -28,7 +28,7 @@ iOS 原生库需先在 macOS 运行 `bash tools/build_ios_engine.sh`。Android �
 
 ## 分支约定
 
-- `main`：经过验证、可用于发布的代码。
+- `main`：持续集成的开发主线；实际发布以通过验收的版本标签为准。
 - `feature/<名称>`：功能开发，完成验证后合并到 `main`。
 - `fix/<名称>`：问题修复，完成验证后合并到 `main`。
 - `release/<版本号>`：需要独立稳定和测试阶段时使用的可选发布分支。
@@ -60,12 +60,12 @@ iOS 与 Android 的构建编号分别记录和递增；同一版本重新提交�
 
 ## 远程仓库
 
-本地仓库初始化后，需接入 GitHub、GitLab 或其他 Git 服务以备份和协作。
-将下面的占位符替换为自己创建的远程仓库地址：
+已接入 [YJxyzxyz/lingoscribe](https://github.com/YJxyzxyz/lingoscribe)，SSH 远程为 `git@github.com:YJxyzxyz/lingoscribe.git`。
+源码和后续版本均通过 Git 管理：
 
 ```powershell
-git remote add origin <远程仓库地址>
-git push -u origin main
+git remote -v
+git push origin main
 ```
 
 连接远程后，建议为 `main` 开启分支保护，并要求构建检查通过后合并。

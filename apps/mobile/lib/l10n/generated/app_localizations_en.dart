@@ -393,7 +393,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backgroundPauseExplanation =>
-      'Recording pauses when the app goes into the background.\nSave, then choose a model to transcribe offline.';
+      'Recording pauses in the background.\nUp to two hours; saved automatically near the limit.\nSave, then transcribe offline.';
 
   @override
   String get settingsHeadline => 'Make it your own';

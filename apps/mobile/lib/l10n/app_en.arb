@@ -118,7 +118,7 @@
   "pauseRecording": "Pause recording",
   "saving": "Saving…",
   "stopAndSave": "Stop & save",
-  "backgroundPauseExplanation": "Recording pauses when the app goes into the background.\nSave, then choose a model to transcribe offline.",
+  "backgroundPauseExplanation": "Recording pauses in the background.\nUp to two hours; saved automatically near the limit.\nSave, then transcribe offline.",
   "settingsHeadline": "Make it your own",
   "newAudioDefaults": "Defaults for new recordings and imports",
   "audioLanguage": "Audio language",

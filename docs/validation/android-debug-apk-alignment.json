@@ -1,6 +1,6 @@
 {
-  "artifact": "lingoscribe-0.1.0-dev-android.apk",
-  "sha256": "c5a65b5e797bf1134c9a09b6de773a03d4dc7de5e402f8e2883951ae095cf255",
+  "artifact": "app-debug.apk",
+  "sha256": "8115d3f1f8c1206b03a995b7cae856c0de86f60899420c1fae46aecc0a40556e",
   "libraries": [
     {
       "path": "lib/arm64-v8a/libVkLayer_khronos_validation.so",

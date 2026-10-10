@@ -1,0 +1,2 @@
+# Development-only corpus extraction; never linked into or shipped with the app.
+pyarrow==26.0.0

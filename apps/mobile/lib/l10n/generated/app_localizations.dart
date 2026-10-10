@@ -809,7 +809,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundPauseExplanation.
   ///
   /// In en, this message translates to:
-  /// **'Recording pauses when the app goes into the background.\nSave, then choose a model to transcribe offline.'**
+  /// **'Recording pauses in the background.\nUp to two hours; saved automatically near the limit.\nSave, then transcribe offline.'**
   String get backgroundPauseExplanation;
 
   /// No description provided for @settingsHeadline.

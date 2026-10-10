@@ -91,12 +91,14 @@ jobs:
           flutter pub get --enforce-lockfile
           flutter build ios --release --no-codesign
           python3 ../../tools/check_ios_bundle.py build/ios/iphoneos/Runner.app --commit "$GITHUB_SHA" --report build/ios/bundle-check.json
+          python3 ../../tools/audit_ios_licenses.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ios-unsigned-app
           path: |
             apps/mobile/build/ios/iphoneos/Runner.app
             apps/mobile/build/ios/bundle-check.json
+            build/ios-license-audit/
           retention-days: 7
       - name: Exercise real iOS native decoding and inference on a dedicated simulator
         run: |
@@ -115,4 +117,6 @@ jobs:
           path: |
             build/ios-native-result.json
             build/ios-native-result.log
+            build/ios-native-result.system.log
+            build/ios-native-result.png
           retention-days: 7

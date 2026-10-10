@@ -12,11 +12,14 @@ Future<void> main() async {
     'WHISPER_LICENSE.txt',
     'MODEL_LICENSE.txt',
     'SILERO_LICENSE.txt',
+    'NATIVE_NOTICES.txt',
   ]) {
     LicenseRegistry.addLicense(() async* {
       yield LicenseEntryWithLineBreaks([
         asset == 'WHISPER_LICENSE.txt'
             ? 'whisper.cpp / ggml'
+            : asset == 'NATIVE_NOTICES.txt'
+            ? 'Native source attributions'
             : asset == 'SILERO_LICENSE.txt'
             ? 'Silero VAD'
             : 'OpenAI Whisper models',

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -16,6 +17,23 @@ import 'package:flutter/services.dart';
 // Fixtures are not bundled into the production application and no inference is mocked.
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  // iOS routes Dart print output through unified logging, not simctl's console.
+  // Export the binding's actual completed assertion result for host runners.
+  unawaited(
+    binding.allTestsPassed.future.then((passed) async {
+      final qa = p.join((await getApplicationSupportDirectory()).path, 'qa');
+      await File(p.join(qa, 'test-status.json')).writeAsString(
+        jsonEncode({
+          'passed': passed,
+          'testCount': binding.results.length,
+          'failures': binding.failureMethodsDetails
+              .map((failure) => failure.details)
+              .toList(),
+        }),
+        flush: true,
+      );
+    }),
+  );
   testWidgets('native codecs preserve real audio, downmix and sample rate', (
     tester,
   ) async {
