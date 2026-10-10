@@ -1,0 +1,3 @@
+# Host-only research; these packages are never shipped in the app.
+sherpa-onnx==1.13.8
+numpy==2.3.5

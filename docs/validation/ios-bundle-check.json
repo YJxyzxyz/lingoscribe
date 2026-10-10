@@ -1,11 +1,11 @@
 {
-  "sourceCommit": "28b453d0571079b7ad7e14885fdb0e0a68ebf6c5",
+  "sourceCommit": "bd8865d105724b42d2fb1793745a57df319711eb",
   "bundleId": "io.github.yjxyzxyz.lingoscribe",
   "version": "0.1.0",
   "build": "1",
   "minimumOS": "15.0",
   "microphoneUsage": "聆写需要麦克风来录制你选择保存的音频。录音和转写只在本机处理。",
-  "nativeSha256": "423dd1c5072561655967f62c6e8f9af13d2270598cde9748601895d7d02de9bb",
+  "nativeSha256": "ce8dcad2b2684fb1b1ad9fce2f1c1790cc5cd3695897fd2b69aa7be598ceba63",
   "nativeExports": {
     "ls_job_create_v2": true,
     "ls_job_run": true,
@@ -118,5 +118,6 @@
     "en": true,
     "zh-Hans": true
   },
+  "developmentFrameworks": [],
   "passed": true
 }

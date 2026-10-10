@@ -1,6 +1,6 @@
 {
-  "artifact": "app-release.aab",
-  "sha256": "dc9436afe8aded5389750351f26bf41c95fec0d12a6a4041aa05e10f72d24cf5",
+  "artifact": "lingoscribe-0.1.0-unsigned-android.aab",
+  "sha256": "9f2920758b855b1f302c151f8083bfe63d4a704283f1aaf74fd11a4e3d3bb1e2",
   "libraries": [
     {
       "path": "base/lib/arm64-v8a/libapp.so",
