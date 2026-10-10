@@ -160,5 +160,7 @@
   "fileAccessFailed": "无法访问所选文件，请重新选择并授予访问权限。",
   "engineUnavailable": "转写引擎无法加载，请更新应用后重试。",
   "recordingTitle": "录音 {date} {time}",
-  "revisionTitle": "{title} · 新转写"
+  "revisionTitle": "{title} · 新转写",
+  "recordingRequiresForeground": "请回到应用后开始录音。",
+  "recordingStartFailedAudioKept": "录音启动失败，已保留音频，请在资料库中检查。"
 }

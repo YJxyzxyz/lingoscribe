@@ -16,14 +16,59 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   int tab = 0;
   Timer? _search;
+  Completer<void>? _permissionFocus;
   AppController get app => widget.controller;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.inactive &&
+        !(_permissionFocus?.isCompleted ?? true)) {
+      _permissionFocus!.complete();
+    }
+    if (state != AppLifecycleState.resumed) {
+      unawaited(
+        app.pauseRecording().catchError((Object error) {
+          if (mounted) showError(context, error);
+        }),
+      );
+    }
+  }
+
+  Future<void> _settlePermissionFocus() async {
+    // The native permission result can arrive just before the dialog restores focus.
+    if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.inactive) {
+      return;
+    }
+    final waiter = _permissionFocus = Completer<void>();
+    try {
+      await waiter.future.timeout(const Duration(seconds: 1), onTimeout: () {});
+    } finally {
+      _permissionFocus = null;
+    }
+  }
+
   Future<void> _record() async {
     try {
-      await app.startRecording();
-      if (!mounted) return;
+      await app.startRecording(
+        isForeground: () =>
+            mounted &&
+            (WidgetsBinding.instance.lifecycleState == null ||
+                WidgetsBinding.instance.lifecycleState ==
+                    AppLifecycleState.resumed),
+        settlePermissionFocus: _settlePermissionFocus,
+      );
+      if (!mounted) {
+        await app.stopRecording();
+        return;
+      }
       await Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => RecordingScreen(controller: app)),
       );
@@ -57,6 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    if (!(_permissionFocus?.isCompleted ?? true)) _permissionFocus!.complete();
+    WidgetsBinding.instance.removeObserver(this);
     _search?.cancel();
     super.dispose();
   }

@@ -515,6 +515,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get recordingRequiresForeground => '请回到应用后开始录音。';
+
+  @override
+  String get recordingStartFailedAudioKept => '录音启动失败，已保留音频，请在资料库中检查。';
+
+  @override
   String revisionTitle(String title) {
     return '$title · 新转写';
   }

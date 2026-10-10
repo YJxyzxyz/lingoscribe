@@ -562,6 +562,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get recordingRequiresForeground =>
+      'Return to the app before starting a recording.';
+
+  @override
+  String get recordingStartFailedAudioKept =>
+      'Recording could not start. Any captured audio was kept in your library.';
+
+  @override
   String revisionTitle(String title) {
     return '$title · New transcription';
   }

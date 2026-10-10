@@ -67,10 +67,9 @@ class _RecordingScreenState extends State<RecordingScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed &&
-        widget.controller.recording != null &&
-        !widget.controller.paused) {
+        widget.controller.recording != null) {
       unawaited(
-        widget.controller.togglePause().catchError((Object e) {
+        widget.controller.pauseRecording().catchError((Object e) {
           if (mounted) showError(context, e);
         }),
       );

@@ -45,7 +45,9 @@ class AppController extends ChangeNotifier {
   final Stopwatch _watch = Stopwatch();
   Timer? _timer;
   StreamSubscription<Amplitude>? _amplitude;
-  bool get busy => taskId != null || recording != null || importing;
+  bool _startingRecording = false;
+  bool get busy =>
+      taskId != null || recording != null || importing || _startingRecording;
   bool get onboarded => preferences.getBool('onboarded') ?? false;
 
   static Future<AppController> create() async {
@@ -152,10 +154,31 @@ class AppController extends ChangeNotifier {
     await refresh();
   }
 
-  Future<void> startRecording() async {
+  Future<void> startRecording({
+    bool Function()? isForeground,
+    Future<void> Function()? settlePermissionFocus,
+  }) async {
     if (busy) throw StateError('请先结束当前任务');
+    _startingRecording = true;
+    notifyListeners();
+    try {
+      await _startCapture(isForeground, settlePermissionFocus);
+    } finally {
+      _startingRecording = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> _startCapture(
+    bool Function()? isForeground,
+    Future<void> Function()? settlePermissionFocus,
+  ) async {
     if (!await recorder.hasPermission()) {
       throw StateError('需要麦克风权限才能录音，请在系统设置中允许。');
+    }
+    await settlePermissionFocus?.call();
+    if (isForeground != null && !isForeground()) {
+      throw StateError('请回到应用后开始录音。');
     }
     final id = const Uuid().v4();
     final folder = Directory(p.join(root.path, 'audio'));
@@ -221,32 +244,74 @@ class AppController extends ChangeNotifier {
           );
         }
       });
+      if (isForeground != null && !isForeground()) await pauseRecording();
       notifyListeners();
     } catch (e) {
       _watch.stop();
-      await repository.delete(id);
+      try {
+        await recorder.stop();
+      } catch (_) {
+        // Preserve any captured file even when native cleanup also fails.
+      }
+      _timer?.cancel();
+      await _amplitude?.cancel();
+      recording = null;
+      paused = false;
+      final audio = File(value.audioPath);
+      if (await audio.exists() && await audio.length() > 44) {
+        final duration = await recoverRecording(audio);
+        await save(
+          value.copyWith(
+            status: duration != null
+                ? TranscriptStatus.interrupted
+                : TranscriptStatus.failed,
+            durationMs: duration ?? _watch.elapsedMilliseconds,
+            error: '录音启动失败，已保留音频，请在资料库中检查。',
+          ),
+        );
+      } else {
+        if (await audio.exists()) await audio.delete();
+        await repository.delete(id);
+      }
       rethrow;
     }
   }
 
-  bool _changingPause = false;
+  Future<void>? _pauseOperation;
   Future<void> togglePause() async {
-    if (recording == null || _changingPause) return;
-    _changingPause = true;
-    final next = !paused;
+    if (recording == null || _pauseOperation != null || _stopping) return;
+    await _setPaused(!paused);
+  }
+
+  Future<void> pauseRecording() async {
+    if (recording == null || _stopping) return;
+    while (_pauseOperation != null) {
+      await _pauseOperation;
+    }
+    if (recording != null && !paused && !_stopping) await _setPaused(true);
+  }
+
+  Future<void> _setPaused(bool next) async {
+    // A background pause waits for a pending resume, then pauses again.
+    final operation = _applyPause(next);
+    _pauseOperation = operation;
     try {
-      if (next) {
-        await recorder.pause();
-        _watch.stop();
-      } else {
-        await recorder.resume();
-        _watch.start();
-      }
-      paused = next;
+      await operation;
     } finally {
-      _changingPause = false;
+      _pauseOperation = null;
       notifyListeners();
     }
+  }
+
+  Future<void> _applyPause(bool next) async {
+    if (next) {
+      await recorder.pause();
+      _watch.stop();
+    } else {
+      await recorder.resume();
+      _watch.start();
+    }
+    paused = next;
   }
 
   bool _stopping = false;
@@ -255,6 +320,11 @@ class AppController extends ChangeNotifier {
     if (value == null || _stopping) return null;
     _stopping = true;
     try {
+      try {
+        await _pauseOperation;
+      } catch (_) {
+        // Still attempt to stop and save if a native pause/resume failed.
+      }
       final path = await recorder.stop();
       _watch.stop();
       _timer?.cancel();

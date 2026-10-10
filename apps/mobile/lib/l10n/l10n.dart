@@ -29,6 +29,8 @@ String localizedLabel(BuildContext context, String text) {
     "任务被中断，音频已恢复或确认可读取，可重试转写。": messages.recordingRecovered,
     "请先结束当前任务": messages.finishCurrentTask,
     "需要麦克风权限才能录音，请在系统设置中允许。": messages.microphonePermission,
+    "请回到应用后开始录音。": messages.recordingRequiresForeground,
+    "录音启动失败，已保留音频，请在资料库中检查。": messages.recordingStartFailedAudioKept,
     "录音已停止，保存记录失败。请重启应用以恢复本地音频。": messages.recordingSaveFailed,
     "录音中断，已恢复本地音频，可继续转写。": messages.recordingInterrupted,
     "录音未正常结束。请检查麦克风权限后重新录音。": messages.recordingIncomplete,

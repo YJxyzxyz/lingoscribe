@@ -1058,6 +1058,18 @@ abstract class AppLocalizations {
   /// **'Recording {date} {time}'**
   String recordingTitle(String date, String time);
 
+  /// No description provided for @recordingRequiresForeground.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to the app before starting a recording.'**
+  String get recordingRequiresForeground;
+
+  /// No description provided for @recordingStartFailedAudioKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording could not start. Any captured audio was kept in your library.'**
+  String get recordingStartFailedAudioKept;
+
   /// No description provided for @revisionTitle.
   ///
   /// In en, this message translates to:

@@ -226,6 +226,8 @@
       }
     }
   },
+  "recordingRequiresForeground": "Return to the app before starting a recording.",
+  "recordingStartFailedAudioKept": "Recording could not start. Any captured audio was kept in your library.",
   "revisionTitle": "{title} · New transcription",
   "@revisionTitle": {
     "placeholders": {
