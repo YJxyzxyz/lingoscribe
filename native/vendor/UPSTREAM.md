@@ -2,7 +2,8 @@
 
 Upstream: https://github.com/ggml-org/whisper.cpp
 Tag: v1.9.4
-Commit: 7d75b14994ae7f59623e2471445e2355fe506ed2
+Annotated tag object: 7d75b14994ae7f59623e2471445e2355fe506ed2
+Resolved source commit: 927cfce34f31707e17f2bff35c349632fb9e2c3a
 Source archive: https://api.github.com/repos/ggml-org/whisper.cpp/tarball/v1.9.4
 Downloaded archive SHA-256: 261de3e2edeb7b3fa8bd3b35d000848fb023933ca220bf4d15937e31f8992ec8
 
