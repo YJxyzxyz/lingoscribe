@@ -9,6 +9,8 @@ import 'package:lingoscribe/data/transcript_repository.dart';
 import 'package:lingoscribe/domain/transcript.dart';
 import 'package:lingoscribe/services/model_manager.dart';
 import 'package:lingoscribe/ui/app.dart';
+import 'package:lingoscribe/ui/recording_screen.dart';
+import 'package:lingoscribe/ui/detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -102,6 +104,64 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'automatic recording limit opens the saved record after capture has ended',
+    (tester) async {
+      final recording = Transcript(
+        id: 'recording-limit',
+        title: '长录音',
+        createdAt: DateTime.now(),
+        audioPath: '${directory.path}/recording-limit.wav',
+        status: TranscriptStatus.recording,
+      );
+      controller.recording = recording;
+      await tester.pumpWidget(
+        MaterialApp(home: RecordingScreen(controller: controller)),
+      );
+      await tester.pump();
+      controller.recording = null;
+      final saved = recording.copyWith(
+        status: TranscriptStatus.saved,
+        durationMs: 7200000,
+      );
+      controller.autoSavedRecording = saved;
+      await tester.runAsync(() => controller.save(saved));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(RecordingScreen), findsNothing);
+      expect(find.byType(DetailScreen), findsOneWidget);
+      expect(find.text('长录音'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
+  test(
+    'native stop returning no path retains actual app-owned audio',
+    () async {
+      final file = File('${directory.path}/recording-recovery.wav');
+      final pcm = List<int>.generate(32000, (i) => i % 256);
+      await file.writeAsBytes([...List<int>.filled(44, 0), ...pcm]);
+      final recording = Transcript(
+        id: 'retained',
+        title: '中断录音',
+        createdAt: DateTime.now(),
+        audioPath: file.path,
+        status: TranscriptStatus.recording,
+      );
+      controller.recording = recording;
+      await controller.repository.save(recording);
+      final saved = await controller.stopRecording();
+      expect(saved!.status, TranscriptStatus.interrupted);
+      expect(saved.durationMs, 1000);
+      expect((await file.readAsBytes()).sublist(44), pcm);
+      expect(
+        (await controller.find('retained'))!.status,
+        TranscriptStatus.interrupted,
+      );
+    },
+  );
   testWidgets('capture actual Flutter library render for visual QA', (
     tester,
   ) async {

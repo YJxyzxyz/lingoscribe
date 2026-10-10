@@ -1,0 +1,14 @@
+{
+  "scope": "Actual Android emulator process-kill recovery, not iOS or low-storage validation",
+  "beforeSha256": "becd40c3d20fd17110b61baabc9f82e2edaeaf7965c459a4d99a7806ec8e9a18",
+  "afterSha256": "3a4cd614df8603681b67bd9a263faf1853344dc696b32ef62dafe0df32c5a33f",
+  "originalPcmSha256": "4b80cbf910be6ae3ce38fd7db7b4895a33a90abe3b6a95a2f069204c90d640b2",
+  "durationSeconds": 51.904,
+  "bytes": 1660972,
+  "checks": [
+    "zero_header_repaired",
+    "original_pcm_identical",
+    "valid_pcm16_mono_16k_wav"
+  ],
+  "passed": true
+}

@@ -36,6 +36,8 @@ class AppController extends ChangeNotifier {
   String? taskId, error, phase;
   double progress = 0, amplitude = -60;
   Transcript? recording;
+  Transcript? autoSavedRecording;
+  String? recordingLimitError;
   bool paused = false, importing = false;
   int recordingMs = 0;
   final Stopwatch _watch = Stopwatch();
@@ -171,6 +173,8 @@ class AppController extends ChangeNotifier {
         path: value.audioPath,
       );
       recording = value;
+      autoSavedRecording = null;
+      recordingLimitError = null;
       paused = false;
       recordingMs = 0;
       _watch
@@ -186,7 +190,20 @@ class AppController extends ChangeNotifier {
         recordingMs = _watch.elapsedMilliseconds;
         notifyListeners();
         if (recordingMs >= 7200000) {
-          unawaited(stopRecording());
+          _timer?.cancel();
+          unawaited(
+            stopRecording()
+                .then<void>((saved) {
+                  if (saved != null) {
+                    autoSavedRecording = saved;
+                    notifyListeners();
+                  }
+                })
+                .catchError((Object failure) {
+                  recordingLimitError = '录音已停止，保存记录失败。请重启应用以恢复本地音频。';
+                  notifyListeners();
+                }),
+          );
         }
       });
       notifyListeners();
@@ -228,13 +245,23 @@ class AppController extends ChangeNotifier {
       await _amplitude?.cancel();
       recording = null;
       paused = false;
-      if (discard || path == null) {
+      if (discard) {
         await remove(value);
         return null;
       }
+      final recovered = await recoverRecording(File(value.audioPath));
       final saved = value.copyWith(
-        status: TranscriptStatus.saved,
-        durationMs: _watch.elapsedMilliseconds,
+        status: path != null
+            ? TranscriptStatus.saved
+            : recovered != null
+            ? TranscriptStatus.interrupted
+            : TranscriptStatus.failed,
+        durationMs: recovered ?? _watch.elapsedMilliseconds,
+        error: path == null
+            ? recovered != null
+                  ? '录音中断，已恢复本地音频，可继续转写。'
+                  : '录音未正常结束。请检查麦克风权限后重新录音。'
+            : null,
       );
       await save(saved);
       return saved;

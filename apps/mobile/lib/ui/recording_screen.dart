@@ -17,10 +17,14 @@ class _RecordingScreenState extends State<RecordingScreen>
   bool saving = false;
   final List<double> levels = [];
   Timer? _meter;
+  String? _recordingId;
+  String? _lastLimitError;
   @override
   void initState() {
     super.initState();
+    _recordingId = widget.controller.recording?.id;
     WidgetsBinding.instance.addObserver(this);
+    widget.controller.addListener(_onLimitSaved);
     _meter = Timer.periodic(const Duration(milliseconds: 100), (_) {
       if (!mounted) return;
       setState(() {
@@ -33,6 +37,31 @@ class _RecordingScreenState extends State<RecordingScreen>
       });
     });
   }
+
+  void _onLimitSaved() {
+    if (!mounted || saving) return;
+    final error = widget.controller.recordingLimitError;
+    if (error != null && error != _lastLimitError) {
+      _lastLimitError = error;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) showError(context, error);
+      });
+    }
+    final saved = widget.controller.autoSavedRecording;
+    if (saved == null || saved.id != _recordingId) return;
+    setState(() => saving = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _showSaved(saved);
+    });
+  }
+
+  void _showSaved(Transcript item) => Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) =>
+          DetailScreen(controller: widget.controller, initial: item),
+    ),
+  );
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -50,6 +79,7 @@ class _RecordingScreenState extends State<RecordingScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.controller.removeListener(_onLimitSaved);
     _meter?.cancel();
     super.dispose();
   }
@@ -64,13 +94,7 @@ class _RecordingScreenState extends State<RecordingScreen>
         Navigator.pop(context);
         return;
       }
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              DetailScreen(controller: widget.controller, initial: item),
-        ),
-      );
+      _showSaved(item);
     } catch (e) {
       if (mounted) {
         setState(() => saving = false);
