@@ -1,6 +1,6 @@
 {
   "artifact": "lingoscribe-0.1.0-dev-android.apk",
-  "sha256": "2448a86473e7c5092bda8d1f56e6057702872395a76819117c5bdb88ae3a0182",
+  "sha256": "30d26a4b1cd478913af6f3ec2eaf3bce3262a7816cd1dffdc4efbb3ecb5f8720",
   "libraries": [
     {
       "path": "lib/arm64-v8a/libVkLayer_khronos_validation.so",
@@ -128,30 +128,6 @@
       "compressed": false
     },
     {
-      "path": "lib/arm64-v8a/liboffline_engine.so",
-      "sha256": "054ed504c68480312972d22feae30237c2ff34b7000a105838b67a7aa94bc90c",
-      "loadSegments": [
-        {
-          "offset": 0,
-          "virtualAddress": 0,
-          "alignment": 16384
-        },
-        {
-          "offset": 3906448,
-          "virtualAddress": 3922832,
-          "alignment": 16384
-        },
-        {
-          "offset": 3938904,
-          "virtualAddress": 3971672,
-          "alignment": 16384
-        }
-      ],
-      "elf16KiB": true,
-      "zip16KiB": true,
-      "compressed": false
-    },
-    {
       "path": "lib/arm64-v8a/libsqlite3.so",
       "sha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
       "loadSegments": [
@@ -272,30 +248,6 @@
       "compressed": false
     },
     {
-      "path": "lib/x86_64/liboffline_engine.so",
-      "sha256": "3a050f8def240bb8fd96022108fae8d2b0a41572f71f30ea36b183a3129fbd51",
-      "loadSegments": [
-        {
-          "offset": 0,
-          "virtualAddress": 0,
-          "alignment": 16384
-        },
-        {
-          "offset": 3818208,
-          "virtualAddress": 3834592,
-          "alignment": 16384
-        },
-        {
-          "offset": 3850656,
-          "virtualAddress": 3883424,
-          "alignment": 16384
-        }
-      ],
-      "elf16KiB": true,
-      "zip16KiB": true,
-      "compressed": false
-    },
-    {
       "path": "lib/x86_64/libsqlite3.so",
       "sha256": "c773c3a25e4c11a450cc700ac95d665c3a1ae75ad426a204fc9b7a7a69b0e191",
       "loadSegments": [
@@ -312,6 +264,54 @@
         {
           "offset": 1692512,
           "virtualAddress": 1725280,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/liboffline_engine.so",
+      "sha256": "ead4643e470b26d14e0ea97ff35ea1e892fba5b9b2bac58a9a06965df2c6303e",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 1944368,
+          "virtualAddress": 1960752,
+          "alignment": 16384
+        },
+        {
+          "offset": 1965080,
+          "virtualAddress": 1997848,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/liboffline_engine.so",
+      "sha256": "f9d293af53514bb5dc2587b92b1c8543952f16dcd38cbaf6f760814a726e5000",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 2205776,
+          "virtualAddress": 2222160,
+          "alignment": 16384
+        },
+        {
+          "offset": 2226496,
+          "virtualAddress": 2259264,
           "alignment": 16384
         }
       ],

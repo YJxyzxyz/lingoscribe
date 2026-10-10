@@ -1,0 +1,11 @@
+{
+  "sha256": "b61961ded0c673681e7de5752d3bac04423fcf445fda79d0c39b4f7c5e90d1de",
+  "certificateSha256": "51ad86a51b9cb539b92e4c4679babe5a6a7dd848ca313045d8f4b1a56e1a3c32",
+  "verifiedSchemes": [
+    "v2",
+    "v3"
+  ],
+  "scope": "apksigner signature verification and aapt release manifest inspection; not store signing or device execution",
+  "passed": true,
+  "signingPurpose": "Android debug certificate; development installation only"
+}

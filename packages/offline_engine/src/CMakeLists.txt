@@ -4,7 +4,7 @@ option(LS_DEV_DIAGNOSTICS "Print private transcript diagnostics for local develo
 option(LS_OPTIMIZED_DEBUG "Keep neural kernels optimized in Flutter debug builds" ON)
 if(LS_OPTIMIZED_DEBUG AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     # Flutter UI debugging does not need unoptimized neural kernels. Retain -g
-    # symbols while matching the production optimization level for useful QA.
+    # symbols while optimizing neural kernels for useful QA.
     add_compile_options("$<$<CONFIG:Debug>:-O3>")
 endif()
 set(CMAKE_CXX_STANDARD 17)

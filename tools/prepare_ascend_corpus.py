@@ -18,17 +18,40 @@ parser = argparse.ArgumentParser()
 parser.add_argument('parquet')
 parser.add_argument('--output', default='build/corpus/ascend')
 parser.add_argument('--ffmpeg', default=shutil.which('ffmpeg'))
+parser.add_argument('--clips-per-language', type=int,
+                    help='Expand deterministically across available speakers; default keeps the original 18-clip regression')
 args = parser.parse_args()
 assert args.ffmpeg, 'FFmpeg is required on the test host'
+assert args.clips_per_language is None or args.clips_per_language > 0
 source = Path(args.parquet)
 assert hashlib.sha256(source.read_bytes()).hexdigest() == SHA, 'Unexpected corpus bytes'
 rows = pq.read_table(source).to_pylist()
 speakers = sorted({row['original_speaker_id'] for row in rows})[:3]
 selected = []
-for speaker in speakers:
+if args.clips_per_language is None:
+    for speaker in speakers:
+        for language in ('zh', 'en', 'mixed'):
+            selected.extend([row for row in rows if row['original_speaker_id'] == speaker
+                             and row['language'] == language and row['duration'] >= 2][:3])
+    selection = ('First up to three numeric speaker IDs in test split; first up to three rows '
+                 'per speaker/language with duration >= 2 seconds; chosen before inference')
+else:
     for language in ('zh', 'en', 'mixed'):
-        selected.extend([row for row in rows if row['original_speaker_id'] == speaker
-                         and row['language'] == language and row['duration'] >= 2][:3])
+        queues = [[row for row in rows if row['original_speaker_id'] == speaker
+                   and row['language'] == language and row['duration'] >= 2] for speaker in speakers]
+        group = []
+        index = 0
+        while len(group) < args.clips_per_language:
+            available = [queue[index] for queue in queues if index < len(queue)]
+            if not available:
+                break
+            group.extend(available[:args.clips_per_language - len(group)])
+            index += 1
+        assert len(group) == args.clips_per_language, f'Insufficient {language} clips'
+        selected.extend(group)
+    selection = (f'First {args.clips_per_language} rows per language with duration >= 2 seconds; '
+                 'round-robin across first up to three numeric speaker IDs in test split, preserving '
+                 'source row order per speaker; exhausted speakers skipped; chosen before inference')
 output = Path(args.output)
 output.mkdir(parents=True, exist_ok=True)
 clips = []
@@ -47,7 +70,7 @@ for row in selected:
 manifest = {'dataset': 'ASCEND', 'attribution': 'HKUST CAiRE; Lovenia et al., ASCEND (LREC 2022)',
             'datasetLicense': 'https://creativecommons.org/licenses/by-sa/4.0/',
             'sourceRevision': REVISION, 'parquetSha256': SHA,
-            'selection': 'First up to three numeric speaker IDs in test split; first up to three rows per speaker/language with duration >= 2 seconds; chosen before inference',
+            'selection': selection,
             'transform': 'FFmpeg mono PCM16 16 kHz; original reference text retained',
             'scope': 'Small deterministic regression subset, not a representative accuracy benchmark', 'clips': clips}
 (output / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

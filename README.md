@@ -25,6 +25,7 @@ iOS 原生库需先在 macOS 运行 `bash tools/build_ios_engine.sh`。Android �
 正式签名、构建命令和账号需求见 [上架准备](docs/STORE_READINESS.md)。
 产品研究见 [产品决策](docs/PRODUCT.md)，真实验证结果见 [测试说明](docs/TESTING.md)，尚未完成的工作见 [交付状态](docs/STATUS.md)。
 [隐私说明](docs/PRIVACY.md)与[第三方许可](docs/THIRD_PARTY_NOTICES.md)随实际实现更新。
+开发版安装、离线首次使用和产物校验见 [试用说明](docs/TRY_BUILD.md)。
 
 ## 分支约定
 

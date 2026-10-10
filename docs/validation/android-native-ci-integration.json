@@ -4,7 +4,7 @@
   "fixtureKind": "upstream",
   "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
   "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
-  "elapsedSeconds": 291.983,
+  "elapsedSeconds": 33.69,
   "durationMs": 11000,
   "segments": [
     {
@@ -57,9 +57,9 @@
     }
   ],
   "microphoneChecks": {
-    "durationMs": 1792,
-    "bytes": 57388,
-    "pausedBytes": 28716,
+    "durationMs": 1856,
+    "bytes": 59436,
+    "pausedBytes": 30764,
     "checks": [
       "native_capture",
       "pause_stops_file_growth",

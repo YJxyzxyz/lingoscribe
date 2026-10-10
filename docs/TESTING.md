@@ -37,6 +37,7 @@ python tools/native_smoke.py --library <原生动态库> --model <官方模型.b
 真实人声小规模回归使用 HKUST CAiRE 的 [ASCEND 数据集](https://huggingface.co/datasets/CAiRE/ASCEND)，数据许可为 CC-BY-SA-4.0；其 GitHub 工具代码的 MIT 许可不能代替数据许可。
 `tools/prepare_ascend_corpus.py` 校验固定测试 Parquet 的 SHA-256，按预先设定规则选取最多三个说话人、每人每种语言前三条不少于两秒的片段，输出音频和参考清单均留在被忽略的 `build/`。
 实际测试 split 只有两个说话人，选出 18 条、约 66.5 秒音频。此样本不能代表真实用户、长会议或整体准确率。
+另使用 `--clips-per-language 30 --output build/corpus/ascend-expanded`，按语言与说话人轮转、保留每人的原始行顺序，预先选取中文、英文、混合各 30 条（共约 316.6 秒）。说话人仍只有两位；这增加回归覆盖，不增加人群代表性。实际结果见 `validation/ascend-expanded-evaluation.json`，原始 18 条基线保留。
 两模型实际推理的聚合指标见 `validation/ascend-regression-evaluation.json`：Small 的中文组原始 CER 23.6%，混合组原始中文 CER 47.0%、英文 WER 65.0%；错误包含简繁体差异、语气词省略、英文词误识别和缩写分词差异。
 这些结果显示混合自然对话仍需优化，不能以两个合成片段的良好结果宣传高准确率。后续调参需保留当前基线和失败样例，并用额外语料验证，防止只适配此子集。
 另行试验固定语言与“简体中文、保留英文”提示：固定语言没有降低本子集的错误数；提示虽降低纯中文原始 CER，却使混合英文 WER 从 65% 增至 80%，还出现新的漏词和误识别。因此没有将该提示设为产品默认值。比较记录见 `validation/ascend-prompt-comparison.json`，桌面运行时间受同时执行任务影响，不作为速度改善结论。
@@ -46,6 +47,8 @@ pip install -r tools/corpus-requirements.txt
 python tools/prepare_ascend_corpus.py <固定ASCEND测试Parquet>
 python tools/evaluate_transcription.py --library <真实原生库> --model <模型.bin> --vad apps/mobile/assets/models/ggml-silero-v6.2.0.bin --manifest build/corpus/ascend/manifest.json --audio-root build/corpus/ascend
 ```
+
+Qwen3 引擎候选用 `tools/evaluate_qwen3.py --model-directory <固定快照目录> --manifest <同一语料清单> --audio-root <音频目录>` 执行真实 sherpa-onnx CPU 推理，校验三项模型和 tokenizer 的 SHA-256，默认不保存参考和识别正文。依赖沿用 `tools/sensevoice-research-requirements.txt`；这只用于开发机研究，不进入手机 App。
 
 `tools/synthetic_corpus.json` 配合本机 Windows TTS 生成器用于合成回归。报告 `validation/synthetic-regression-evaluation.json` 仅包含两个合成片段，不是人声准确率证据。
 原始 CER 不转换简繁体：Base 的一个结果输出了繁体中文，导致较高的原始字面错误率；不能将该数值直接解释成语音识别错误率。参考与输出、规范化规则均已记录，不能隐藏这类差异来夸大效果。
@@ -62,7 +65,7 @@ python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/
 
 该脚本通过 `run-as` 写入测试安装的私有夹具，无需 root；必须使用专用测试设备及相容的测试签名。
 当前 Android 测试入口增加真实原生麦克风采集、暂停/继续及 WAV 保存断言；脚本会在指定 QA 安装上预授予麦克风权限。虚拟麦克风结果不代表真实人声或物理手机麦克风质量。
-`android-runtime` CI 在专用 Linux/KVM 模拟器上已通过此入口，见 `validation/android-native-ci-integration.json`。在未优化原生内核的该次 Debug 运行中，11 秒英文推理为约 292 秒，因此后续 Debug 内核启用与 Release 相同的 `-O3`；不同宿主和构建模式的时间不能作为手机速度比较。
+`android-runtime` CI 在专用 Linux/KVM 模拟器上已通过此入口，见 `validation/android-native-ci-integration.json`。首次未优化的 Debug 原生运行中，11 秒英文推理为约 292 秒；后续 Debug 内核启用 `-O3` 并保留调试符号。Android 发布构建使用已优化的 `RelWithDebInfo` 配置（本机实际编译指令为 `-O2`），该变更不修改发布配置。不同宿主和构建模式的时间不能作为手机速度比较。
 FFmpeg 仅用于测试工具生成不同编码的真实音频夹具，不进入 App；可通过 `--ffmpeg` 指定本机路径。
 构建入口改变后用正常 `lib/main.dart` 重新构建安装。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
 切换 Debug/Release 时使用完整 `flutter build`，不要跳过需要按构建模式生成的插件配置；不要与同一工程的 pub/analyze 命令并行执行。

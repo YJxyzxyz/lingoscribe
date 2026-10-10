@@ -37,6 +37,19 @@ git push origin v1.0.0
 构建工具接入后，应支持直接从发布标签检出并构建，确保产物与源码一致。
 首次初始化仓库不创建发布标签；标签应在实际应用通过发布验证后建立。
 
+## 开发版产物与源码对应
+
+正常入口 APK 和 ARM64 AAB 构建后，分别运行 `tools/check_android_artifact.py`，将报告保存到交付目录的 `android-apk-check.json` 与 `android-aab-check.json`。
+iOS ZIP 使用对应提交的 macOS CI 原始产物，必须保留包内的 `bundle-check.json`。将三项文件放到 `build/deliverables/`，再运行：
+
+```sh
+python tools/create_delivery_manifest.py --android-commit <完整构建提交SHA> --ios-commit <完整构建提交SHA> --ci-run <实际构建编号>
+```
+
+脚本校验实际文件摘要与 Android 检查报告，核对 iOS 报告的源码和版本，生成 `manifest.json`。过期或失败报告不能通过。源码参数由构建者记录，文件摘要不独立证明源码身份；应一并保存 CI 构建记录。
+开发版 APK 可安装，未签名 AAB / iOS ZIP 只用于工程验证；不将它们标记成正式商店版本。交付文件留在被 Git 忽略的构建目录，源码、工具和脱敏验证记录进入 Git。
+可另提供采用 Release 编译配置、开发证书签名的 ARM64 APK，用于手机试用；它仍不能代表正式签名发布。使用 `apksigner verify` 检查实际签名，保存包含 APK 摘要的 `android-release-apk-signature.json`，运行同一静态对齐工具生成 `android-release-apk-check.json`，再为清单命令增加 `--include-arm64-release-apk`。当前开发 APK 使用相同开发证书，正式发行必须单独管理上传密钥。
+
 ## 每次发布记录
 
 复制此模板到 `docs/releases/<版本号>.md`，按实际情况填写；不要写入密码、签名私钥或访问令牌。

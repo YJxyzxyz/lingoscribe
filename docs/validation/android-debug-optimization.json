@@ -1,0 +1,19 @@
+{
+  "fixtureAudioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "fixtureModelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "durationMs": 11000,
+  "before": {
+    "sourceCommit": "b2231c04b08eb5e01197d4806d7bc5106bff590f",
+    "ciRun": 38040285199,
+    "nativeDebugOptimization": "No explicit optimization flag",
+    "elapsedSeconds": 291.983
+  },
+  "after": {
+    "sourceCommit": "ff36fc53a067fadfcc3abea019ca8dc26de74ec5",
+    "ciRun": 38042039062,
+    "nativeDebugOptimization": "-O3 with debug symbols retained",
+    "elapsedSeconds": 33.69
+  },
+  "device": "Dedicated Linux/KVM Android SDK 35 x86_64 emulator",
+  "scope": "Separate ephemeral CI hosts, same fixture/model/API/ABI. Debug QA observation, not a controlled phone benchmark. Android RelWithDebInfo production optimization remains unchanged."
+}

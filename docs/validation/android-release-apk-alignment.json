@@ -1,9 +1,9 @@
 {
-  "artifact": "lingoscribe-0.1.0-unsigned-android.aab",
-  "sha256": "bb0cc97b370c72d4017f82f22f48d864dc6921f99655e7c1601b842488fa620e",
+  "artifact": "lingoscribe-0.1.0-dev-arm64-release.apk",
+  "sha256": "b61961ded0c673681e7de5752d3bac04423fcf445fda79d0c39b4f7c5e90d1de",
   "libraries": [
     {
-      "path": "base/lib/arm64-v8a/libapp.so",
+      "path": "lib/arm64-v8a/libapp.so",
       "sha256": "5cf2193c4e60d68754cbf6e8e116446c88eb421a8da368cc8377e5cbfedd01a7",
       "loadSegments": [
         {
@@ -24,10 +24,10 @@
       ],
       "elf16KiB": true,
       "zip16KiB": true,
-      "compressed": true
+      "compressed": false
     },
     {
-      "path": "base/lib/arm64-v8a/libc++_shared.so",
+      "path": "lib/arm64-v8a/libc++_shared.so",
       "sha256": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c",
       "loadSegments": [
         {
@@ -53,10 +53,10 @@
       ],
       "elf16KiB": true,
       "zip16KiB": true,
-      "compressed": true
+      "compressed": false
     },
     {
-      "path": "base/lib/arm64-v8a/libdartjni.so",
+      "path": "lib/arm64-v8a/libdartjni.so",
       "sha256": "d190654615007dfd86e983ecb906bf7ddbf623110541b930aa73b0a9152e0fa9",
       "loadSegments": [
         {
@@ -77,10 +77,10 @@
       ],
       "elf16KiB": true,
       "zip16KiB": true,
-      "compressed": true
+      "compressed": false
     },
     {
-      "path": "base/lib/arm64-v8a/libdatastore_shared_counter.so",
+      "path": "lib/arm64-v8a/libdatastore_shared_counter.so",
       "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
       "loadSegments": [
         {
@@ -101,10 +101,10 @@
       ],
       "elf16KiB": true,
       "zip16KiB": true,
-      "compressed": true
+      "compressed": false
     },
     {
-      "path": "base/lib/arm64-v8a/libflutter.so",
+      "path": "lib/arm64-v8a/libflutter.so",
       "sha256": "34f4113ae93b2c7069030f0bcfede18e7c83ed548b71a75c9ebb749403d3a060",
       "loadSegments": [
         {
@@ -125,10 +125,10 @@
       ],
       "elf16KiB": true,
       "zip16KiB": true,
-      "compressed": true
+      "compressed": false
     },
     {
-      "path": "base/lib/arm64-v8a/liboffline_engine.so",
+      "path": "lib/arm64-v8a/liboffline_engine.so",
       "sha256": "a6dc42f69f535ab9a3e9b43cc77bb161f28bcf99d9334eaf7cda1c275eadf07e",
       "loadSegments": [
         {
@@ -149,7 +149,7 @@
       ],
       "elf16KiB": true,
       "zip16KiB": true,
-      "compressed": true
+      "compressed": false
     }
   ],
   "incompleteAbis": {},

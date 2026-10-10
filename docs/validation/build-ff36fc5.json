@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "ff36fc53a067fadfcc3abea019ca8dc26de74ec5",
+  "ciRun": "https://github.com/YJxyzxyz/lingoscribe/actions/runs/38042039062",
+  "jobs": {
+    "quality": { "id": 114184043481, "conclusion": "success" },
+    "android": { "id": 114184244881, "conclusion": "success" },
+    "ios": { "id": 114184244873, "conclusion": "success" },
+    "android-runtime": { "id": 114186099738, "conclusion": "success" }
+  },
+  "artifactArchives": {
+    "ios-unsigned-app": { "id": 11665419211, "sha256": "855fd6c88903558bc669b3fd1cec77ff211457ad8101e49896e0753232299a5f" },
+    "ios-native-runtime-validation": { "id": 11665769407, "sha256": "d29a14ac5898a693d8f8d6e691d0c754f3a306774ad4d586d11b4b272e6bd998" },
+    "android-native-runtime-validation": { "id": 11666213877, "sha256": "68c152e34573609d2928880a5435692878b4298401671b1eb6c50323c501f6e2" },
+    "android-debug-and-unsigned-aab": { "id": 11665824131, "sha256": "f1091e4f19a48aa1e4deb3bc55af569fa7dcc69c602a97a991898aab6ce218f3" }
+  },
+  "reports": ["ios-bundle-check.json", "ios-native-integration.json", "android-native-ci-integration.json", "android-debug-apk-alignment.json", "android-aab-alignment.json"],
+  "localArtifacts": "build/deliverables/manifest.json records local Android build hashes and the downloaded original iOS archive hash; ARM64 release-mode APK additionally signed with the existing development certificate, not store signing",
+  "scope": "Build, static package inspection and simulator native assertions only; not signed releases, human accuracy acceptance or phone performance."
+}
