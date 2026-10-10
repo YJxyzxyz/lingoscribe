@@ -48,8 +48,10 @@ Future<String> _hashInWorker(String path) =>
     Isolate.run(() => _digestFile(path));
 
 class ModelManager extends ChangeNotifier {
-  ModelManager(this.directory);
+  ModelManager(this.directory, {http.Client Function()? clientFactory})
+    : _clientFactory = clientFactory ?? http.Client.new;
   final Directory directory;
+  final http.Client Function() _clientFactory;
   final Set<String> installed = {};
   String? activeId, downloadingId, error;
   double progress = 0;
@@ -103,7 +105,7 @@ class ModelManager extends ChangeNotifier {
     _cancelled = false;
     notifyListeners();
     final part = File('${pathFor(model)}.part');
-    final client = _client = http.Client();
+    final client = _client = _clientFactory();
     IOSink? sink;
     try {
       final response = await client
@@ -116,19 +118,20 @@ class ModelManager extends ChangeNotifier {
       var received = 0;
       final clock = Stopwatch()..start();
       var lastNotified = 0;
-      await for (final chunk in response.stream.timeout(
-        const Duration(seconds: 45),
-      )) {
-        if (_cancelled) throw const HttpException('下载已取消');
-        received += chunk.length;
-        if (received > model.bytes) throw const FormatException('模型文件大小异常');
-        sink.add(chunk);
-        progress = received / model.bytes;
-        if (clock.elapsedMilliseconds - lastNotified >= 100) {
-          lastNotified = clock.elapsedMilliseconds;
-          notifyListeners();
-        }
-      }
+      // addStream applies disk backpressure, avoiding unbounded queued model bytes.
+      await sink.addStream(
+        response.stream.timeout(const Duration(seconds: 45)).map((chunk) {
+          if (_cancelled) throw const HttpException('下载已取消');
+          received += chunk.length;
+          if (received > model.bytes) throw const FormatException('模型文件大小异常');
+          progress = received / model.bytes;
+          if (clock.elapsedMilliseconds - lastNotified >= 100) {
+            lastNotified = clock.elapsedMilliseconds;
+            notifyListeners();
+          }
+          return chunk;
+        }),
+      );
       await sink.flush();
       await sink.close();
       sink = null;
@@ -146,7 +149,7 @@ class ModelManager extends ChangeNotifier {
         try {
           await sink.close();
         } catch (e) {
-          error ??= e.toString();
+          if (!_cancelled) error ??= e.toString();
         }
       }
       client.close();

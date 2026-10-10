@@ -10,6 +10,14 @@ val releaseKeyFile = rootProject.file("key.properties")
 val releaseKeys = Properties().apply {
     if (releaseKeyFile.exists()) releaseKeyFile.inputStream().use { load(it) }
 }
+val targetAbis = (project.findProperty("target-platform") as? String ?: "android-arm64,android-x64")
+    .split(",").map { target ->
+        when (target) {
+            "android-arm64" -> "arm64-v8a"
+            "android-x64" -> "x86_64"
+            else -> error("Unsupported LingoScribe target: $target")
+        }
+    }
 
 android {
     namespace = "io.github.yjxyzxyz.lingoscribe"
@@ -33,7 +41,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
+        ndk { abiFilters.clear(); abiFilters += targetAbis }
     }
 
     signingConfigs {

@@ -89,4 +89,27 @@ void main() {
     await repository.delete('1');
     expect(await repository.list(), isEmpty);
   });
+  test(
+    'library previews stay bounded while detail and search retain complete text',
+    () async {
+      final segments = List<Segment>.generate(
+        2000,
+        (i) => Segment(
+          startMs: i * 1000,
+          endMs: (i + 1) * 1000,
+          text: i == 1999 ? '末尾关键词 tail keyword' : '中文 English $i',
+        ),
+      );
+      await repository.save(item('long', '').copyWith(segments: segments));
+      final summary = (await repository.summaries(
+        query: 'tail keyword',
+      )).single;
+      expect(summary.id, 'long');
+      expect(summary.preview.runes.length, lessThanOrEqualTo(220));
+      final full = await repository.get('long');
+      expect(full!.segments.length, 2000);
+      expect(full.segments.last.text, contains('末尾关键词'));
+      expect(await repository.summaries(query: "' OR 1=1 --"), isEmpty);
+    },
+  );
 }

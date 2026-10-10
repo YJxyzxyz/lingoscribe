@@ -6,6 +6,7 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -82,7 +83,9 @@ class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                 }
                 var resampler = Resampler(rate, ::writeSample)
                 var frames = 0L
+                var lastOutput = SystemClock.elapsedRealtime()
                 while (!outputEnded) {
+                    check(SystemClock.elapsedRealtime() - lastOutput < 30000) { "Audio decoder stopped responding" }
                     if (!inputEnded) {
                         val index = codec.dequeueInputBuffer(10000)
                         if (index >= 0) {
@@ -106,6 +109,7 @@ class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                         require(encoding == AudioFormat.ENCODING_PCM_16BIT || encoding == AudioFormat.ENCODING_PCM_FLOAT) { "Unsupported PCM encoding" }
                         if (frames == 0L) resampler = Resampler(rate, ::writeSample)
                     } else if (index >= 0) {
+                        lastOutput = SystemClock.elapsedRealtime()
                         try {
                             val buffer = codec.getOutputBuffer(index)!!.order(ByteOrder.LITTLE_ENDIAN)
                             buffer.position(info.offset); buffer.limit(info.offset + info.size)

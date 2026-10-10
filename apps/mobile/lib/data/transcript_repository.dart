@@ -57,6 +57,41 @@ class TranscriptRepository {
 
   Future<void> delete(String id) async =>
       database.delete('transcripts', where: 'id = ?', whereArgs: [id]);
+  Future<List<TranscriptSummary>> summaries({String query = ''}) async {
+    final escaped = query
+        .trim()
+        .replaceAll('\\', '\\\\')
+        .replaceAll('%', '\\%')
+        .replaceAll('_', '\\_');
+    final rows = await database.query(
+      'transcripts',
+      columns: [
+        'id',
+        'title',
+        'createdAt',
+        'durationMs',
+        'status',
+        'source',
+        'substr(plainText, 1, 220) AS preview',
+      ],
+      where: escaped.isEmpty
+          ? null
+          : "title LIKE ? ESCAPE '\\' OR plainText LIKE ? ESCAPE '\\'",
+      whereArgs: escaped.isEmpty ? null : ['%$escaped%', '%$escaped%'],
+      orderBy: 'createdAt DESC',
+    );
+    return rows.map(TranscriptSummary.fromRow).toList();
+  }
+
+  Future<List<Transcript>> interruptedRecordings() async {
+    final rows = await database.query(
+      'transcripts',
+      where: 'status = ? AND source = ?',
+      whereArgs: [TranscriptStatus.interrupted.name, 'recording'],
+    );
+    return rows.map(Transcript.fromRow).toList();
+  }
+
   Future<Transcript?> get(String id) async {
     final rows = await database.query(
       'transcripts',

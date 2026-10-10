@@ -54,5 +54,5 @@ CI 的 unsigned AAB / iOS .app 仅用于编译验证，不能当作已签名商�
 
 - [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)：真实功能、隐私、许可和商店审核资料需与实际构建一致。
 - [Apple Privacy Manifest](https://developer.apple.com/documentation/bundleresources/privacy-manifest-files)：依赖及访问受管 API 的声明需要根据最终构建复核。
-- [Android 16 KB page sizes](https://developer.android.com/guide/practices/page-sizes)：应用包含原生库，需要检查实际 ELF 与 APK/AAB 对齐；已配置 NDK 28 和 16 KB 链接对齐，尚需检查产物。
+- [Android 16 KB page sizes](https://developer.android.com/guide/practices/page-sizes)：已检查重新构建的 ARM64 AAB，全部 ELF 加载段支持 16 KB 对齐，且没有不完整 CPU 架构，见 `validation/android-aab-alignment.json`；仍需 16 KB 设备执行验证。
 - [Google Play review preparation](https://support.google.com/googleplay/android-developer/answer/9859455)：隐私、数据安全与应用访问资料需填写。

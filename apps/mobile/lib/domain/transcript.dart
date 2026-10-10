@@ -9,6 +9,33 @@ enum TranscriptStatus {
   interrupted,
 }
 
+/// Lightweight library projection; never use it to save or export a transcript.
+class TranscriptSummary {
+  const TranscriptSummary({
+    required this.id,
+    required this.title,
+    required this.createdAt,
+    required this.durationMs,
+    required this.status,
+    required this.source,
+    required this.preview,
+  });
+  final String id, title, source, preview;
+  final DateTime createdAt;
+  final int durationMs;
+  final TranscriptStatus status;
+  factory TranscriptSummary.fromRow(Map<String, Object?> row) =>
+      TranscriptSummary(
+        id: row['id'] as String,
+        title: row['title'] as String,
+        createdAt: DateTime.fromMillisecondsSinceEpoch(row['createdAt'] as int),
+        durationMs: row['durationMs'] as int,
+        status: TranscriptStatus.values.byName(row['status'] as String),
+        source: row['source'] as String,
+        preview: row['preview'] as String,
+      );
+}
+
 class Segment {
   const Segment({
     required this.startMs,

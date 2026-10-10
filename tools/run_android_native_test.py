@@ -1,0 +1,72 @@
+"""Run the real native integration APK on an explicitly selected QA device."""
+import argparse
+import hashlib
+import json
+import subprocess
+import shutil
+import tempfile
+import time
+from pathlib import Path
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--adb', default='adb')
+parser.add_argument('--device', required=True, help='Dedicated QA emulator/device serial')
+parser.add_argument('--apk', required=True, help='APK built from integration_test/native_pipeline_test.dart')
+parser.add_argument('--model', required=True)
+parser.add_argument('--audio', required=True, help='Licensed English fixture containing the word country; see TESTING.md')
+parser.add_argument('--report', default='build/android-native-result.json')
+parser.add_argument('--ffmpeg', default=shutil.which('ffmpeg'), help='Used only to create local codec QA fixtures')
+args = parser.parse_args()
+package = 'io.github.yjxyzxyz.lingoscribe'
+command = [args.adb, '-s', args.device]
+def adb(*arguments, **kwargs):
+    return subprocess.run(command + list(arguments), check=True, **kwargs)
+
+model = Path(args.model)
+expected = '422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898'
+assert hashlib.sha256(model.read_bytes()).hexdigest() == expected, 'Model must match the official pinned Base Q5 file'
+adb('shell', 'am', 'force-stop', package, capture_output=True)
+adb('install', '-r', args.apk)
+adb('shell', 'run-as', package, 'mkdir', '-p', 'files/qa')
+for source, name in [(Path(args.audio), 'sample.wav'), (model, 'ggml-base-q5_1.bin')]:
+    with source.open('rb') as input_file:
+        adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{name}', stdin=input_file)
+assert args.ffmpeg, 'FFmpeg is required to create real codec test fixtures'
+with tempfile.TemporaryDirectory(prefix='lingoscribe-codec-qa-') as folder:
+    encodings = [('stereo48.wav', 'pcm_s16le', '48000'), ('stereo44.wav', 'pcm_s16le', '44100'),
+                 ('sample.mp3', 'libmp3lame', '48000'), ('sample.m4a', 'aac', '48000'),
+                 ('sample.flac', 'flac', '48000'), ('sample.ogg', 'libopus', '48000')]
+    for name, codec, rate in encodings:
+        fixture = Path(folder) / name
+        subprocess.run([args.ffmpeg, '-hide_banner', '-loglevel', 'error', '-y', '-i', args.audio,
+                        '-ac', '2', '-ar', rate, '-c:a', codec, str(fixture)], check=True)
+        with fixture.open('rb') as input_file:
+            adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{name}', stdin=input_file)
+adb('shell', 'run-as', package, 'rm', '-f', 'files/qa/native-result.json')
+adb('logcat', '-c')
+adb('shell', 'am', 'start', '-n', f'{package}/.MainActivity')
+started = time.monotonic()
+while time.monotonic() - started < 360:
+    log = adb('logcat', '-d', '-s', 'flutter', capture_output=True).stdout.decode('utf-8', errors='replace')
+    if 'Some tests failed.' in log:
+        print(log)
+        raise SystemExit('Native integration assertions failed')
+    if 'All tests passed!' in log:
+        response = adb('exec-out', 'run-as', package, 'cat', 'files/qa/native-result.json', capture_output=True).stdout
+        report = json.loads(response)
+        codecs = adb('exec-out', 'run-as', package, 'cat', 'files/qa/codec-result.json', capture_output=True).stdout
+        report['codecChecks'] = json.loads(codecs)
+        assert report['audioSha256'] == hashlib.sha256(Path(args.audio).read_bytes()).hexdigest()
+        assert report['modelSha256'] == expected
+        report['deviceSerial'] = args.device
+        report['androidSdk'] = adb('shell', 'getprop', 'ro.build.version.sdk', capture_output=True).stdout.decode().strip()
+        report['abi'] = adb('shell', 'getprop', 'ro.product.cpu.abi', capture_output=True).stdout.decode().strip()
+        report['scope'] = 'Dedicated QA device; debug timing is not a release or physical-phone benchmark'
+        destination = Path(args.report)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        print(f'Native integration assertions passed. Report: {destination}')
+        break
+    time.sleep(3)
+else:
+    raise SystemExit('Native integration timed out; inspect device logs')

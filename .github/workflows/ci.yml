@@ -22,11 +22,11 @@ jobs:
           flutter-version: '3.47.7'
           channel: stable
           cache: true
-      - run: flutter pub get
+      - run: flutter pub get --enforce-lockfile
       - name: Resolve native engine package for reproducible formatting
         run: |
           cd ../../packages/offline_engine
-          flutter pub get
+          flutter pub get --enforce-lockfile
       - run: dart format --output=none --set-exit-if-changed lib test ../../packages/offline_engine/lib
       - run: flutter analyze
       - name: Analyze native engine Dart bindings
@@ -55,11 +55,12 @@ jobs:
       - name: Compile Android debug and unsigned distribution bundle
         working-directory: apps/mobile
         run: |
-          flutter pub get
+          flutter pub get --enforce-lockfile
           flutter build apk --debug --target-platform android-arm64,android-x64
           mkdir -p build/qa
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/lingoscribe-debug.apk
           flutter build appbundle --release --target-platform android-arm64
+          python ../../tools/check_android_artifact.py build/app/outputs/bundle/release/app-release.aab --report build/qa/android-aab-alignment.json
           flutter build apk --debug --target-platform android-x64 --target integration_test/native_pipeline_test.dart
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/native-pipeline-debug.apk
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -67,6 +68,7 @@ jobs:
           name: android-debug-and-unsigned-aab
           path: |
             apps/mobile/build/qa/*.apk
+            apps/mobile/build/qa/*.json
             apps/mobile/build/app/outputs/bundle/release/*.aab
           retention-days: 7
   ios:
@@ -85,10 +87,13 @@ jobs:
         working-directory: apps/mobile
         run: |
           flutter config --no-enable-swift-package-manager
-          flutter pub get
+          flutter pub get --enforce-lockfile
           flutter build ios --release --no-codesign
+          python3 ../../tools/check_ios_bundle.py build/ios/iphoneos/Runner.app --commit "$GITHUB_SHA" --report build/ios/bundle-check.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ios-unsigned-app
-          path: apps/mobile/build/ios/iphoneos/Runner.app
+          path: |
+            apps/mobile/build/ios/iphoneos/Runner.app
+            apps/mobile/build/ios/bundle-check.json
           retention-days: 7

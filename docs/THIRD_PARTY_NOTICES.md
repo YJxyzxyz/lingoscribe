@@ -3,7 +3,9 @@
 本应用原创代码默认保留所有权利，仓库公开不等于授予商业再发行权。第三方组件按各自许可使用。
 发布前需根据最终 lockfile 和两端打包依赖生成完整许可清单，并检查新增 SDK 的隐私清单。
 当前已从本机解析的 lockfile 导出 110 个 Dart 依赖及全部许可，见 `licenses/dart-dependencies.json` 与 `licenses/DART_NOTICES.txt`。
-其中包含开发/测试依赖，不意味着它们全部进入 release 包；Android Maven 与 iOS 原生传递依赖仍需在最终归档后审计。
+其中包含开发/测试依赖，不意味着它们全部进入 release 包。
+已从 ARM64 Release runtime classpath 提取 108 个 Maven 依赖的 POM 许可元数据（包括父 POM 继承），见 `licenses/android-dependencies.json`。
+POM 元数据不是完整著作权/NOTICE 审计，最终包的嵌入代码、原生依赖及 iOS CocoaPods 许可仍需复核。
 
 | 组件 | 来源 | 许可 / 处理 |
 | --- | --- | --- |

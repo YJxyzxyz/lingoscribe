@@ -3,10 +3,12 @@
 ## 已运行
 
 - Flutter 静态检查：通过，零问题。
-- 领域、导出、SQLite 持久化和模型拒绝测试：12 项通过。
+- 领域、导出、SQLite 持久化和模型传输/校验测试：16 项通过，包含长篇内容的有界预览与全文检索。
 - 真实 Flutter 资料库/模型页面、搜索和窄屏大字体检查：4 项通过。UI 测试的麦克风通道采用测试隔离，不代表验证了原生录音。
-- 校对弹窗保存/返回/标题校验：3 项通过；中断录音 WAV 头恢复与损坏文件拒绝：2 项通过。当前合计 21 项。
+- 校对弹窗保存/返回/标题校验：3 项通过；中断录音 WAV 头恢复与损坏文件拒绝：2 项通过。当前合计 25 项。
 - Android API 35 x86_64 模拟器：实际系统文件选择器导入、飞行模式原生英文转写、录音权限拒绝/允许、暂停/继续/保存、取消转写、编辑保存及 SRT 文件与系统分享面板已验证。未向任何外部收件人发送数据。
+- 原生 Android 集成测试已通过真实模型导入、归一化、isolate 推理、时间戳、数据库校对原文及标记检查。11 秒英文样例在此模拟器 Debug 构建中约 135 秒完成；不能当作 Release 或实际手机的性能。
+- 实际 Android 解码通过 44.1/48 kHz 双声道 WAV、MP3、M4A、FLAC、Opus/OGG：归一化为 PCM16/单声道/16 kHz，时长差小于 200 ms，与原始语音的波形相关性大于 0.9；损坏输入拒绝并清理输出。数据见 `validation/android-native-integration.json`。
 - 原生 C++ Windows 烟测：真实加载官方 Base Q5 模型，转写上游 11 秒英文音频。报告见 `validation/native-smoke-windows.json`，包含模型及音频 SHA-256、实际文本、时间戳与取消/坏文件检查。
 - Windows 桌面烟测的速度仅适用于该台桌面机，不代表 Android / iPhone 速度，也不构成中文准确率报告。
 - 界面截图来自实际 Flutter 渲染；测试可加载本机字体，不打包该字体。需在原生模拟器/真机复核字体、图标和系统控件。
@@ -25,6 +27,25 @@ flutter test --coverage
 ```sh
 python tools/native_smoke.py --library <原生动态库> --model <官方模型.bin> --audio <16kHz单声道PCM16.wav>
 ```
+
+专用 Android QA 设备的真实集成测试（安装的是测试入口 APK，夹具不进入生产安装包）：
+
+```sh
+cd apps/mobile
+flutter pub get --enforce-lockfile
+flutter build apk --debug --target-platform android-x64 --target integration_test/native_pipeline_test.dart
+cd ../..
+python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/mobile/build/app/outputs/flutter-apk/app-debug.apk --model <官方BaseQ5.bin> --audio <whisper.cpp上游samples/jfk.wav> --report build/android-native-result.json
+```
+
+该脚本通过 `run-as` 写入测试安装的私有夹具，无需 root；必须使用专用测试设备及相容的测试签名。
+FFmpeg 仅用于测试工具生成不同编码的真实音频夹具，不进入 App；可通过 `--ffmpeg` 指定本机路径。
+构建入口改变后用正常 `lib/main.dart` 重新构建安装。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
+切换 Debug/Release 时使用完整 `flutter build`，不要跳过需要按构建模式生成的插件配置；不要与同一工程的 pub/analyze 命令并行执行。
+CI 与正式构建使用 `pub get --enforce-lockfile`，避免依赖来源变化时悄悄升级版本。
+
+产物检查：`tools/check_android_artifact.py` 检查实际 ELF、APK 存储对齐和完整 ABI；`tools/check_ios_bundle.py` 检查实际 App 内的 FFI 导出、检测模型哈希与隐私声明。
+当前 ARM64 AAB 及已下载的 iOS unsigned App 静态检查通过。它们分别不能代替 16 KB 设备执行和签名 iPhone 验证。
 
 测试 UI、仓储或网络边界时允许隔离平台通道；离线推理、音频解码和录音验收必须调用真实原生实现。
 测试夹具不进入用户资料库，产品不能预置虚构录音或伪造推理进度。

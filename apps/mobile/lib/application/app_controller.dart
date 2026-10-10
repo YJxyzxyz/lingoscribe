@@ -30,7 +30,7 @@ class AppController extends ChangeNotifier {
   final SharedPreferences preferences;
   final OfflineEngine engine;
   final AudioRecorder recorder;
-  List<Transcript> items = [];
+  List<TranscriptSummary> items = [];
   int dataRevision = 0;
   String query = '', language = 'auto', prompt = '';
   String? taskId, error, phase;
@@ -57,7 +57,7 @@ class AppController extends ChangeNotifier {
     final repository = await TranscriptRepository.open(
       p.join(root.path, 'library.sqlite'),
     );
-    for (final interrupted in await repository.list()) {
+    for (final interrupted in await repository.interruptedRecordings()) {
       if (interrupted.status == TranscriptStatus.interrupted &&
           interrupted.source == 'recording' &&
           interrupted.audioPath ==
@@ -112,7 +112,7 @@ class AppController extends ChangeNotifier {
   Future<void> refresh({String? query}) async {
     if (query != null) this.query = query;
     final serial = ++_refreshSerial;
-    final result = await repository.list(query: this.query);
+    final result = await repository.summaries(query: this.query);
     if (serial != _refreshSerial) return;
     items = result;
     notifyListeners();

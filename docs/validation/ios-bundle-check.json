@@ -1,0 +1,175 @@
+{
+  "sourceCommit": "f3bf4b433d4e1f4f25bf9364ca943c6439b9c11b",
+  "bundleId": "io.github.yjxyzxyz.lingoscribe",
+  "version": "0.1.0",
+  "build": "1",
+  "minimumOS": "15.0",
+  "microphoneUsage": "聆写需要麦克风来录制你选择保存的音频。录音和转写只在本机处理。",
+  "nativeSha256": "68837280d5229f6786b0a9556156d3357f6f25b858492e53eb1843e42cea395b",
+  "nativeExports": {
+    "ls_job_create_v2": true,
+    "ls_job_run": true,
+    "ls_job_progress": true,
+    "ls_job_phase": true,
+    "ls_job_cancel": true,
+    "ls_job_result": true,
+    "ls_job_free": true
+  },
+  "detectorSha256": "2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987",
+  "manifests": [
+    {
+      "path": "Frameworks/DKImagePickerController.framework/DKImagePickerController.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "3B52.1"
+            ]
+          }
+        ],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/DKPhotoGallery.framework/DKPhotoGallery.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "3B52.1"
+            ]
+          }
+        ],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/file_picker.framework/file_picker_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "0A2A.1",
+              "C617.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "path": "Frameworks/offline_engine.framework/offline_engine_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    },
+    {
+      "path": "Frameworks/record_ios.framework/record_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/SDWebImage.framework/SDWebImage.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "C617.1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "path": "Frameworks/share_plus.framework/share_plus_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "1C8F.1"
+            ]
+          }
+        ],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/sqflite_darwin.framework/sqflite_darwin_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/SwiftyGif.framework/SwiftyGif.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    },
+    {
+      "path": "PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    }
+  ],
+  "trackingDeclarations": [],
+  "collectedDataDeclarations": [],
+  "scope": "Static unsigned bundle inspection; not signed-device runtime or App Store acceptance",
+  "passed": true
+}

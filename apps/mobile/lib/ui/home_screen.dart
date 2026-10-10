@@ -45,6 +45,15 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (_) => DetailScreen(controller: app, initial: item),
     ),
   );
+  Future<void> _openSaved(String id) async {
+    try {
+      final item = await app.find(id);
+      if (item != null && mounted) _open(item);
+    } catch (error) {
+      if (mounted) showError(context, error);
+    }
+  }
+
   @override
   void dispose() {
     _search?.cancel();
@@ -230,9 +239,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     ),
   );
-  Widget _item(Transcript value) => InkWell(
+  Widget _item(TranscriptSummary value) => InkWell(
     borderRadius: BorderRadius.circular(24),
-    onTap: () => _open(value),
+    onTap: () => _openSaved(value.id),
     child: SurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,9 +287,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 14),
-          if (value.segments.isNotEmpty)
+          if (value.preview.isNotEmpty)
             Text(
-              value.plainText,
+              value.preview,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontSize: 13, color: muted),

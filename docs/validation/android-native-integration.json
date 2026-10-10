@@ -1,0 +1,63 @@
+{
+  "platform": "android",
+  "buildMode": "debug",
+  "fixtureKind": "upstream",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "elapsedSeconds": 130.032,
+  "durationMs": 11000,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 10580,
+      "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "model_import_hash",
+    "native_normalization",
+    "isolate_asr",
+    "timestamps",
+    "sqlite_persistence",
+    "original_text_retained",
+    "bookmark"
+  ],
+  "codecChecks": [
+    {
+      "format": "stereo48.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "stereo44.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998616663192
+    },
+    {
+      "format": "sample.mp3",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999987269504103
+    },
+    {
+      "format": "sample.m4a",
+      "durationMs": 11008,
+      "signalCorrelation": 0.9999972363229749
+    },
+    {
+      "format": "sample.flac",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "sample.ogg",
+      "durationMs": 11013,
+      "signalCorrelation": 0.9990501126571459
+    }
+  ],
+  "deviceSerial": "emulator-5560",
+  "androidSdk": "35",
+  "abi": "x86_64",
+  "scope": "Dedicated QA device; debug timing is not a release or physical-phone benchmark"
+}

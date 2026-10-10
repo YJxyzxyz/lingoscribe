@@ -1,14 +1,94 @@
 import 'dart:io';
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:lingoscribe/application/app_controller.dart';
 import 'package:lingoscribe/domain/transcript.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:offline_engine/offline_engine.dart';
 
 // Inject test media into this test installation's private files/qa directory.
 // Fixtures are not bundled into the production application and no inference is mocked.
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  testWidgets('native codecs preserve real audio, downmix and sample rate', (
+    tester,
+  ) async {
+    final qa = p.join((await getApplicationSupportDirectory()).path, 'qa');
+    final engine = OfflineEngine();
+    List<double> pcm(Uint8List bytes) {
+      final view = ByteData.sublistView(bytes);
+      var offset = 12;
+      while (offset + 8 <= bytes.length) {
+        final size = view.getUint32(offset + 4, Endian.little);
+        if (String.fromCharCodes(bytes.sublist(offset, offset + 4)) == 'data') {
+          return List<double>.generate(
+            size ~/ 2,
+            (i) => view.getInt16(offset + 8 + i * 2, Endian.little) / 32768,
+          );
+        }
+        offset += 8 + size + size % 2;
+      }
+      throw const FormatException('Missing audio data');
+    }
+
+    final reference = pcm(await File(p.join(qa, 'sample.wav')).readAsBytes());
+    final reports = <Map<String, Object>>[];
+    for (final name in [
+      'stereo48.wav',
+      'stereo44.wav',
+      'sample.mp3',
+      'sample.m4a',
+      'sample.flac',
+      'sample.ogg',
+    ]) {
+      final output = p.join(qa, '$name.normalized.wav');
+      final duration = await engine.normalize(p.join(qa, name), output);
+      expect((duration - 11000).abs(), lessThan(200), reason: name);
+      final bytes = await File(output).readAsBytes();
+      final header = ByteData.sublistView(bytes);
+      expect(header.getUint32(24, Endian.little), 16000, reason: name);
+      expect(header.getUint16(22, Endian.little), 1, reason: name);
+      expect(header.getUint16(34, Endian.little), 16, reason: name);
+      final decoded = pcm(bytes);
+      double best = 0;
+      // Codec padding may shift the waveform. Check the real signal, not a mock duration.
+      for (var shift = -3200; shift <= 3200; shift += 16) {
+        double dot = 0, left = 0, right = 0;
+        for (
+          var i = 3200;
+          i < min(reference.length, decoded.length) - 3200;
+          i += 8
+        ) {
+          final a = reference[i], b = decoded[i + shift];
+          dot += a * b;
+          left += a * a;
+          right += b * b;
+        }
+        if (left > 0 && right > 0) best = max(best, dot / sqrt(left * right));
+      }
+      expect(best, greaterThan(.9), reason: '$name signal correlation');
+      reports.add({
+        'format': name,
+        'durationMs': duration,
+        'signalCorrelation': best,
+      });
+    }
+    final invalid = File(p.join(qa, 'not-audio.wav'));
+    await invalid.writeAsString('invalid audio');
+    await expectLater(
+      engine.normalize(invalid.path, p.join(qa, 'invalid-out.wav')),
+      throwsA(isA<Exception>()),
+    );
+    expect(await File(p.join(qa, 'invalid-out.wav')).exists(), false);
+    await File(
+      p.join(qa, 'codec-result.json'),
+    ).writeAsString(jsonEncode(reports), flush: true);
+  }, timeout: const Timeout(Duration(minutes: 2)));
   testWidgets(
     'native decoding, verified model import, isolate inference and persisted transcript',
     (tester) async {
@@ -41,7 +121,9 @@ void main() {
           audioPath: imported.path,
         );
         await app.save(entry);
+        final elapsed = Stopwatch()..start();
         await app.transcribe(entry);
+        elapsed.stop();
         final result = await app.find(entry.id);
         expect(result?.status, TranscriptStatus.ready, reason: result?.error);
         expect(result!.segments, isNotEmpty);
@@ -61,6 +143,32 @@ void main() {
         final edited = await app.find(entry.id);
         expect(edited!.segments.first.originalText, result.segments.first.text);
         expect(edited.segments.first.bookmarked, true);
+        final report = <String, dynamic>{
+          'platform': Platform.operatingSystem,
+          'buildMode': 'debug',
+          'fixtureKind': 'upstream',
+          'modelSha256': (await sha256.bind(model.openRead()).first).toString(),
+          'audioSha256': (await sha256.bind(audio.openRead()).first).toString(),
+          'elapsedSeconds': elapsed.elapsedMilliseconds / 1000,
+          'durationMs': result.durationMs,
+          'segments': result.segments
+              .map((segment) => segment.toJson())
+              .toList(),
+          'checks': [
+            'model_import_hash',
+            'native_normalization',
+            'isolate_asr',
+            'timestamps',
+            'sqlite_persistence',
+            'original_text_retained',
+            'bookmark',
+          ],
+        };
+        binding.reportData = report;
+        await File(p.join(qa, 'native-result.json')).writeAsString(
+          const JsonEncoder.withIndent('  ').convert(report),
+          flush: true,
+        );
       } finally {
         await app.recorder.dispose();
         await app.repository.close();
