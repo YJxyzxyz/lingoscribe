@@ -7,6 +7,7 @@ import shutil
 import tempfile
 import time
 from pathlib import Path
+from codec_fixtures import create_fixtures
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--adb', default='adb')
@@ -33,15 +34,9 @@ for source, name in [(Path(args.audio), 'sample.wav'), (model, 'ggml-base-q5_1.b
         adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{name}', stdin=input_file)
 assert args.ffmpeg, 'FFmpeg is required to create real codec test fixtures'
 with tempfile.TemporaryDirectory(prefix='lingoscribe-codec-qa-') as folder:
-    encodings = [('stereo48.wav', 'pcm_s16le', '48000'), ('stereo44.wav', 'pcm_s16le', '44100'),
-                 ('sample.mp3', 'libmp3lame', '48000'), ('sample.m4a', 'aac', '48000'),
-                 ('sample.flac', 'flac', '48000'), ('sample.ogg', 'libopus', '48000')]
-    for name, codec, rate in encodings:
-        fixture = Path(folder) / name
-        subprocess.run([args.ffmpeg, '-hide_banner', '-loglevel', 'error', '-y', '-i', args.audio,
-                        '-ac', '2', '-ar', rate, '-c:a', codec, str(fixture)], check=True)
+    for fixture in create_fixtures(args.audio, folder, args.ffmpeg):
         with fixture.open('rb') as input_file:
-            adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{name}', stdin=input_file)
+            adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{fixture.name}', stdin=input_file)
 adb('shell', 'run-as', package, 'rm', '-f', 'files/qa/native-result.json')
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-n', f'{package}/.MainActivity')

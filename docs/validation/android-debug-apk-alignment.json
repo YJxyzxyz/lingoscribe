@@ -1,0 +1,326 @@
+{
+  "artifact": "lingoscribe-0.1.0-dev-android.apk",
+  "sha256": "c5a65b5e797bf1134c9a09b6de773a03d4dc7de5e402f8e2883951ae095cf255",
+  "libraries": [
+    {
+      "path": "lib/arm64-v8a/libVkLayer_khronos_validation.so",
+      "sha256": "ae445f7e74d402e3a367adb230b1edd9841899fcb3310166e5cc96a09ad37a3f",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 65536
+        },
+        {
+          "offset": 13729184,
+          "virtualAddress": 13794720,
+          "alignment": 65536
+        },
+        {
+          "offset": 15236624,
+          "virtualAddress": 15367696,
+          "alignment": 65536
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/libc++_shared.so",
+      "sha256": "cd61762848882a16c8244c964a6f396c0caa0b440588a210ce9cc4ab0e6d9f0c",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 624800,
+          "virtualAddress": 641184,
+          "alignment": 16384
+        },
+        {
+          "offset": 1210520,
+          "virtualAddress": 1243288,
+          "alignment": 16384
+        },
+        {
+          "offset": 1250352,
+          "virtualAddress": 1299504,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/libdartjni.so",
+      "sha256": "9f111dd114db7d820c04367392913a9047c142573b3d3243592412703d94943c",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 92480,
+          "virtualAddress": 108864,
+          "alignment": 16384
+        },
+        {
+          "offset": 93864,
+          "virtualAddress": 126632,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/libdatastore_shared_counter.so",
+      "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 4544,
+          "virtualAddress": 20928,
+          "alignment": 16384
+        },
+        {
+          "offset": 5160,
+          "virtualAddress": 37928,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/libflutter.so",
+      "sha256": "e68c4c8640f0ba1ea971e75b1a7214a694c00fa0966933ffff72dd8bfda7f749",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 65536
+        },
+        {
+          "offset": 38220592,
+          "virtualAddress": 38286128,
+          "alignment": 65536
+        },
+        {
+          "offset": 38814728,
+          "virtualAddress": 38945800,
+          "alignment": 65536
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/liboffline_engine.so",
+      "sha256": "054ed504c68480312972d22feae30237c2ff34b7000a105838b67a7aa94bc90c",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 3906448,
+          "virtualAddress": 3922832,
+          "alignment": 16384
+        },
+        {
+          "offset": 3938904,
+          "virtualAddress": 3971672,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/arm64-v8a/libsqlite3.so",
+      "sha256": "081df67ee9ab852daea6a0679427e90fc89a0245d06f93dafe2309875c609c5c",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 1705520,
+          "virtualAddress": 1721904,
+          "alignment": 16384
+        },
+        {
+          "offset": 1715360,
+          "virtualAddress": 1748128,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/libc++_shared.so",
+      "sha256": "2e855857f80819737d25a663109fedf816a5e996a85423166806014a06593256",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 604448,
+          "virtualAddress": 620832,
+          "alignment": 16384
+        },
+        {
+          "offset": 1187008,
+          "virtualAddress": 1219776,
+          "alignment": 16384
+        },
+        {
+          "offset": 1226704,
+          "virtualAddress": 1275856,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/libdartjni.so",
+      "sha256": "b5f6107049db66814a6f2d829d89fef78d80499c02530a7e7b6b0f4e112e371e",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 94496,
+          "virtualAddress": 110880,
+          "alignment": 16384
+        },
+        {
+          "offset": 95880,
+          "virtualAddress": 128648,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/libdatastore_shared_counter.so",
+      "sha256": "fb6c9208988c49ae94943bc3236fa763ba584722e044fa4ea9a12d2941027105",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 3872,
+          "virtualAddress": 20256,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/libflutter.so",
+      "sha256": "3f1d5e63c8d06325e0c04ac883b1d389d936025d936b120d763bff76b0beb4d5",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 65536
+        },
+        {
+          "offset": 39482608,
+          "virtualAddress": 39548144,
+          "alignment": 65536
+        },
+        {
+          "offset": 40069200,
+          "virtualAddress": 40200272,
+          "alignment": 65536
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/liboffline_engine.so",
+      "sha256": "3a050f8def240bb8fd96022108fae8d2b0a41572f71f30ea36b183a3129fbd51",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 3818208,
+          "virtualAddress": 3834592,
+          "alignment": 16384
+        },
+        {
+          "offset": 3850656,
+          "virtualAddress": 3883424,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    },
+    {
+      "path": "lib/x86_64/libsqlite3.so",
+      "sha256": "c773c3a25e4c11a450cc700ac95d665c3a1ae75ad426a204fc9b7a7a69b0e191",
+      "loadSegments": [
+        {
+          "offset": 0,
+          "virtualAddress": 0,
+          "alignment": 16384
+        },
+        {
+          "offset": 1682448,
+          "virtualAddress": 1698832,
+          "alignment": 16384
+        },
+        {
+          "offset": 1692512,
+          "virtualAddress": 1725280,
+          "alignment": 16384
+        }
+      ],
+      "elf16KiB": true,
+      "zip16KiB": true,
+      "compressed": false
+    }
+  ],
+  "incompleteAbis": {},
+  "passed": true,
+  "scope": "Static package alignment only; not a 16 KiB device execution test"
+}

@@ -10,6 +10,7 @@ import 'package:lingoscribe/domain/transcript.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:offline_engine/offline_engine.dart';
+import 'package:flutter/services.dart';
 
 // Inject test media into this test installation's private files/qa directory.
 // Fixtures are not bundled into the production application and no inference is mocked.
@@ -47,7 +48,26 @@ void main() {
       'sample.ogg',
     ]) {
       final output = p.join(qa, '$name.normalized.wav');
-      final duration = await engine.normalize(p.join(qa, name), output);
+      expect(await File(p.join(qa, name)).exists(), true, reason: name);
+      int duration;
+      try {
+        duration = await engine.normalize(p.join(qa, name), output);
+      } on PlatformException catch (error) {
+        // OGG container support is platform-dependent; an explicit rejection is required.
+        if (Platform.isIOS &&
+            name == 'sample.ogg' &&
+            error.code == 'decode' &&
+            error.message == 'No supported audio track') {
+          expect(await File(output).exists(), false);
+          reports.add({
+            'format': name,
+            'supported': false,
+            'behavior': 'explicit_unsupported_audio_track',
+          });
+          continue;
+        }
+        rethrow;
+      }
       expect((duration - 11000).abs(), lessThan(200), reason: name);
       final bytes = await File(output).readAsBytes();
       final header = ByteData.sublistView(bytes);
