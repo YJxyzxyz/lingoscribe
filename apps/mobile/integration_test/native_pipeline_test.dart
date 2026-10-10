@@ -22,7 +22,8 @@ void main() {
   unawaited(
     binding.allTestsPassed.future.then((passed) async {
       final qa = p.join((await getApplicationSupportDirectory()).path, 'qa');
-      await File(p.join(qa, 'test-status.json')).writeAsString(
+      final status = File(p.join(qa, 'test-status.json.part'));
+      await status.writeAsString(
         jsonEncode({
           'passed': passed,
           'testCount': binding.results.length,
@@ -32,8 +33,64 @@ void main() {
         }),
         flush: true,
       );
+      await status.rename(p.join(qa, 'test-status.json'));
     }),
   );
+  if (Platform.isAndroid) {
+    testWidgets(
+      'native microphone capture pauses, resumes and saves actual WAV',
+      (tester) async {
+        final app = await AppController.create();
+        try {
+          await app.startRecording();
+          await Future<void>.delayed(const Duration(milliseconds: 800));
+          await app.pauseRecording();
+          await Future<void>.delayed(const Duration(milliseconds: 350));
+          final audio = File(app.recording!.audioPath);
+          final pausedBytes = await audio.length();
+          await Future<void>.delayed(const Duration(milliseconds: 300));
+          expect(
+            await audio.length(),
+            pausedBytes,
+            reason: 'Paused native recording must stop growing',
+          );
+          expect(app.paused, true);
+          await app.togglePause();
+          await Future<void>.delayed(const Duration(milliseconds: 650));
+          expect(await audio.length(), greaterThan(pausedBytes));
+          final saved = await app.stopRecording();
+          expect(saved!.status, TranscriptStatus.saved);
+          expect(saved.durationMs, greaterThan(500));
+          expect(saved.durationMs, lessThan(5000));
+          expect((await app.find(saved.id))!.durationMs, saved.durationMs);
+          final qa = p.join(p.dirname(app.root.path), 'qa');
+          await File(p.join(qa, 'microphone-result.json')).writeAsString(
+            jsonEncode({
+              'durationMs': saved.durationMs,
+              'bytes': await audio.length(),
+              'pausedBytes': pausedBytes,
+              'checks': [
+                'native_capture',
+                'pause_stops_file_growth',
+                'resume_grows_file',
+                'wav_duration',
+                'sqlite_persistence',
+              ],
+              'scope':
+                  'Native virtual-device microphone lifecycle; not human voice quality or a physical microphone test',
+            }),
+            flush: true,
+          );
+        } finally {
+          if (app.recording != null) await app.stopRecording();
+          await app.recorder.dispose();
+          await app.repository.close();
+          app.models.dispose();
+        }
+      },
+      timeout: const Timeout(Duration(minutes: 1)),
+    );
+  }
   testWidgets('native codecs preserve real audio, downmix and sample rate', (
     tester,
   ) async {

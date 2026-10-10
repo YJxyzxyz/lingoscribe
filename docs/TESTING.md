@@ -61,6 +61,8 @@ python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/
 ```
 
 该脚本通过 `run-as` 写入测试安装的私有夹具，无需 root；必须使用专用测试设备及相容的测试签名。
+当前 Android 测试入口增加真实原生麦克风采集、暂停/继续及 WAV 保存断言；脚本会在指定 QA 安装上预授予麦克风权限。虚拟麦克风结果不代表真实人声或物理手机麦克风质量。
+新增 `android-runtime` CI 在专用 Linux/KVM 模拟器上运行此入口，结果另行记录；只有实际通过后才算运行验证通过。
 FFmpeg 仅用于测试工具生成不同编码的真实音频夹具，不进入 App；可通过 `--ffmpeg` 指定本机路径。
 构建入口改变后用正常 `lib/main.dart` 重新构建安装。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
 切换 Debug/Release 时使用完整 `flutter build`，不要跳过需要按构建模式生成的插件配置；不要与同一工程的 pub/analyze 命令并行执行。
