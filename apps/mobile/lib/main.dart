@@ -1,3 +1,4 @@
+import 'l10n/l10n.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +23,7 @@ Future<void> main() async {
       ], await rootBundle.loadString('assets/licenses/$asset'));
     });
   }
-  runApp(const _Bootstrap());
+  runApp(_Bootstrap());
 }
 
 class _Bootstrap extends StatefulWidget {
@@ -38,46 +39,57 @@ class _BootstrapState extends State<_Bootstrap> {
     future: _controller,
     builder: (context, snapshot) {
       if (snapshot.hasData) return LingoScribeApp(controller: snapshot.data!);
+      final messages = localeMessages('system');
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: appTheme(),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localeResolutionCallback: (locale, _) => locale?.languageCode == 'zh'
+            ? const Locale('zh')
+            : const Locale('en'),
         home: Scaffold(
           body: SafeArea(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(32),
+                padding: EdgeInsets.all(32),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const BrandMark(size: 72),
-                    const SizedBox(height: 24),
+                    BrandMark(size: 72),
+                    SizedBox(height: 24),
                     if (snapshot.hasError) ...[
-                      const Text(
-                        '无法打开本地资料库',
+                      Text(
+                        messages.libraryUnavailable,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Text('${snapshot.error}', textAlign: TextAlign.center),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 12),
+                      Builder(
+                        builder: (context) => Text(
+                          friendlyError(context, snapshot.error!),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 24),
                       FilledButton(
                         onPressed: () => setState(
                           () => _controller = AppController.create(),
                         ),
-                        child: const Text('重试'),
+                        child: Text(messages.retry),
                       ),
                     ] else ...[
-                      const Text(
+                      Text(
                         'LingoScribe',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      const CircularProgressIndicator(),
+                      SizedBox(height: 24),
+                      CircularProgressIndicator(),
                     ],
                   ],
                 ),

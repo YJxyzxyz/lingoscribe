@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _DetailScreenState extends State<DetailScreen> {
     final value = await showDialog<String>(
       context: context,
       builder: (_) => TextEditorDialog(
-        title: '校对 ${clock(segment.startMs)}',
+        title: l10n(context).proofreadAt(clock(segment.startMs)),
         initialText: segment.text,
         originalText: segment.originalText,
       ),
@@ -117,7 +118,7 @@ class _DetailScreenState extends State<DetailScreen> {
     final value = await showDialog<String>(
       context: context,
       builder: (_) => TextEditorDialog(
-        title: '重命名',
+        title: l10n(context).rename,
         initialText: item.title,
         singleLine: true,
         requireNonempty: true,
@@ -138,22 +139,22 @@ class _DetailScreenState extends State<DetailScreen> {
       showDragHandle: true,
       builder: (context) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 20),
+          padding: EdgeInsets.fromLTRB(12, 4, 12, 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const ListTile(
+              ListTile(
                 title: Text(
-                  '导出这份转写',
+                  l10n(context).exportThisTranscript,
                   style: TextStyle(fontWeight: FontWeight.w700),
                 ),
-                subtitle: Text('只在你主动分享时，文件才会交给其他应用。'),
+                subtitle: Text(l10n(context).shareExplanation),
               ),
               for (final format in ExportFormat.values)
                 ListTile(
-                  leading: const Icon(Icons.description_outlined),
-                  title: Text(format.label),
-                  trailing: const Icon(Icons.chevron_right),
+                  leading: Icon(Icons.description_outlined),
+                  title: Text(localizedLabel(context, format.label)),
+                  trailing: Icon(Icons.chevron_right),
                   onTap: () => Navigator.pop(context, format),
                 ),
             ],
@@ -197,16 +198,16 @@ class _DetailScreenState extends State<DetailScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除音频和转写？'),
-        content: const Text('删除后无法恢复。已经分享给其他应用的文件不会被删除。'),
+        title: Text(l10n(context).deleteTranscriptQuestion),
+        content: Text(l10n(context).deleteTranscriptExplanation),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('保留'),
+            child: Text(l10n(context).keep),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('删除'),
+            child: Text(l10n(context).delete),
           ),
         ],
       ),
@@ -273,12 +274,12 @@ class _DetailScreenState extends State<DetailScreen> {
     final running = widget.controller.taskId == item.id;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('回听与校对'),
+        title: Text(l10n(context).replayAndEdit),
         actions: [
           IconButton(
-            tooltip: '导出转写',
+            tooltip: l10n(context).exportTranscript,
             onPressed: item.segments.isEmpty || exporting ? null : _export,
-            icon: const Icon(Icons.ios_share_outlined),
+            icon: Icon(Icons.ios_share_outlined),
           ),
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -291,16 +292,16 @@ class _DetailScreenState extends State<DetailScreen> {
               }
             },
             itemBuilder: (_) => [
-              const PopupMenuItem(value: 'rename', child: Text('重命名')),
+              PopupMenuItem(value: 'rename', child: Text(l10n(context).rename)),
               PopupMenuItem(
                 value: 'revision',
                 enabled: !widget.controller.busy,
-                child: const Text('重新转写，保留原稿'),
+                child: Text(l10n(context).transcribeNewCopy),
               ),
               PopupMenuItem(
                 value: 'delete',
                 enabled: !widget.controller.busy,
-                child: const Text('删除音频和转写'),
+                child: Text(l10n(context).deleteAudioAndTranscript),
               ),
             ],
           ),
@@ -309,40 +310,48 @@ class _DetailScreenState extends State<DetailScreen> {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 760),
+            constraints: BoxConstraints(maxWidth: 760),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+                  padding: EdgeInsets.fromLTRB(24, 16, 24, 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         item.title,
+                        maxLines: MediaQuery.viewInsetsOf(context).bottom > 0
+                            ? 1
+                            : 3,
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Text(
-                        '${clock(item.durationMs)} · ${statusLabel(item.status)}',
-                        style: const TextStyle(color: muted, fontSize: 13),
+                        '${clock(item.durationMs)} · ${localizedLabel(context, statusLabel(item.status))}',
+                        style: TextStyle(color: muted, fontSize: 13),
                       ),
-                      const SizedBox(height: 14),
-                      const PrivacyBadge(),
+                      SizedBox(height: 14),
+                      PrivacyBadge(),
                       if (running) ...[
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
                         LinearProgressIndicator(
                           value: widget.controller.phase == '正在设备上转写'
                               ? widget.controller.progress
                               : null,
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Row(
                           children: [
                             Expanded(
                               child: Text(
-                                widget.controller.phase ?? '准备转写',
-                                style: const TextStyle(fontSize: 12),
+                                localizedLabel(
+                                  context,
+                                  widget.controller.phase ??
+                                      l10n(context).preparingTranscription,
+                                ),
+                                style: TextStyle(fontSize: 12),
                               ),
                             ),
                             if (widget.controller.phase == '正在设备上转写' ||
@@ -351,28 +360,28 @@ class _DetailScreenState extends State<DetailScreen> {
                               TextButton(
                                 onPressed:
                                     widget.controller.cancelTranscription,
-                                child: const Text('取消'),
+                                child: Text(l10n(context).cancel),
                               ),
                           ],
                         ),
                       ],
                       if (item.segments.isNotEmpty) ...[
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
                         TextField(
                           onChanged: (value) =>
                               setState(() => search = value.toLowerCase()),
-                          decoration: const InputDecoration(
-                            hintText: '在这份转写中查找',
+                          decoration: InputDecoration(
+                            hintText: l10n(context).searchThisTranscript,
                             prefixIcon: Icon(Icons.search),
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6),
                         FilterChip(
                           selected: bookmarksOnly,
                           onSelected: (value) =>
                               setState(() => bookmarksOnly = value),
-                          avatar: const Icon(Icons.bookmark_outline, size: 16),
-                          label: const Text('只看标记'),
+                          avatar: Icon(Icons.bookmark_outline, size: 16),
+                          label: Text(l10n(context).bookmarksOnly),
                         ),
                       ],
                     ],
@@ -381,52 +390,63 @@ class _DetailScreenState extends State<DetailScreen> {
                 Expanded(
                   child: item.segments.isEmpty
                       ? SingleChildScrollView(
-                          padding: const EdgeInsets.all(24),
+                          padding: EdgeInsets.all(24),
                           child: SurfaceCard(
                             child: Column(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.text_snippet_outlined,
                                   size: 44,
                                   color: forest,
                                 ),
-                                const SizedBox(height: 18),
+                                SizedBox(height: 18),
                                 Text(
                                   item.status == TranscriptStatus.ready
-                                      ? '没有识别到可转写的语音'
-                                      : '音频已留在本机',
+                                      ? l10n(context).noSpeechDetected
+                                      : l10n(context).audioKeptLocally,
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                                const SizedBox(height: 12),
+                                SizedBox(height: 12),
                                 Text(
-                                  item.error ??
-                                      (item.status == TranscriptStatus.ready
-                                          ? '请回听确认是否包含清晰的语音。'
-                                          : '准备好模型后，把它写成文字。'),
+                                  item.error != null
+                                      ? friendlyError(context, item.error!)
+                                      : (item.status == TranscriptStatus.ready
+                                            ? l10n(context).checkAudioQuality
+                                            : l10n(
+                                                context,
+                                              ).transcribeWhenReady),
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(color: muted),
+                                  style: TextStyle(color: muted),
                                 ),
                                 if (!running &&
                                     item.status != TranscriptStatus.ready) ...[
-                                  const SizedBox(height: 20),
+                                  SizedBox(height: 20),
                                   SizedBox(
                                     width: double.infinity,
                                     child: FilledButton.icon(
                                       onPressed: widget.controller.busy
                                           ? null
                                           : _transcribe,
-                                      icon: const Icon(
-                                        Icons.auto_awesome_outlined,
+                                      icon: Icon(Icons.auto_awesome_outlined),
+                                      label: Text(
+                                        l10n(context).startOfflineTranscription,
                                       ),
-                                      label: const Text('开始离线转写'),
                                     ),
                                   ),
-                                  const SizedBox(height: 12),
+                                  SizedBox(height: 12),
                                   Text(
-                                    widget.controller.models.active?.name ??
-                                        '尚未安装模型：返回“离线模型”下载或导入。',
+                                    widget.controller.models.active != null
+                                        ? localizedLabel(
+                                            context,
+                                            widget
+                                                .controller
+                                                .models
+                                                .active!
+                                                .name,
+                                          )
+                                        : l10n(context).noModelInstalled,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       color: muted,
                                     ),
@@ -453,18 +473,17 @@ class _DetailScreenState extends State<DetailScreen> {
                                 )
                                 .toList();
                             if (visible.isEmpty) {
-                              return const Center(
+                              return Center(
                                 child: Text(
-                                  '没有符合条件的段落',
+                                  l10n(context).noMatchingSegments,
                                   style: TextStyle(color: muted),
                                 ),
                               );
                             }
                             return ListView.separated(
-                              padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
+                              padding: EdgeInsets.fromLTRB(24, 4, 24, 24),
                               itemCount: visible.length,
-                              separatorBuilder: (_, _) =>
-                                  const SizedBox(height: 12),
+                              separatorBuilder: (_, _) => SizedBox(height: 12),
                               itemBuilder: (context, i) {
                                 final index = visible[i].key;
                                 final segment = visible[i].value;
@@ -476,25 +495,23 @@ class _DetailScreenState extends State<DetailScreen> {
                                     border: Border.all(
                                       color: active
                                           ? forest
-                                          : const Color(0xffe2e7df),
+                                          : Color(0xffe2e7df),
                                       width: active ? 1.5 : 1,
                                     ),
                                     borderRadius: BorderRadius.circular(20),
                                     color: active
-                                        ? const Color(0xffedf3e8)
+                                        ? Color(0xffedf3e8)
                                         : Colors.white,
                                   ),
-                                  padding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    8,
-                                    16,
-                                    16,
-                                  ),
+                                  padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
+                                      Wrap(
+                                        spacing: 4,
+                                        runSpacing: 4,
+                                        alignment: WrapAlignment.spaceBetween,
                                         children: [
                                           TextButton.icon(
                                             onPressed: loading
@@ -502,17 +519,16 @@ class _DetailScreenState extends State<DetailScreen> {
                                                 : () => _play(
                                                     at: segment.startMs,
                                                   ),
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.play_arrow,
                                               size: 16,
                                             ),
                                             label: Text(clock(segment.startMs)),
                                           ),
-                                          const Spacer(),
                                           IconButton(
                                             tooltip: segment.bookmarked
-                                                ? '取消标记'
-                                                : '标记段落',
+                                                ? l10n(context).removeBookmark
+                                                : l10n(context).bookmarkSegment,
                                             onPressed: () => _bookmark(index),
                                             icon: Icon(
                                               segment.bookmarked
@@ -522,9 +538,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                             ),
                                           ),
                                           IconButton(
-                                            tooltip: '编辑段落',
+                                            tooltip: l10n(context).editSegment,
                                             onPressed: () => _edit(index),
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.edit_outlined,
                                               size: 18,
                                             ),
@@ -533,16 +549,16 @@ class _DetailScreenState extends State<DetailScreen> {
                                       ),
                                       SelectableText(
                                         segment.text,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 16,
                                           height: 1.8,
                                         ),
                                       ),
                                       if (segment.originalText != null)
-                                        const Padding(
+                                        Padding(
                                           padding: EdgeInsets.only(top: 8),
                                           child: Text(
-                                            '已校对',
+                                            l10n(context).edited,
                                             style: TextStyle(
                                               fontSize: 11,
                                               color: muted,
@@ -557,7 +573,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           },
                         ),
                 ),
-                _player(),
+                if (MediaQuery.viewInsetsOf(context).bottom == 0) _player(),
               ],
             ),
           ),
@@ -567,8 +583,8 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Widget _player() => Container(
-    padding: const EdgeInsets.fromLTRB(16, 10, 24, 14),
-    decoration: const BoxDecoration(
+    padding: EdgeInsets.fromLTRB(16, 10, 24, 14),
+    decoration: BoxDecoration(
       color: Colors.white,
       border: Border(top: BorderSide(color: Color(0xffe2e7df))),
     ),
@@ -586,7 +602,7 @@ class _DetailScreenState extends State<DetailScreen> {
               children: [
                 Text(
                   clock(position),
-                  style: const TextStyle(fontSize: 11, color: muted),
+                  style: TextStyle(fontSize: 11, color: muted),
                 ),
                 Expanded(
                   child: Slider(
@@ -601,7 +617,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 Text(
                   clock(total),
-                  style: const TextStyle(fontSize: 11, color: muted),
+                  style: TextStyle(fontSize: 11, color: muted),
                 ),
               ],
             );
@@ -612,7 +628,9 @@ class _DetailScreenState extends State<DetailScreen> {
             StreamBuilder<PlayerState>(
               stream: player.playerStateStream,
               builder: (context, snapshot) => IconButton.filled(
-                tooltip: player.playing ? '暂停回放' : '回放音频',
+                tooltip: player.playing
+                    ? l10n(context).pausePlayback
+                    : l10n(context).playAudio,
                 onPressed: loading ? null : () => _play(),
                 icon: Icon(
                   snapshot.data?.playing == true &&
@@ -623,15 +641,15 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
-            const Expanded(
+            SizedBox(width: 12),
+            Expanded(
               child: Text(
-                '点击时间戳回听原音',
+                l10n(context).tapTimestamp,
                 style: TextStyle(fontSize: 12, color: muted),
               ),
             ),
             PopupMenuButton<double>(
-              tooltip: '播放速度',
+              tooltip: l10n(context).playbackSpeed,
               onSelected: (value) async {
                 await player.setSpeed(value);
                 if (mounted) setState(() {});
@@ -643,10 +661,10 @@ class _DetailScreenState extends State<DetailScreen> {
                   )
                   .toList(),
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12),
                 child: Text(
                   '${player.speed}×',
-                  style: const TextStyle(color: forest, fontSize: 13),
+                  style: TextStyle(color: forest, fontSize: 13),
                 ),
               ),
             ),

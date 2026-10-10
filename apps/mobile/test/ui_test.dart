@@ -11,6 +11,7 @@ import 'package:lingoscribe/services/model_manager.dart';
 import 'package:lingoscribe/ui/app.dart';
 import 'package:lingoscribe/ui/recording_screen.dart';
 import 'package:lingoscribe/ui/detail_screen.dart';
+import 'package:lingoscribe/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -104,6 +105,131 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'English interface switches persistently without altering bilingual records',
+    (tester) async {
+      await tester.runAsync(
+        () => controller.save(
+          Transcript(
+            id: 'bilingual',
+            title: '客户会议',
+            createdAt: DateTime.now(),
+            audioPath: '${directory.path}/bilingual.wav',
+            status: TranscriptStatus.ready,
+            segments: const [
+              Segment(startMs: 0, endMs: 1000, text: '今天 review the plan.'),
+            ],
+          ),
+        ),
+      );
+      await tester.runAsync(() => controller.setDisplayLanguage('en'));
+      await tester.pumpWidget(LingoScribeApp(controller: controller));
+      await tester.pumpAndSettle();
+      expect(find.text('Your audio library'), findsOneWidget);
+      expect(find.text('1 record'), findsOneWidget);
+      expect(find.text('客户会议'), findsOneWidget);
+      expect(find.text('今天 review the plan.'), findsOneWidget);
+      await tester.tap(find.text('Offline models'));
+      await tester.pumpAndSettle();
+      expect(find.text('Download 60 MB'), findsOneWidget);
+      expect(find.text('Light · Base'), findsOneWidget);
+      await tester.runAsync(() => controller.setDisplayLanguage('zh'));
+      await tester.pumpAndSettle();
+      expect(find.text('把 AI 留在本机'), findsOneWidget);
+      expect(controller.preferences.getString('displayLanguage'), 'zh');
+      expect(
+        (await tester.runAsync(() => controller.find('bilingual')))!.plainText,
+        '今天 review the plan.',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('English library fits a narrow screen and large system font', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 780);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await tester.runAsync(() => controller.setDisplayLanguage('en'));
+    await tester.pumpWidget(LingoScribeApp(controller: controller));
+    await tester.pumpAndSettle();
+    expect(find.text('Your audio library'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+    'English detail remains usable with long titles and an open keyboard',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 780);
+      tester.view.devicePixelRatio = 1;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetViewInsets);
+      tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final entry = Transcript(
+        id: 'detail-layout',
+        title: List.filled(8, 'Long interview').join(' '),
+        audioPath: '${directory.path}/missing-layout-only.wav',
+        createdAt: DateTime.now(),
+        durationMs: 1000,
+        status: TranscriptStatus.ready,
+        segments: const [
+          Segment(startMs: 0, endMs: 1000, text: '校对 mixed text'),
+        ],
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: DetailScreen(controller: controller, initial: entry),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Search this transcript'), findsOneWidget);
+      expect(find.text('校对 mixed text'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
+  testWidgets(
+    'known errors are localized while private device paths stay out of messages',
+    (tester) async {
+      late BuildContext scope;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: Builder(
+            builder: (context) {
+              scope = context;
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        friendlyError(scope, const FormatException('模型校验失败，请重新下载官方模型')),
+        'Model verification failed. Download the official model again.',
+      );
+      final message = friendlyError(
+        scope,
+        const FileSystemException('Permission denied', '/private/personal.wav'),
+      );
+      expect(
+        message,
+        'Unable to access the file. Select it again and allow access.',
+      );
+      expect(message, isNot(contains('/private/')));
+    },
+  );
   testWidgets(
     'automatic recording limit opens the saved record after capture has ended',
     (tester) async {

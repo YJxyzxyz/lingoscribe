@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 const forest = Color(0xff245b49);
@@ -16,14 +17,14 @@ ThemeData appTheme({String? fontFamily}) {
     useMaterial3: true,
     colorScheme: scheme,
     scaffoldBackgroundColor: paper,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: paper,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       foregroundColor: ink,
       centerTitle: false,
     ),
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       displaySmall: TextStyle(
         fontSize: 36,
         height: 1.25,
@@ -56,36 +57,36 @@ ThemeData appTheme({String? fontFamily}) {
       fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Color(0xffdce4dc)),
+        borderSide: BorderSide(color: Color(0xffdce4dc)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(color: Color(0xffdce4dc)),
+        borderSide: BorderSide(color: Color(0xffdce4dc)),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 16),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: forest,
         foregroundColor: Colors.white,
-        minimumSize: const Size(0, 54),
+        minimumSize: Size(0, 54),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(0, 54),
+        minimumSize: Size(0, 54),
         foregroundColor: forest,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        side: const BorderSide(color: Color(0xffc9d9cf)),
+        side: BorderSide(color: Color(0xffc9d9cf)),
       ),
     ),
-    navigationBarTheme: const NavigationBarThemeData(
+    navigationBarTheme: NavigationBarThemeData(
       backgroundColor: paper,
       indicatorColor: Color(0xffdceade),
       elevation: 0,
     ),
-    dividerColor: const Color(0xffdce4dc),
+    dividerColor: Color(0xffdce4dc),
   );
 }
 
@@ -94,7 +95,7 @@ class BrandMark extends StatelessWidget {
   final double size;
   @override
   Widget build(BuildContext context) => Semantics(
-    label: '聆写标志',
+    label: l10n(context).brandSemantics,
     image: true,
     child: SizedBox.square(
       dimension: size,
@@ -112,7 +113,7 @@ class _BrandPainter extends CustomPainter {
       Paint()..color = forest,
     );
     final paint = Paint()
-      ..color = const Color(0xffedf5d9)
+      ..color = Color(0xffedf5d9)
       ..strokeCap = StrokeCap.round
       ..strokeWidth = size.width * .065;
     const heights = [.2, .38, .55, .38, .2];
@@ -144,7 +145,7 @@ class SurfaceCard extends StatelessWidget {
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: const Color(0xffe2e7df)),
+      border: Border.all(color: Color(0xffe2e7df)),
     ),
     child: child,
   );
@@ -153,12 +154,17 @@ class SurfaceCard extends StatelessWidget {
 class PrivacyBadge extends StatelessWidget {
   const PrivacyBadge({super.key});
   @override
-  Widget build(BuildContext context) => const Row(
+  Widget build(BuildContext context) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [
       Icon(Icons.shield_outlined, size: 15, color: forest),
       SizedBox(width: 5),
-      Text('仅在你的设备上', style: TextStyle(fontSize: 12, color: forest)),
+      Flexible(
+        child: Text(
+          l10n(context).onYourDeviceOnly,
+          style: TextStyle(fontSize: 12, color: forest),
+        ),
+      ),
     ],
   );
 }
@@ -166,7 +172,7 @@ class PrivacyBadge extends StatelessWidget {
 void showError(BuildContext context, Object error) =>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(error.toString()),
+        content: Text(friendlyError(context, error)),
         behavior: SnackBarBehavior.floating,
       ),
     );

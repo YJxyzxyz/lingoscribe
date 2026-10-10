@@ -1,5 +1,5 @@
+import '../l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import '../application/app_controller.dart';
 import 'home_screen.dart';
 import 'theme.dart';
@@ -9,18 +9,24 @@ class LingoScribeApp extends StatelessWidget {
   final AppController controller;
   final String? fontFamily;
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: '聆写 · LingoScribe',
-    debugShowCheckedModeBanner: false,
-    theme: appTheme(fontFamily: fontFamily),
-    locale: const Locale('zh'),
-    supportedLocales: const [Locale('zh'), Locale('en')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    home: ListenableBuilder(
-      listenable: controller,
-      builder: (context, _) => controller.onboarded
-          ? HomeScreen(controller: controller)
-          : _Onboarding(controller: controller),
+  Widget build(BuildContext context) => ValueListenableBuilder<String>(
+    valueListenable: controller.displayLanguage,
+    builder: (context, language, _) => MaterialApp(
+      title: 'LingoScribe',
+      debugShowCheckedModeBanner: false,
+      theme: appTheme(fontFamily: fontFamily),
+      locale: language == 'system' ? null : Locale(language),
+      localeResolutionCallback: (locale, _) => locale?.languageCode == 'zh'
+          ? const Locale('zh')
+          : const Locale('en'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: ListenableBuilder(
+        listenable: controller,
+        builder: (context, _) => controller.onboarded
+            ? HomeScreen(controller: controller)
+            : _Onboarding(controller: controller),
+      ),
     ),
   );
 }
@@ -33,13 +39,13 @@ class _Onboarding extends StatelessWidget {
     body: SafeArea(
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
+          constraints: BoxConstraints(maxWidth: 560),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(28),
+            padding: EdgeInsets.all(28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   children: [
                     BrandMark(),
                     SizedBox(width: 12),
@@ -53,39 +59,39 @@ class _Onboarding extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 56),
+                SizedBox(height: 56),
                 Container(
-                  padding: const EdgeInsets.all(32),
+                  padding: EdgeInsets.all(32),
                   decoration: BoxDecoration(
-                    color: const Color(0xffe5eddc),
+                    color: Color(0xffe5eddc),
                     borderRadius: BorderRadius.circular(36),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [BrandMark(size: 110)],
                   ),
                 ),
-                const SizedBox(height: 36),
+                SizedBox(height: 36),
                 Text(
-                  '声音留在这里。\n文字随你前行。',
+                  l10n(context).onboardingHeadline,
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  '把录音变成可回听、可编辑的文字。\n支持中文、英文与双语录音，全程在设备上转写。',
+                SizedBox(height: 16),
+                Text(
+                  l10n(context).onboardingDescription,
                   style: TextStyle(color: muted, fontSize: 16, height: 1.8),
                 ),
-                const SizedBox(height: 28),
-                const SurfaceCard(
+                SizedBox(height: 28),
+                SurfaceCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PrivacyBadge(),
                       SizedBox(height: 12),
-                      Text('无需账号 · 不上传录音 · 没有广告'),
+                      Text(l10n(context).noAccountNoAds),
                       SizedBox(height: 8),
                       Text(
-                        '首次需联网下载模型，也可以导入已下载的官方模型。之后可以断网转写。模型效果会随设备与录音质量变化。',
+                        l10n(context).firstModelExplanation,
                         style: TextStyle(
                           color: muted,
                           fontSize: 13,
@@ -95,18 +101,18 @@ class _Onboarding extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: controller.finishOnboarding,
-                    child: const Text('开始聆写  →'),
+                    child: Text(l10n(context).getStarted),
                   ),
                 ),
-                const SizedBox(height: 12),
-                const Center(
+                SizedBox(height: 12),
+                Center(
                   child: Text(
-                    '在录音前，请征得参与者同意。',
+                    l10n(context).recordingConsent,
                     style: TextStyle(color: muted, fontSize: 12),
                   ),
                 ),

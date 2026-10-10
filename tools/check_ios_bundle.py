@@ -32,7 +32,11 @@ report = {'sourceCommit': args.commit, 'bundleId': info.get('CFBundleIdentifier'
           'detectorSha256': digest, 'manifests': manifests,
           'trackingDeclarations': tracking, 'collectedDataDeclarations': collected,
           'scope': 'Static unsigned bundle inspection; not signed-device runtime or App Store acceptance'}
+localizations = {language: (root / f'{language}.lproj/InfoPlist.strings').exists() for language in ('en', 'zh-Hans')}
+report['permissionLocalizations'] = localizations
 report['passed'] = bool(manifests) and not tracking and not collected and all(exports.values()) and bool(report['microphoneUsage']) and digest == '2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987'
+if localizations and not all(localizations.values()):
+    report['passed'] = False
 encoded = json.dumps(report, ensure_ascii=False, indent=2)
 if args.report:
     Path(args.report).write_text(encoded + '\n', encoding='utf-8')

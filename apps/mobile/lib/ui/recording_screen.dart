@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../application/app_controller.dart';
@@ -25,7 +26,7 @@ class _RecordingScreenState extends State<RecordingScreen>
     _recordingId = widget.controller.recording?.id;
     WidgetsBinding.instance.addObserver(this);
     widget.controller.addListener(_onLimitSaved);
-    _meter = Timer.periodic(const Duration(milliseconds: 100), (_) {
+    _meter = Timer.periodic(Duration(milliseconds: 100), (_) {
       if (!mounted) return;
       setState(() {
         levels.add(
@@ -107,16 +108,16 @@ class _RecordingScreenState extends State<RecordingScreen>
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('丢弃这段录音？'),
-        content: const Text('这段录音会被删除。也可以返回后先保存。'),
+        title: Text(l10n(context).discardRecordingQuestion),
+        content: Text(l10n(context).discardRecordingExplanation),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('继续录音'),
+            child: Text(l10n(context).resumeRecording),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('丢弃'),
+            child: Text(l10n(context).discard),
           ),
         ],
       ),
@@ -142,40 +143,42 @@ class _RecordingScreenState extends State<RecordingScreen>
       builder: (context, _) => Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('正在聆听'),
+          title: Text(l10n(context).listening),
           actions: [
             TextButton(
               onPressed: saving ? null : _discard,
-              child: const Text('丢弃'),
+              child: Text(l10n(context).discard),
             ),
           ],
         ),
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
+              constraints: BoxConstraints(maxWidth: 560),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(28),
+                padding: EdgeInsets.all(28),
                 child: Column(
                   children: [
-                    const SizedBox(height: 36),
-                    const PrivacyBadge(),
-                    const SizedBox(height: 48),
+                    SizedBox(height: 36),
+                    PrivacyBadge(),
+                    SizedBox(height: 48),
                     Text(
                       clock(widget.controller.recordingMs, hours: true),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.w300,
                         color: ink,
                         fontFeatures: [FontFeature.tabularFigures()],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
                     Text(
-                      widget.controller.paused ? '已暂停 · 点击继续' : '记录此刻的声音',
-                      style: const TextStyle(color: muted),
+                      widget.controller.paused
+                          ? l10n(context).pausedRecording
+                          : l10n(context).recordingMoment,
+                      style: TextStyle(color: muted),
                     ),
-                    const SizedBox(height: 36),
+                    SizedBox(height: 36),
                     SizedBox(
                       height: 110,
                       width: double.infinity,
@@ -183,7 +186,7 @@ class _RecordingScreenState extends State<RecordingScreen>
                         painter: _MeterPainter(List.of(levels)),
                       ),
                     ),
-                    const SizedBox(height: 36),
+                    SizedBox(height: 36),
                     OutlinedButton.icon(
                       onPressed: saving
                           ? null
@@ -199,20 +202,28 @@ class _RecordingScreenState extends State<RecordingScreen>
                             ? Icons.play_arrow
                             : Icons.pause,
                       ),
-                      label: Text(widget.controller.paused ? '继续录音' : '暂停录音'),
+                      label: Text(
+                        widget.controller.paused
+                            ? l10n(context).resumeRecording
+                            : l10n(context).pauseRecording,
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
                         onPressed: saving ? null : _save,
-                        icon: const Icon(Icons.stop_rounded),
-                        label: Text(saving ? '正在保存…' : '结束并保存'),
+                        icon: Icon(Icons.stop_rounded),
+                        label: Text(
+                          saving
+                              ? l10n(context).saving
+                              : l10n(context).stopAndSave,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      '退出到后台时会自动暂停。\n保存后可选择模型进行离线转写。',
+                    SizedBox(height: 20),
+                    Text(
+                      l10n(context).backgroundPauseExplanation,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 12, color: muted, height: 1.8),
                     ),
@@ -228,7 +239,7 @@ class _RecordingScreenState extends State<RecordingScreen>
 }
 
 class _MeterPainter extends CustomPainter {
-  const _MeterPainter(this.values);
+  _MeterPainter(this.values);
   final List<double> values;
   @override
   void paint(Canvas canvas, Size size) {

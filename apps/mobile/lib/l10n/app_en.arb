@@ -1,0 +1,237 @@
+{
+  "@@locale": "en",
+  "libraryUnavailable": "Unable to open your library",
+  "retry": "Retry",
+  "recordingRecovered": "The task was interrupted. Your audio is available; you can retry transcription.",
+  "finishCurrentTask": "Finish the current task first.",
+  "microphonePermission": "Microphone access is required to record. Allow it in system settings.",
+  "recordingSaveFailed": "Recording stopped, but the record could not be saved. Restart the app to recover the local audio.",
+  "recordingInterrupted": "Recording was interrupted. The local audio was recovered and can be transcribed.",
+  "recordingIncomplete": "Recording did not finish correctly. Check microphone access before recording again.",
+  "importingAudio": "Importing audio",
+  "fileTooLarge": "This file exceeds 2 GB. Trim the audio before importing.",
+  "preserveEditsBeforeRetry": "Use “Transcribe a new copy” to keep your existing edits.",
+  "prepareModelFirst": "Download or import a model in Offline models to transcribe on your device.",
+  "verifyingLocalModel": "Verifying the local model",
+  "preparingAudio": "Preparing audio",
+  "transcribingOnDevice": "Transcribing on your device",
+  "loadingLocalModel": "Loading the local model",
+  "checkingSpeechGaps": "Checking for missed speech",
+  "detectingSpeech": "Detecting speech",
+  "transcriptionCancelled": "Transcription cancelled. Your audio has been kept.",
+  "preparingRevision": "Preparing a new transcription",
+  "taskInterrupted": "The task was interrupted. Your audio has been kept; please retry.",
+  "detectorIntegrityFailed": "The built-in speech detector failed its integrity check.",
+  "exportText": "Plain text · TXT",
+  "exportMarkdown": "Notes · Markdown",
+  "exportSrt": "Subtitles · SRT",
+  "exportVtt": "Web subtitles · VTT",
+  "exportJson": "Full data · JSON",
+  "baseModel": "Light · Base",
+  "baseModelDescription": "A smaller download for short notes. Multilingual, Q5 quantized.",
+  "smallModel": "Detailed · Small",
+  "smallModelDescription": "A larger multilingual model for interviews and bilingual audio. Speed and memory use depend on your device.",
+  "modelIntegrityFailed": "Model verification failed. Download the official model again.",
+  "modelRequired": "Download or import a model first.",
+  "downloadCancelled": "Download cancelled.",
+  "modelSizeInvalid": "The model file has an unexpected size.",
+  "waitForModelOperation": "Wait for the current model operation to finish.",
+  "officialModelsOnly": "Only the official Base / Small Q5 models listed here are supported.",
+  "applicationTitle": "LingoScribe",
+  "onboardingHeadline": "Your voice stays here.\nYour words go with you.",
+  "onboardingDescription": "Turn recordings into text you can replay and edit.\nChinese, English and bilingual audio, transcribed on your device.",
+  "noAccountNoAds": "No account · No audio uploads · No ads",
+  "firstModelExplanation": "Download a model once, or import an official model file. Then transcribe offline. Results depend on your device and recording quality.",
+  "getStarted": "Get started  →",
+  "recordingConsent": "Get participants’ consent before recording.",
+  "rename": "Rename",
+  "exportThisTranscript": "Export this transcript",
+  "shareExplanation": "Files are sent to other apps only when you choose to share.",
+  "deleteTranscriptQuestion": "Delete audio and transcript?",
+  "deleteTranscriptExplanation": "This cannot be undone. Copies already shared with other apps will remain.",
+  "keep": "Keep",
+  "delete": "Delete",
+  "replayAndEdit": "Replay & edit",
+  "exportTranscript": "Export transcript",
+  "transcribeNewCopy": "Transcribe a new copy",
+  "deleteAudioAndTranscript": "Delete audio and transcript",
+  "preparingTranscription": "Preparing transcription",
+  "cancel": "Cancel",
+  "searchThisTranscript": "Search this transcript",
+  "bookmarksOnly": "Bookmarks only",
+  "noSpeechDetected": "No speech detected",
+  "audioKeptLocally": "Your audio is stored here",
+  "checkAudioQuality": "Replay the audio to check for clear speech.",
+  "transcribeWhenReady": "Prepare a model, then turn this audio into text.",
+  "startOfflineTranscription": "Transcribe offline",
+  "noModelInstalled": "No model installed. Download or import one in Offline models.",
+  "noMatchingSegments": "No matching segments",
+  "removeBookmark": "Remove bookmark",
+  "bookmarkSegment": "Bookmark segment",
+  "editSegment": "Edit segment",
+  "edited": "Edited",
+  "pausePlayback": "Pause playback",
+  "playAudio": "Play audio",
+  "tapTimestamp": "Tap a timestamp to hear the audio",
+  "playbackSpeed": "Playback speed",
+  "library": "Library",
+  "offlineModels": "Offline models",
+  "settings": "Settings",
+  "brandName": "LingoScribe",
+  "transcriptionPreferences": "Transcription preferences",
+  "yourAudioLibrary": "Your audio library",
+  "searchLibrary": "Search titles or transcripts",
+  "allRecords": "All records",
+  "searchResults": "Search results",
+  "startRecording": "Record",
+  "importAudio": "Import audio",
+  "emptyLibraryTitle": "A home for your voice",
+  "noRecordsFound": "No records found",
+  "emptyLibraryDescription": "Record a thought or import an interview.\nYour audio and text stay on your device.",
+  "tryAnotherKeyword": "Try a different keyword.",
+  "prepareOfflineModel": "Prepare an offline model",
+  "statusRecording": "Recording",
+  "statusSaved": "Audio saved · Ready to transcribe",
+  "statusTranscribing": "Transcribing locally",
+  "statusReady": "Transcription complete",
+  "statusFailed": "Transcription failed · Retry available",
+  "statusInterrupted": "Interrupted · Audio kept",
+  "deleteModelQuestion": "Delete this model?",
+  "deleteModel": "Delete model",
+  "modelsHeadline": "Keep AI on your device",
+  "modelsDescription": "Download once. Use offline.\nModels process local audio; recordings are never uploaded.",
+  "modelVerificationExplanation": "Each model is checked with SHA-256 before installation, then checked again before transcription.",
+  "importOfficialModel": "Import an official model file",
+  "useModelMirror": "Use an alternative download source",
+  "modelSourceExplanation": "Default: Hugging Face. Alternative: hf-mirror.com. The source receives your IP and model request, never your recordings.",
+  "modelAccuracyExplanation": "Accuracy depends on recording quality, language and model. Larger models usually need more memory and time. Speed has not been measured on this device.",
+  "verifyingModel": "Verifying model…",
+  "currentModel": "Currently selected",
+  "selectModel": "Use this model",
+  "discardRecordingQuestion": "Discard this recording?",
+  "discardRecordingExplanation": "This recording will be deleted. You can go back and save it instead.",
+  "resumeRecording": "Resume recording",
+  "discard": "Discard",
+  "listening": "Listening",
+  "pausedRecording": "Paused · Tap to resume",
+  "recordingMoment": "Capture this moment",
+  "pauseRecording": "Pause recording",
+  "saving": "Saving…",
+  "stopAndSave": "Stop & save",
+  "backgroundPauseExplanation": "Recording pauses when the app goes into the background.\nSave, then choose a model to transcribe offline.",
+  "settingsHeadline": "Make it your own",
+  "newAudioDefaults": "Defaults for new recordings and imports",
+  "audioLanguage": "Audio language",
+  "autoLanguage": "Detect automatically · Includes Chinese & English",
+  "chinese": "Chinese",
+  "glossaryPrompt": "Glossary prompt",
+  "glossaryHint": "For example: LingoScribe, product names, people, technical terms",
+  "glossaryExplanation": "Terms guide the model but do not guarantee a result. Saved records keep their original settings.",
+  "privacyByDefault": "Privacy by default",
+  "privacyDescription": "Recording, imported audio, transcription and search are processed locally. There are no accounts, ads or analytics SDKs, and this content is never uploaded.\n\nInternet access is used only when you download a model. When you export and share, the receiving app handles the file under its own privacy rules.\n\nData is stored in the system app sandbox, without additional app-level encryption. Uninstalling deletes local records. Export important content first.",
+  "clearExportCache": "Clear temporary exports",
+  "exportCacheExplanation": "Keeps recordings and your library. Shared copies remain.",
+  "noTemporaryExports": "No temporary exports",
+  "openSourceLicenses": "Open-source licenses",
+  "licenseApplicationName": "LingoScribe",
+  "usageReminder": "Get participants’ consent before recording. AI can make mistakes; replay important details to check them. Keep the app in the foreground during transcription. Consider connecting power for long audio.",
+  "title": "Title",
+  "transcriptText": "Transcript",
+  "enterTitle": "Enter a title",
+  "save": "Save",
+  "brandSemantics": "LingoScribe logo",
+  "onYourDeviceOnly": "Only on your device",
+  "recordCount": "{count, plural, one{1 record} other{{count} records}}",
+  "@recordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "proofreadAt": "Edit {time}",
+  "@proofreadAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "originalTranscript": "Original: {text}",
+  "@originalTranscript": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "removeModelExplanation": "Free {size}. Recordings and transcripts stay. You can download the model again.",
+  "@removeModelExplanation": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadModelSize": "Download {size}",
+  "@downloadModelSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadProgress": "Downloading {percent}%",
+  "@downloadProgress": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "modelLanguagesAndLicense": "{size} · Chinese / English · MIT",
+  "@modelLanguagesAndLicense": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "exportFilesCleared": "{count, plural, one{1 temporary export cleared} other{{count} temporary exports cleared}}",
+  "@exportFilesCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "interfaceLanguage": "App language",
+  "followSystem": "System default",
+  "operationFailed": "The operation could not be completed. Please retry.",
+  "audioUnreadable": "Unable to read audio. Check that the file contains an audio track in a supported format.",
+  "audioTooLong": "Audio must be shorter than two hours. Trim it first.",
+  "storageFull": "Not enough storage. Free some space and retry.",
+  "modelConnectionFailed": "Unable to reach the model source. Try the alternative source or import a model file.",
+  "modelLoadFailed": "Unable to load the model. Check its integrity or try the light model.",
+  "fileAccessFailed": "Unable to access the file. Select it again and allow access.",
+  "engineUnavailable": "Unable to load the transcription engine. Update the app and retry.",
+  "recordingTitle": "Recording {date} {time}",
+  "@recordingTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "revisionTitle": "{title} · New transcription",
+  "@revisionTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
+}

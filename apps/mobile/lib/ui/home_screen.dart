@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../application/app_controller.dart';
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 760),
+            constraints: BoxConstraints(maxWidth: 760),
             child: switch (tab) {
               1 => ModelScreen(controller: app),
               2 => SettingsScreen(controller: app),
@@ -79,135 +80,157 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: tab,
         onDestinationSelected: (value) => setState(() => tab = value),
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.library_books_outlined),
             selectedIcon: Icon(Icons.library_books),
-            label: '资料库',
+            label: l10n(context).library,
           ),
           NavigationDestination(
             icon: Icon(Icons.memory_outlined),
             selectedIcon: Icon(Icons.memory),
-            label: '离线模型',
+            label: l10n(context).offlineModels,
           ),
-          NavigationDestination(icon: Icon(Icons.tune), label: '设置'),
+          NavigationDestination(
+            icon: Icon(Icons.tune),
+            label: l10n(context).settings,
+          ),
         ],
       ),
     ),
   );
   Widget _library() => Column(
     children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const BrandMark(size: 34),
-                const SizedBox(width: 10),
-                const Text(
-                  '聆写',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-                const Spacer(),
-                IconButton(
-                  tooltip: '转写偏好',
-                  onPressed: () => setState(() => tab = 2),
-                  icon: const Icon(Icons.tune),
-                ),
-              ],
-            ),
-            const SizedBox(height: 28),
-            Text('你的声音资料库', style: Theme.of(context).textTheme.headlineMedium),
-            const SizedBox(height: 8),
-            const PrivacyBadge(),
-            const SizedBox(height: 24),
-            TextField(
-              onChanged: (value) {
-                _search?.cancel();
-                _search = Timer(
-                  const Duration(milliseconds: 180),
-                  () => unawaited(app.refresh(query: value)),
-                );
-              },
-              decoration: const InputDecoration(
-                hintText: '搜索标题或转写内容',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Text(
-                  app.query.isEmpty ? '全部记录' : '搜索结果',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const Spacer(),
-                Text(
-                  '${app.items.length} 条',
-                  style: const TextStyle(color: muted),
-                ),
-              ],
-            ),
-            if (app.importing || app.taskId != null) ...[
-              const SizedBox(height: 16),
-              LinearProgressIndicator(
-                value: app.importing || app.phase != '正在设备上转写'
-                    ? null
-                    : app.progress,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                app.phase ?? '',
-                style: const TextStyle(color: forest, fontSize: 13),
-              ),
-            ],
-            const SizedBox(height: 12),
-          ],
-        ),
-      ),
       Expanded(
-        child: app.items.isEmpty
-            ? _empty()
-            : ListView.separated(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _libraryHeader()),
+            if (app.items.isEmpty)
+              SliverToBoxAdapter(child: _empty())
+            else
+              SliverPadding(
                 padding: const EdgeInsets.fromLTRB(24, 4, 24, 20),
-                itemCount: app.items.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (context, index) => _item(app.items[index]),
+                sliver: SliverList.separated(
+                  itemCount: app.items.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) => _item(app.items[index]),
+                ),
               ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 18),
-        child: Row(
-          children: [
-            Expanded(
-              child: FilledButton.icon(
-                onPressed: app.busy ? null : _record,
-                icon: const Icon(Icons.mic_none),
-                label: const Text('开始录音'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: app.busy ? null : _import,
-                icon: const Icon(Icons.file_upload_outlined),
-                label: const Text('导入音频'),
-              ),
-            ),
           ],
         ),
       ),
+      if (MediaQuery.viewInsetsOf(context).bottom == 0) _libraryActions(),
     ],
   );
+  Widget _libraryHeader() => Padding(
+    padding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            BrandMark(size: 34),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                l10n(context).brandName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+              ),
+            ),
+            IconButton(
+              tooltip: l10n(context).transcriptionPreferences,
+              onPressed: () => setState(() => tab = 2),
+              icon: Icon(Icons.tune),
+            ),
+          ],
+        ),
+        SizedBox(height: 28),
+        Text(
+          l10n(context).yourAudioLibrary,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        SizedBox(height: 8),
+        PrivacyBadge(),
+        SizedBox(height: 24),
+        TextField(
+          onChanged: (value) {
+            _search?.cancel();
+            _search = Timer(
+              Duration(milliseconds: 180),
+              () => unawaited(app.refresh(query: value)),
+            );
+          },
+          decoration: InputDecoration(
+            hintText: l10n(context).searchLibrary,
+            prefixIcon: Icon(Icons.search),
+          ),
+        ),
+        SizedBox(height: 20),
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 12,
+          runSpacing: 4,
+          children: [
+            Text(
+              app.query.isEmpty
+                  ? l10n(context).allRecords
+                  : l10n(context).searchResults,
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            Text(
+              l10n(context).recordCount(app.items.length),
+              style: TextStyle(color: muted),
+            ),
+          ],
+        ),
+        if (app.importing || app.taskId != null) ...[
+          SizedBox(height: 16),
+          LinearProgressIndicator(
+            value: app.importing || app.phase != '正在设备上转写'
+                ? null
+                : app.progress,
+          ),
+          SizedBox(height: 8),
+          Text(
+            localizedLabel(context, app.phase ?? ''),
+            style: TextStyle(color: forest, fontSize: 13),
+          ),
+        ],
+        SizedBox(height: 12),
+      ],
+    ),
+  );
+  Widget _libraryActions() => Padding(
+    padding: EdgeInsets.fromLTRB(24, 12, 24, 18),
+    child: Row(
+      children: [
+        Expanded(
+          child: FilledButton.icon(
+            onPressed: app.busy ? null : _record,
+            icon: Icon(Icons.mic_none),
+            label: Text(l10n(context).startRecording),
+          ),
+        ),
+        SizedBox(width: 12),
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: app.busy ? null : _import,
+            icon: Icon(Icons.file_upload_outlined),
+            label: Text(l10n(context).importAudio),
+          ),
+        ),
+      ],
+    ),
+  );
   Widget _empty() => SingleChildScrollView(
-    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 30),
+    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 30),
     child: Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(24),
-          decoration: const BoxDecoration(
+          padding: EdgeInsets.all(24),
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xffe7eedf),
           ),
@@ -217,23 +240,27 @@ class _HomeScreenState extends State<HomeScreen> {
             color: forest,
           ),
         ),
-        const SizedBox(height: 22),
+        SizedBox(height: 22),
         Text(
-          app.query.isEmpty ? '给声音一个归处' : '没有找到相关记录',
+          app.query.isEmpty
+              ? l10n(context).emptyLibraryTitle
+              : l10n(context).noRecordsFound,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Text(
-          app.query.isEmpty ? '录下一个想法，或导入一段访谈。\n你的录音和文字只保存在本机。' : '试试不同的关键词。',
+          app.query.isEmpty
+              ? l10n(context).emptyLibraryDescription
+              : l10n(context).tryAnotherKeyword,
           textAlign: TextAlign.center,
-          style: const TextStyle(color: muted, height: 1.8),
+          style: TextStyle(color: muted, height: 1.8),
         ),
         if (app.models.active == null && app.query.isEmpty) ...[
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           TextButton.icon(
             onPressed: () => setState(() => tab = 1),
-            icon: const Icon(Icons.download_outlined, size: 18),
-            label: const Text('先准备离线模型'),
+            icon: Icon(Icons.download_outlined, size: 18),
+            label: Text(l10n(context).prepareOfflineModel),
           ),
         ],
       ],
@@ -250,9 +277,9 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xffedf3e8),
+                  color: Color(0xffedf3e8),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
@@ -263,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,29 +301,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       '${value.createdAt.month}/${value.createdAt.day} · ${clock(value.durationMs)}',
-                      style: const TextStyle(color: muted, fontSize: 12),
+                      style: TextStyle(color: muted, fontSize: 12),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              const Icon(Icons.chevron_right, color: muted),
+              SizedBox(width: 8),
+              Icon(Icons.chevron_right, color: muted),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14),
           if (value.preview.isNotEmpty)
             Text(
               value.preview,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 13, color: muted),
+              style: TextStyle(fontSize: 13, color: muted),
             ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Text(
-            statusLabel(value.status),
+            localizedLabel(context, statusLabel(value.status)),
             style: TextStyle(
               fontSize: 12,
               color: value.status == TranscriptStatus.failed

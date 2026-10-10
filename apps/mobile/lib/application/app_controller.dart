@@ -13,6 +13,7 @@ import '../domain/transcript.dart';
 import '../services/model_manager.dart';
 import '../services/recording_recovery.dart';
 import '../services/bundled_detector.dart';
+import '../l10n/l10n.dart';
 
 class AppController extends ChangeNotifier {
   AppController({
@@ -30,6 +31,7 @@ class AppController extends ChangeNotifier {
   final SharedPreferences preferences;
   final OfflineEngine engine;
   final AudioRecorder recorder;
+  final ValueNotifier<String> displayLanguage = ValueNotifier('zh');
   List<TranscriptSummary> items = [];
   int dataRevision = 0;
   String query = '', language = 'auto', prompt = '';
@@ -84,6 +86,8 @@ class AppController extends ChangeNotifier {
     );
     controller.language = preferences.getString('language') ?? 'auto';
     controller.prompt = preferences.getString('prompt') ?? '';
+    controller.displayLanguage.value =
+        preferences.getString('displayLanguage') ?? 'system';
     modelManager.addListener(controller._onModelsChanged);
     await controller.refresh();
     return controller;
@@ -100,6 +104,14 @@ class AppController extends ChangeNotifier {
   Future<void> finishOnboarding() async {
     await preferences.setBool('onboarded', true);
     notifyListeners();
+  }
+
+  Future<void> setDisplayLanguage(String value) async {
+    if (!['system', 'zh', 'en'].contains(value)) {
+      throw ArgumentError.value(value);
+    }
+    await preferences.setString('displayLanguage', value);
+    displayLanguage.value = value;
   }
 
   Future<void> settings({String? language, String? prompt}) async {
@@ -151,8 +163,10 @@ class AppController extends ChangeNotifier {
     final now = DateTime.now();
     final value = Transcript(
       id: id,
-      title:
-          '录音 ${now.month}/${now.day} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}',
+      title: localeMessages(displayLanguage.value).recordingTitle(
+        '${now.month}/${now.day}',
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}',
+      ),
       createdAt: now,
       audioPath: p.join(folder.path, '$id.wav'),
       status: TranscriptStatus.recording,
@@ -438,7 +452,9 @@ class AppController extends ChangeNotifier {
       await File(source.audioPath).copy(path);
       final revision = Transcript(
         id: id,
-        title: '${source.title} · 新转写',
+        title: localeMessages(
+          displayLanguage.value,
+        ).revisionTitle(source.title),
         createdAt: DateTime.now(),
         audioPath: path,
         durationMs: source.durationMs,
@@ -470,6 +486,7 @@ class AppController extends ChangeNotifier {
     unawaited(recorder.dispose());
     models.removeListener(_onModelsChanged);
     models.dispose();
+    displayLanguage.dispose();
     unawaited(repository.close());
     super.dispose();
   }

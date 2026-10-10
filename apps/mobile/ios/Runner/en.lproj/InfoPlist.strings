@@ -1,0 +1,2 @@
+"CFBundleDisplayName" = "LingoScribe";
+"NSMicrophoneUsageDescription" = "LingoScribe uses your microphone when you choose to record. Audio and transcription are processed on your device.";

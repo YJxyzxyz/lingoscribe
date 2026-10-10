@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../application/app_controller.dart';
@@ -33,16 +34,16 @@ class _ModelScreenState extends State<ModelScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除这个模型？'),
-        content: Text('释放 ${model.sizeLabel}。你的录音和转写内容会保留，以后可以重新下载模型。'),
+        title: Text(l10n(context).deleteModelQuestion),
+        content: Text(l10n(context).removeModelExplanation(model.sizeLabel)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('保留'),
+            child: Text(l10n(context).keep),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('删除模型'),
+            child: Text(l10n(context).deleteModel),
           ),
         ],
       ),
@@ -60,17 +61,20 @@ class _ModelScreenState extends State<ModelScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: app.models,
     builder: (context, _) => ListView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       children: [
-        const SizedBox(height: 20),
-        Text('把 AI 留在本机', style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 10),
-        const Text(
-          '下载一次，离线使用。\n模型只处理本地音频，录音不会上传。',
+        SizedBox(height: 20),
+        Text(
+          l10n(context).modelsHeadline,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        SizedBox(height: 10),
+        Text(
+          l10n(context).modelsDescription,
           style: TextStyle(color: muted, height: 1.8),
         ),
-        const SizedBox(height: 24),
-        const SurfaceCard(
+        SizedBox(height: 24),
+        SurfaceCard(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -78,49 +82,46 @@ class _ModelScreenState extends State<ModelScreen> {
               SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  '每个模型安装前都会验证 SHA-256。转写前再次检查文件，确保模型完整。',
+                  l10n(context).modelVerificationExplanation,
                   style: TextStyle(color: muted, fontSize: 13),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
-        for (final model in models) ...[
-          _model(model),
-          const SizedBox(height: 16),
-        ],
+        SizedBox(height: 20),
+        for (final model in models) ...[_model(model), SizedBox(height: 16)],
         if (app.models.error != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.only(bottom: 16),
             child: Text(
-              app.models.error!,
-              style: const TextStyle(color: Colors.brown),
+              friendlyError(context, app.models.error!),
+              style: TextStyle(color: Colors.brown),
             ),
           ),
         OutlinedButton.icon(
           onPressed: app.busy || app.models.downloadingId != null
               ? null
               : _import,
-          icon: const Icon(Icons.folder_open_outlined),
-          label: const Text('从文件导入官方模型'),
+          icon: Icon(Icons.folder_open_outlined),
+          label: Text(l10n(context).importOfficialModel),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         SwitchListTile.adaptive(
           contentPadding: EdgeInsets.zero,
           value: mirror,
           onChanged: app.models.downloadingId != null
               ? null
               : (value) => setState(() => mirror = value),
-          title: const Text('使用备用模型下载站'),
-          subtitle: const Text(
-            '默认 Hugging Face；备用 hf-mirror.com。下载站会收到 IP 和模型请求，不会收到录音。',
+          title: Text(l10n(context).useModelMirror),
+          subtitle: Text(
+            l10n(context).modelSourceExplanation,
             style: TextStyle(fontSize: 12),
           ),
         ),
-        const SizedBox(height: 12),
-        const Text(
-          '准确率取决于录音质量、语言及模型。更大模型通常需要更多内存和处理时间；尚未对本设备测得速度。',
+        SizedBox(height: 12),
+        Text(
+          l10n(context).modelAccuracyExplanation,
           style: TextStyle(fontSize: 12, color: muted),
         ),
       ],
@@ -136,47 +137,49 @@ class _ModelScreenState extends State<ModelScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.memory, color: forest),
-              const SizedBox(width: 10),
+              Icon(Icons.memory, color: forest),
+              SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  model.name,
+                  localizedLabel(context, model.name),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (selected) const Icon(Icons.check_circle, color: forest),
+              if (selected) Icon(Icons.check_circle, color: forest),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(
-            model.description,
-            style: const TextStyle(color: muted, fontSize: 13),
+            localizedLabel(context, model.description),
+            style: TextStyle(color: muted, fontSize: 13),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(
-            '${model.sizeLabel} · 中文 / English · MIT',
-            style: const TextStyle(color: forest, fontSize: 12),
+            l10n(context).modelLanguagesAndLicense(model.sizeLabel),
+            style: TextStyle(color: forest, fontSize: 12),
           ),
-          const SizedBox(height: 18),
+          SizedBox(height: 18),
           if (downloading) ...[
             LinearProgressIndicator(
               value: app.models.verifying ? null : app.models.progress,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: Text(
                     app.models.verifying
-                        ? '正在校验模型…'
-                        : '下载 ${(app.models.progress * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(fontSize: 12),
+                        ? l10n(context).verifyingModel
+                        : l10n(context).downloadProgress(
+                            (app.models.progress * 100).toStringAsFixed(0),
+                          ),
+                    style: TextStyle(fontSize: 12),
                   ),
                 ),
                 if (!app.models.verifying)
                   TextButton(
                     onPressed: app.models.cancelDownload,
-                    child: const Text('取消'),
+                    child: Text(l10n(context).cancel),
                   ),
               ],
             ),
@@ -188,16 +191,20 @@ class _ModelScreenState extends State<ModelScreen> {
                     onPressed: selected || app.busy
                         ? null
                         : () => app.models.select(model.id),
-                    child: Text(selected ? '当前使用' : '使用这个模型'),
+                    child: Text(
+                      selected
+                          ? l10n(context).currentModel
+                          : l10n(context).selectModel,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 IconButton(
-                  tooltip: '删除模型',
+                  tooltip: l10n(context).deleteModel,
                   onPressed: app.busy || app.models.downloadingId != null
                       ? null
                       : () => _remove(model),
-                  icon: const Icon(Icons.delete_outline),
+                  icon: Icon(Icons.delete_outline),
                 ),
               ],
             )
@@ -208,8 +215,8 @@ class _ModelScreenState extends State<ModelScreen> {
                 onPressed: app.busy || app.models.downloadingId != null
                     ? null
                     : () => app.models.download(model, mirror: mirror),
-                icon: const Icon(Icons.download_outlined),
-                label: Text('下载 ${model.sizeLabel}'),
+                icon: Icon(Icons.download_outlined),
+                label: Text(l10n(context).downloadModelSize(model.sizeLabel)),
               ),
             ),
         ],

@@ -206,7 +206,7 @@
     "name": "intl",
     "version": "0.20.3",
     "source": "hosted",
-    "dependency": "transitive",
+    "dependency": "direct main",
     "licenseFound": true
   },
   {

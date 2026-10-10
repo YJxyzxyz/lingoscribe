@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 
@@ -51,16 +52,18 @@ class _TextEditorDialogState extends State<TextEditorDialog> {
               maxLines: widget.singleLine ? 1 : 8,
               maxLength: widget.singleLine ? 120 : 10000,
               decoration: InputDecoration(
-                labelText: widget.singleLine ? '标题' : '转写内容',
-                errorText: invalid ? '请输入标题' : null,
+                labelText: widget.singleLine
+                    ? l10n(context).title
+                    : l10n(context).transcriptText,
+                errorText: invalid ? l10n(context).enterTitle : null,
               ),
             ),
             if (widget.originalText != null)
               Padding(
-                padding: const EdgeInsets.only(top: 12),
+                padding: EdgeInsets.only(top: 12),
                 child: Text(
-                  '原始转写：${widget.originalText}',
-                  style: const TextStyle(color: muted, fontSize: 12),
+                  l10n(context).originalTranscript(widget.originalText!),
+                  style: TextStyle(color: muted, fontSize: 12),
                 ),
               ),
           ],
@@ -70,9 +73,9 @@ class _TextEditorDialogState extends State<TextEditorDialog> {
     actions: [
       TextButton(
         onPressed: () => Navigator.pop(context),
-        child: const Text('取消'),
+        child: Text(l10n(context).cancel),
       ),
-      FilledButton(onPressed: _save, child: const Text('保存')),
+      FilledButton(onPressed: _save, child: Text(l10n(context).save)),
     ],
   );
 }
