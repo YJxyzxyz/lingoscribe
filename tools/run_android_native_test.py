@@ -42,7 +42,7 @@ adb('shell', 'run-as', package, 'rm', '-f', 'files/qa/native-result.json', 'file
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-n', f'{package}/.MainActivity')
 started = time.monotonic()
-while time.monotonic() - started < 360:
+while time.monotonic() - started < 600:
     log = adb('logcat', '-d', '-s', 'flutter', capture_output=True).stdout.decode('utf-8', errors='replace')
     if 'Some tests failed.' in log:
         print(log)

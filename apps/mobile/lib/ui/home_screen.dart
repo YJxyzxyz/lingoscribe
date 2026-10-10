@@ -232,16 +232,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             ),
           ],
         ),
-        if (app.importing || app.taskId != null) ...[
+        if (app.importing || app.taskId != null || app.startingRecording) ...[
           SizedBox(height: 16),
           LinearProgressIndicator(
-            value: app.importing || app.phase != '正在设备上转写'
+            value:
+                app.importing || app.startingRecording || app.phase != '正在设备上转写'
                 ? null
                 : app.progress,
           ),
           SizedBox(height: 8),
           Text(
-            localizedLabel(context, app.phase ?? ''),
+            app.startingRecording
+                ? l10n(context).preparingRecording
+                : localizedLabel(context, app.phase ?? ''),
             style: TextStyle(color: forest, fontSize: 13),
           ),
         ],

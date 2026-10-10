@@ -24,7 +24,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get microphonePermission => '需要麦克风权限才能录音，请在系统设置中允许。';
 
   @override
-  String get recordingSaveFailed => '录音已停止，保存记录失败。请重启应用以恢复本地音频。';
+  String get recordingSaveFailed => '自动保存未完成，请尝试结束录音，或重启应用恢复本地音频。';
+
+  @override
+  String get preparingRecording => '正在准备录音';
 
   @override
   String get recordingInterrupted => '录音中断，已恢复本地音频，可继续转写。';

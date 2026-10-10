@@ -131,8 +131,14 @@ abstract class AppLocalizations {
   /// No description provided for @recordingSaveFailed.
   ///
   /// In en, this message translates to:
-  /// **'Recording stopped, but the record could not be saved. Restart the app to recover the local audio.'**
+  /// **'Auto-save could not finish. Try stopping the recording, or restart the app to recover the local audio.'**
   String get recordingSaveFailed;
+
+  /// No description provided for @preparingRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing to record'**
+  String get preparingRecording;
 
   /// No description provided for @recordingInterrupted.
   ///

@@ -1,0 +1,81 @@
+{
+  "platform": "android",
+  "buildMode": "debug",
+  "fixtureKind": "upstream",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "elapsedSeconds": 291.983,
+  "durationMs": 11000,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 10580,
+      "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "model_import_hash",
+    "native_normalization",
+    "isolate_asr",
+    "timestamps",
+    "sqlite_persistence",
+    "original_text_retained",
+    "bookmark"
+  ],
+  "codecChecks": [
+    {
+      "format": "stereo48.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "stereo44.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998616663192
+    },
+    {
+      "format": "sample.mp3",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999987269504103
+    },
+    {
+      "format": "sample.m4a",
+      "durationMs": 11008,
+      "signalCorrelation": 0.9999944863118821
+    },
+    {
+      "format": "sample.flac",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "sample.ogg",
+      "durationMs": 11013,
+      "signalCorrelation": 0.9990635245300317
+    }
+  ],
+  "microphoneChecks": {
+    "durationMs": 1792,
+    "bytes": 57388,
+    "pausedBytes": 28716,
+    "checks": [
+      "native_capture",
+      "pause_stops_file_growth",
+      "resume_grows_file",
+      "wav_duration",
+      "sqlite_persistence"
+    ],
+    "scope": "Native virtual-device microphone lifecycle; not human voice quality or a physical microphone test"
+  },
+  "deviceSerial": "emulator-5554",
+  "androidSdk": "35",
+  "abi": "x86_64",
+  "scope": "Dedicated QA device; debug timing is not a release or physical-phone benchmark",
+  "testStatus": {
+    "passed": true,
+    "testCount": 3,
+    "failures": []
+  }
+}

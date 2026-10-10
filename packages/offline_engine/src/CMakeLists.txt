@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.22)
 project(offline_engine LANGUAGES C CXX)
 option(LS_DEV_DIAGNOSTICS "Print private transcript diagnostics for local development only" OFF)
+option(LS_OPTIMIZED_DEBUG "Keep neural kernels optimized in Flutter debug builds" ON)
+if(LS_OPTIMIZED_DEBUG AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Flutter UI debugging does not need unoptimized neural kernels. Retain -g
+    # symbols while matching the production optimization level for useful QA.
+    add_compile_options("$<$<CONFIG:Debug>:-O3>")
+endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)

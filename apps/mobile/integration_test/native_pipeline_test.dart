@@ -270,6 +270,6 @@ void main() {
         app.models.dispose();
       }
     },
-    timeout: const Timeout(Duration(minutes: 5)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

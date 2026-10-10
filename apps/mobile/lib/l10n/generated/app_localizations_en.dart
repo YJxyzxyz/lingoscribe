@@ -27,7 +27,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordingSaveFailed =>
-      'Recording stopped, but the record could not be saved. Restart the app to recover the local audio.';
+      'Auto-save could not finish. Try stopping the recording, or restart the app to recover the local audio.';
+
+  @override
+  String get preparingRecording => 'Preparing to record';
 
   @override
   String get recordingInterrupted =>

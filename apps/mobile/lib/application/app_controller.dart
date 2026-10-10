@@ -46,6 +46,7 @@ class AppController extends ChangeNotifier {
   Timer? _timer;
   StreamSubscription<Amplitude>? _amplitude;
   bool _startingRecording = false;
+  bool get startingRecording => _startingRecording;
   bool get busy =>
       taskId != null || recording != null || importing || _startingRecording;
   bool get onboarded => preferences.getBool('onboarded') ?? false;
@@ -238,7 +239,7 @@ class AppController extends ChangeNotifier {
                   }
                 })
                 .catchError((Object failure) {
-                  recordingLimitError = '录音已停止，保存记录失败。请重启应用以恢复本地音频。';
+                  recordingLimitError = '自动保存未完成，请尝试结束录音，或重启应用恢复本地音频。';
                   notifyListeners();
                 }),
           );
