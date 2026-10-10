@@ -8,6 +8,28 @@ import 'package:lingoscribe/services/model_manager.dart';
 import 'package:path/path.dart' as p;
 
 void main() {
+  test(
+    'startup removes known interrupted downloads without deleting unrelated files',
+    () async {
+      final directory = await Directory.systemTemp.createTemp(
+        'lingoscribe-model-recovery',
+      );
+      final manager = ModelManager(directory);
+      final partial = File('${manager.pathFor(models.first)}.part');
+      final unrelated = File(p.join(directory.path, 'unrelated.bin'));
+      await partial.writeAsString('interrupted download');
+      await unrelated.writeAsString('keep');
+      try {
+        await manager.initialize(null);
+        expect(await partial.exists(), false);
+        expect(await unrelated.readAsString(), 'keep');
+        expect(manager.installed, isEmpty);
+      } finally {
+        manager.dispose();
+        await directory.delete(recursive: true);
+      }
+    },
+  );
   ModelSpec fixture(List<int> bytes, {String? digest}) => ModelSpec(
     'qa-model',
     'Test only',

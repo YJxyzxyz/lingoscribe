@@ -60,6 +60,8 @@ class ModelManager extends ChangeNotifier {
   Future<void> initialize(String? selected) async {
     await directory.create(recursive: true);
     for (final model in models) {
+      final partial = File('${pathFor(model)}.part');
+      if (await partial.exists()) await partial.delete();
       final file = File(pathFor(model));
       if (await file.exists() && await file.length() == model.bytes) {
         installed.add(model.id);
