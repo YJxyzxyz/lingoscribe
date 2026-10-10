@@ -37,7 +37,7 @@ with tempfile.TemporaryDirectory(prefix='lingoscribe-codec-qa-') as folder:
     for fixture in create_fixtures(args.audio, folder, args.ffmpeg):
         with fixture.open('rb') as input_file:
             adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{fixture.name}', stdin=input_file)
-adb('shell', 'run-as', package, 'rm', '-f', 'files/qa/native-result.json')
+adb('shell', 'run-as', package, 'rm', '-f', 'files/qa/native-result.json', 'files/qa/codec-result.json', 'files/qa/test-status.json')
 adb('logcat', '-c')
 adb('shell', 'am', 'start', '-n', f'{package}/.MainActivity')
 started = time.monotonic()
@@ -46,7 +46,13 @@ while time.monotonic() - started < 360:
     if 'Some tests failed.' in log:
         print(log)
         raise SystemExit('Native integration assertions failed')
-    if 'All tests passed!' in log:
+    status_response = subprocess.run(command + ['exec-out', 'run-as', package, 'cat', 'files/qa/test-status.json'], capture_output=True)
+    # adb exec-out can return 0 with an empty body before the private file exists.
+    status = json.loads(status_response.stdout) if status_response.stdout.strip().startswith(b'{') else None
+    if status is not None and not status['passed']:
+        raise SystemExit(f'Native assertions failed: {status}')
+    if status is not None:
+        assert status['passed'] and status['testCount'] == 2, status
         response = adb('exec-out', 'run-as', package, 'cat', 'files/qa/native-result.json', capture_output=True).stdout
         report = json.loads(response)
         codecs = adb('exec-out', 'run-as', package, 'cat', 'files/qa/codec-result.json', capture_output=True).stdout
@@ -57,6 +63,7 @@ while time.monotonic() - started < 360:
         report['androidSdk'] = adb('shell', 'getprop', 'ro.build.version.sdk', capture_output=True).stdout.decode().strip()
         report['abi'] = adb('shell', 'getprop', 'ro.product.cpu.abi', capture_output=True).stdout.decode().strip()
         report['scope'] = 'Dedicated QA device; debug timing is not a release or physical-phone benchmark'
+        report['testStatus'] = status
         destination = Path(args.report)
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

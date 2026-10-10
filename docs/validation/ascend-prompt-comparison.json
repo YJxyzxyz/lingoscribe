@@ -1,0 +1,122 @@
+{
+  "automatic": {
+    "manifestSha256": "8f307540ef981f129a23a5c5d1a818e7ea938014ac2386cd324d46d9d9a273d7",
+    "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "aggregates": {
+      "en": {
+        "clips": 6,
+        "durationSeconds": 20.036,
+        "chineseReferenceChars": 0,
+        "chineseEditDistance": 0,
+        "chineseCER": null,
+        "englishReferenceWords": 49,
+        "englishEditDistance": 19,
+        "englishWER": 0.3877551020408163,
+        "rtf": 1.999
+      },
+      "mixed": {
+        "clips": 6,
+        "durationSeconds": 28.36,
+        "chineseReferenceChars": 83,
+        "chineseEditDistance": 39,
+        "chineseCER": 0.46987951807228917,
+        "englishReferenceWords": 20,
+        "englishEditDistance": 13,
+        "englishWER": 0.65,
+        "rtf": 1.429
+      },
+      "zh": {
+        "clips": 6,
+        "durationSeconds": 18.07,
+        "chineseReferenceChars": 72,
+        "chineseEditDistance": 17,
+        "chineseCER": 0.2361111111111111,
+        "englishReferenceWords": 0,
+        "englishEditDistance": 0,
+        "englishWER": null,
+        "rtf": 2.198
+      }
+    }
+  },
+  "fixed_language": {
+    "manifestSha256": "7722a7937c0a5c6a987136d47f49ef742a09e40b9486b7b83ef827e71736089a",
+    "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "aggregates": {
+      "en": {
+        "clips": 6,
+        "durationSeconds": 20.036,
+        "chineseReferenceChars": 0,
+        "chineseEditDistance": 0,
+        "chineseCER": null,
+        "englishReferenceWords": 49,
+        "englishEditDistance": 19,
+        "englishWER": 0.3877551020408163,
+        "rtf": 1.027
+      },
+      "mixed": {
+        "clips": 6,
+        "durationSeconds": 28.36,
+        "chineseReferenceChars": 83,
+        "chineseEditDistance": 39,
+        "chineseCER": 0.46987951807228917,
+        "englishReferenceWords": 20,
+        "englishEditDistance": 13,
+        "englishWER": 0.65,
+        "rtf": 0.768
+      },
+      "zh": {
+        "clips": 6,
+        "durationSeconds": 18.07,
+        "chineseReferenceChars": 72,
+        "chineseEditDistance": 17,
+        "chineseCER": 0.2361111111111111,
+        "englishReferenceWords": 0,
+        "englishEditDistance": 0,
+        "englishWER": null,
+        "rtf": 1.156
+      }
+    }
+  },
+  "fixed_language_and_prompt": {
+    "manifestSha256": "cf0d0e8f674ac0619744067227d7a490873d4df6ced0ba2cb3d4c4d22b983565",
+    "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "aggregates": {
+      "en": {
+        "clips": 6,
+        "durationSeconds": 20.036,
+        "chineseReferenceChars": 0,
+        "chineseEditDistance": 0,
+        "chineseCER": null,
+        "englishReferenceWords": 49,
+        "englishEditDistance": 19,
+        "englishWER": 0.3877551020408163,
+        "rtf": 1.222
+      },
+      "mixed": {
+        "clips": 6,
+        "durationSeconds": 28.36,
+        "chineseReferenceChars": 83,
+        "chineseEditDistance": 41,
+        "chineseCER": 0.4939759036144578,
+        "englishReferenceWords": 20,
+        "englishEditDistance": 16,
+        "englishWER": 0.8,
+        "rtf": 0.995
+      },
+      "zh": {
+        "clips": 6,
+        "durationSeconds": 18.07,
+        "chineseReferenceChars": 72,
+        "chineseEditDistance": 13,
+        "chineseCER": 0.18055555555555555,
+        "englishReferenceWords": 0,
+        "englishEditDistance": 0,
+        "englishWER": null,
+        "rtf": 1.42
+      }
+    }
+  },
+  "scope": "Same predetermined 18 public ASCEND clips; small Windows desktop experiment, with concurrent host tasks. No phone-speed claim or general accuracy claim.",
+  "prompt": "以下是普通话与英语的原声对话，中文使用简体，英文保持原文。",
+  "productDecision": "Do not apply the experimental prompt by default; mixed English errors increased."
+}

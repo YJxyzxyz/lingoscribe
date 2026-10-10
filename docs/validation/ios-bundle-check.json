@@ -1,11 +1,11 @@
 {
-  "sourceCommit": "f3bf4b433d4e1f4f25bf9364ca943c6439b9c11b",
+  "sourceCommit": "28b453d0571079b7ad7e14885fdb0e0a68ebf6c5",
   "bundleId": "io.github.yjxyzxyz.lingoscribe",
   "version": "0.1.0",
   "build": "1",
   "minimumOS": "15.0",
   "microphoneUsage": "聆写需要麦克风来录制你选择保存的音频。录音和转写只在本机处理。",
-  "nativeSha256": "68837280d5229f6786b0a9556156d3357f6f25b858492e53eb1843e42cea395b",
+  "nativeSha256": "423dd1c5072561655967f62c6e8f9af13d2270598cde9748601895d7d02de9bb",
   "nativeExports": {
     "ls_job_create_v2": true,
     "ls_job_run": true,
@@ -17,47 +17,6 @@
   },
   "detectorSha256": "2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987",
   "manifests": [
-    {
-      "path": "Frameworks/DKImagePickerController.framework/DKImagePickerController.bundle/PrivacyInfo.xcprivacy",
-      "declaration": {
-        "NSPrivacyTrackingDomains": [],
-        "NSPrivacyAccessedAPITypes": [
-          {
-            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-            "NSPrivacyAccessedAPITypeReasons": [
-              "3B52.1"
-            ]
-          }
-        ],
-        "NSPrivacyCollectedDataTypes": [],
-        "NSPrivacyTracking": false
-      }
-    },
-    {
-      "path": "Frameworks/DKPhotoGallery.framework/DKPhotoGallery.bundle/PrivacyInfo.xcprivacy",
-      "declaration": {
-        "NSPrivacyTrackingDomains": [],
-        "NSPrivacyAccessedAPITypes": [
-          {
-            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-            "NSPrivacyAccessedAPITypeReasons": [
-              "3B52.1"
-            ]
-          }
-        ],
-        "NSPrivacyCollectedDataTypes": [],
-        "NSPrivacyTracking": false
-      }
-    },
-    {
-      "path": "Frameworks/file_picker.framework/file_picker_ios_privacy.bundle/PrivacyInfo.xcprivacy",
-      "declaration": {
-        "NSPrivacyTrackingDomains": [],
-        "NSPrivacyAccessedAPITypes": [],
-        "NSPrivacyCollectedDataTypes": [],
-        "NSPrivacyTracking": false
-      }
-    },
     {
       "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
       "declaration": {
@@ -82,6 +41,15 @@
       }
     },
     {
+      "path": "Frameworks/file_picker.framework/file_picker_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
       "path": "Frameworks/offline_engine.framework/offline_engine_privacy.bundle/PrivacyInfo.xcprivacy",
       "declaration": {
         "NSPrivacyTracking": false,
@@ -97,22 +65,6 @@
         "NSPrivacyAccessedAPITypes": [],
         "NSPrivacyCollectedDataTypes": [],
         "NSPrivacyTracking": false
-      }
-    },
-    {
-      "path": "Frameworks/SDWebImage.framework/SDWebImage.bundle/PrivacyInfo.xcprivacy",
-      "declaration": {
-        "NSPrivacyTracking": false,
-        "NSPrivacyCollectedDataTypes": [],
-        "NSPrivacyTrackingDomains": [],
-        "NSPrivacyAccessedAPITypes": [
-          {
-            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
-            "NSPrivacyAccessedAPITypeReasons": [
-              "C617.1"
-            ]
-          }
-        ]
       }
     },
     {
@@ -150,15 +102,6 @@
       }
     },
     {
-      "path": "Frameworks/SwiftyGif.framework/SwiftyGif.bundle/PrivacyInfo.xcprivacy",
-      "declaration": {
-        "NSPrivacyTracking": false,
-        "NSPrivacyCollectedDataTypes": [],
-        "NSPrivacyTrackingDomains": [],
-        "NSPrivacyAccessedAPITypes": []
-      }
-    },
-    {
       "path": "PrivacyInfo.xcprivacy",
       "declaration": {
         "NSPrivacyTracking": false,
@@ -171,5 +114,9 @@
   "trackingDeclarations": [],
   "collectedDataDeclarations": [],
   "scope": "Static unsigned bundle inspection; not signed-device runtime or App Store acceptance",
+  "permissionLocalizations": {
+    "en": true,
+    "zh-Hans": true
+  },
   "passed": true
 }

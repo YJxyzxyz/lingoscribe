@@ -10,6 +10,7 @@ POM 元数据不是完整著作权/NOTICE 审计，最终包的嵌入代码和�
 原生声明同步打包并注册到应用许可页；可选后端的声明不表示移动端启用了这些后端。
 iOS CI 另从实际 CocoaPods acknowledgements 导出许可及 Podfile.lock；若出现 Flutter 插件清单以外的原生 Pod，会阻止检查通过，要求补齐打包声明。
 当前 iOS 文件导入仅编译 Document picker，关闭未使用的图库和 Apple Music 入口，避免引入 DKImagePickerController 依赖。
+实际 CocoaPods 文本存于 `licenses/IOS_PODS_NOTICES.txt` / `ios-pods-notices.json`，包含 Debug 测试插件的声明；发布包检查会另外要求不存在 `integration_test.framework`。
 
 | 组件 | 来源 | 许可 / 处理 |
 | --- | --- | --- |

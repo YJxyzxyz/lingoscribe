@@ -16,10 +16,22 @@ def flutter_root
   raise 'FLUTTER_ROOT missing from Generated.xcconfig'
 end
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+# Flutter 3.47's CocoaPods helper installs development plugins in every mode.
+# Keep the native integration-test harness available only in Debug builds.
+alias lingoscribe_all_flutter_plugins flutter_get_plugins_list
+def flutter_get_plugins_list(dependencies_hash, platform)
+  lingoscribe_all_flutter_plugins(dependencies_hash, platform).reject { |plugin| plugin['name'] == 'integration_test' }
+end
 flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  dependencies = flutter_parse_plugins_file(File.join(__dir__, '..', '.flutter-plugins-dependencies'))
+  qa_plugin = lingoscribe_all_flutter_plugins(dependencies, 'ios').find { |plugin| plugin['name'] == 'integration_test' }
+  if qa_plugin
+    File.symlink(qa_plugin['path'], File.join(__dir__, '.symlinks', 'plugins', 'integration_test'))
+    pod 'integration_test', path: '.symlinks/plugins/integration_test/ios', configurations: ['Debug']
+  end
   target 'RunnerTests' do
     inherit! :search_paths
   end

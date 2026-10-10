@@ -11,6 +11,7 @@
 - Android 原生播放器已验证播放进度推进、暂停和拖动定位：实际进度从 00:20 定位至 00:35；模拟器关闭音频输出，不声称已检验听感。
 - 原生 Android 集成测试已通过真实模型导入、归一化、isolate 推理、时间戳、数据库校对原文及标记检查。11 秒英文样例在此模拟器 Debug 构建中约 135 秒完成；不能当作 Release 或实际手机的性能。
 - 实际 Android 解码通过 44.1/48 kHz 双声道 WAV、MP3、M4A、FLAC、Opus/OGG：归一化为 PCM16/单声道/16 kHz，时长差小于 200 ms，与原始语音的波形相关性大于 0.9；损坏输入拒绝并清理输出。数据见 `validation/android-native-integration.json`。
+- iOS 18.5 / iPhone 16 模拟器真实运行也通过上述六种编码（含本次运行支持的 OGG）、模型校验、isolate 推理、时间戳及校对持久化，见 `validation/ios-native-integration.json`。不同 iOS 系统的解码支持仍需验收；不构成 iPhone 真机性能证据。
 - 原生 C++ Windows 烟测：真实加载官方 Base Q5 模型，转写上游 11 秒英文音频。报告见 `validation/native-smoke-windows.json`，包含模型及音频 SHA-256、实际文本、时间戳与取消/坏文件检查。
 - Windows 桌面烟测的速度仅适用于该台桌面机，不代表 Android / iPhone 速度，也不构成中文准确率报告。
 - 界面截图来自实际 Flutter 渲染；测试可加载本机字体，不打包该字体。需在原生模拟器/真机复核字体、图标和系统控件。
@@ -37,6 +38,7 @@ python tools/native_smoke.py --library <原生动态库> --model <官方模型.b
 实际测试 split 只有两个说话人，选出 18 条、约 66.5 秒音频。此样本不能代表真实用户、长会议或整体准确率。
 两模型实际推理的聚合指标见 `validation/ascend-regression-evaluation.json`：Small 的中文组原始 CER 23.6%，混合组原始中文 CER 47.0%、英文 WER 65.0%；错误包含简繁体差异、语气词省略、英文词误识别和缩写分词差异。
 这些结果显示混合自然对话仍需优化，不能以两个合成片段的良好结果宣传高准确率。后续调参需保留当前基线和失败样例，并用额外语料验证，防止只适配此子集。
+另行试验固定语言与“简体中文、保留英文”提示：固定语言没有降低本子集的错误数；提示虽降低纯中文原始 CER，却使混合英文 WER 从 65% 增至 80%，还出现新的漏词和误识别。因此没有将该提示设为产品默认值。比较记录见 `validation/ascend-prompt-comparison.json`，桌面运行时间受同时执行任务影响，不作为速度改善结论。
 
 ```sh
 pip install -r tools/corpus-requirements.txt

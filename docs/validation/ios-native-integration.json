@@ -1,15 +1,15 @@
 {
-  "platform": "android",
+  "platform": "ios",
   "buildMode": "debug",
   "fixtureKind": "upstream",
   "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
   "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
-  "elapsedSeconds": 116.178,
+  "elapsedSeconds": 3.977,
   "durationMs": 11000,
   "segments": [
     {
       "startMs": 0,
-      "endMs": 10580,
+      "endMs": 10640,
       "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
       "originalText": null,
       "bookmarked": false
@@ -27,39 +27,38 @@
   "codecChecks": [
     {
       "format": "stereo48.wav",
-      "durationMs": 11000,
-      "signalCorrelation": 0.9999998412727191
+      "durationMs": 10999,
+      "signalCorrelation": 0.9633573820018352
     },
     {
       "format": "stereo44.wav",
-      "durationMs": 11000,
-      "signalCorrelation": 0.9999998616663192
+      "durationMs": 10998,
+      "signalCorrelation": 0.9889861863807058
     },
     {
       "format": "sample.mp3",
-      "durationMs": 11000,
-      "signalCorrelation": 0.9999987269504103
+      "durationMs": 10999,
+      "signalCorrelation": 0.9633491461814051
     },
     {
       "format": "sample.m4a",
-      "durationMs": 11008,
-      "signalCorrelation": 0.9999972363229749
+      "durationMs": 10999,
+      "signalCorrelation": 0.9633623251242475
     },
     {
       "format": "sample.flac",
-      "durationMs": 11000,
-      "signalCorrelation": 0.9999998412727191
+      "durationMs": 11024,
+      "signalCorrelation": 0.9633573133886704
     },
     {
       "format": "sample.ogg",
-      "durationMs": 11013,
-      "signalCorrelation": 0.9990501126571459
+      "durationMs": 10999,
+      "signalCorrelation": 0.961795635444543
     }
   ],
-  "deviceSerial": "emulator-5560",
-  "androidSdk": "35",
-  "abi": "x86_64",
-  "scope": "Dedicated QA device; debug timing is not a release or physical-phone benchmark",
+  "runtime": "18.5",
+  "simulatorDevice": "iPhone 16",
+  "scope": "Real iOS Simulator decoding and inference; not physical iPhone performance or store acceptance",
   "testStatus": {
     "passed": true,
     "testCount": 2,
