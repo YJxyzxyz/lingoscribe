@@ -83,6 +83,8 @@ void main() {
               .join(' '),
           'elapsedSeconds': clock.elapsedMilliseconds / 1000,
           'speechIntervals': detected['segments'],
+          'inputContextPolicy': result['inputContextPolicy'],
+          'decodedWindows': result['decodedWindows'],
         });
         // Progress only; reference/hypothesis text stays in ignored local build/.
         // ignore: avoid_print

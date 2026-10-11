@@ -78,7 +78,7 @@ void main() {
                 'sqlite_persistence',
               ],
               'scope':
-                  'Native virtual-device microphone lifecycle; not human voice quality or a physical microphone test',
+                  'Native microphone lifecycle; device type is recorded by the host runner. Not human voice quality or power measurement',
             }),
             flush: true,
           );

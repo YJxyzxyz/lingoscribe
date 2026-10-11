@@ -5,6 +5,7 @@ import 'dart:isolate';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa;
 import 'offline_engine.dart' show EngineException;
 import 'pcm_wave.dart';
+import 'qwen_windows.dart';
 
 class QwenEngine {
   bool _running = false, _cancelled = false;
@@ -114,8 +115,9 @@ Future<void> _qwenWorker(Map<String, dynamic> args) async {
       throw const FormatException('Normalized WAV duration changed');
     }
     final intervals = (args['intervals'] as List).cast<Map<String, dynamic>>();
+    final windows = qwenDecodeWindows(intervals, wave.durationMs);
     final segments = <Map<String, dynamic>>[];
-    if (intervals.isNotEmpty) {
+    if (windows.isNotEmpty) {
       // The Windows test host may resolve the OS's older ONNX runtime before
       // PATH. Preload the matching package runtime before its C API library.
       if (Platform.isWindows && args['library'] != null) {
@@ -143,15 +145,10 @@ Future<void> _qwenWorker(Map<String, dynamic> args) async {
         ),
       );
       await checkpoint();
-      var previousEnd = 0;
-      for (final interval in intervals) {
+      for (final window in windows) {
         await checkpoint();
-        final start = interval['startMs'] as int,
-            end = interval['endMs'] as int;
-        if (start < previousEnd) {
-          throw const FormatException('Overlapping speech intervals');
-        }
-        final samples = wave.readRange(start, end);
+        final start = window.startMs, end = window.endMs;
+        final samples = wave.readRange(window.audioStartMs, window.audioEndMs);
         final stream = recognizer.createStream();
         String text;
         try {
@@ -172,7 +169,6 @@ Future<void> _qwenWorker(Map<String, dynamic> args) async {
         if (text.isNotEmpty) {
           segments.add({'startMs': start, 'endMs': end, 'text': text});
         }
-        previousEnd = end;
         events.send({'type': 'progress', 'value': end / wave.durationMs});
       }
     }
@@ -183,6 +179,16 @@ Future<void> _qwenWorker(Map<String, dynamic> args) async {
         'durationMs': wave.durationMs,
         'segments': segments,
         'timestampSource': 'speech_intervals',
+        'inputContextPolicy': 'qwen_context_v1',
+        'decodedWindows': [
+          for (final window in windows)
+            {
+              'startMs': window.startMs,
+              'endMs': window.endMs,
+              'audioStartMs': window.audioStartMs,
+              'audioEndMs': window.audioEndMs,
+            },
+        ],
       },
     };
   } catch (error) {

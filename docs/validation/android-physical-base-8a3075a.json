@@ -1,0 +1,134 @@
+{
+  "platform": "android",
+  "buildMode": "debug",
+  "fixtureKind": "upstream",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "elapsedSeconds": 12.894,
+  "durationMs": 11000,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 10580,
+      "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "model_import_hash",
+    "native_normalization",
+    "isolate_asr",
+    "timestamps",
+    "sqlite_persistence",
+    "original_text_retained",
+    "bookmark"
+  ],
+  "codecChecks": [
+    {
+      "format": "stereo48.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "stereo44.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998616663192
+    },
+    {
+      "format": "sample.mp3",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999987269504103
+    },
+    {
+      "format": "sample.m4a",
+      "durationMs": 11008,
+      "signalCorrelation": 0.9999972366165762
+    },
+    {
+      "format": "sample.flac",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "sample.ogg",
+      "durationMs": 11013,
+      "signalCorrelation": 0.9990501126571459
+    }
+  ],
+  "microphoneChecks": {
+    "durationMs": 1760,
+    "bytes": 56364,
+    "pausedBytes": 28204,
+    "checks": [
+      "native_capture",
+      "pause_stops_file_growth",
+      "resume_grows_file",
+      "wav_duration",
+      "sqlite_persistence"
+    ],
+    "scope": "Real native microphone lifecycle on a physical phone; not human voice accuracy or power measurement"
+  },
+  "deviceSerial": "redacted",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "apkSha256": "9dce8494884f074916b1797024018cd9743f00d69fa0111465c696df7a5056b4",
+  "physicalDevice": true,
+  "deviceModel": "V2073A",
+  "androidRelease": "13",
+  "androidSdk": "33",
+  "abi": "arm64-v8a",
+  "scope": "Real native pipeline on a physical phone; debug timing is not a release performance or power benchmark",
+  "testStatus": {
+    "passed": true,
+    "testCount": 3,
+    "failures": []
+  },
+  "memory": {
+    "sampleIntervalSeconds": 5,
+    "samples": [
+      {
+        "elapsedSeconds": 4.047,
+        "pssKiB": 245793,
+        "rssKiB": 363500
+      },
+      {
+        "elapsedSeconds": 11.391,
+        "pssKiB": 319474,
+        "rssKiB": 440488
+      },
+      {
+        "elapsedSeconds": 18.703,
+        "pssKiB": 344405,
+        "rssKiB": 463780
+      },
+      {
+        "elapsedSeconds": 26.125,
+        "pssKiB": 505216,
+        "rssKiB": 618012
+      },
+      {
+        "elapsedSeconds": 33.547,
+        "pssKiB": 361635,
+        "rssKiB": 474400
+      }
+    ],
+    "peakSampledPssKiB": 505216,
+    "peakSampledRssKiB": 618012,
+    "scope": "ADB dumpsys samples across the complete debug integration run including fixture import; sampled maxima can miss short peaks. Not power measurement."
+  },
+  "deviceId": "physical-android-01",
+  "provenance": {
+    "applicationSourceCommit": "8a3075a69995586ff8e0b1e8be33c6315d90a3d2",
+    "nativeSourceCommit": "1c07d6ca9c7f042e14b455400cf9e81dc81b13c3",
+    "nativeBuildWorkflowRun": 38106497266,
+    "nativeCacheSourceInputsAndLibraryHashesVerified": true
+  },
+  "observations": {
+    "pageSizeBytes": 4096,
+    "socModel": "SM7250",
+    "charging": true,
+    "batteryLevelPercent": 100,
+    "batteryTemperatureCelsius": 26.7,
+    "scope": "Read-only snapshot after the Base run; not energy use or processor thermal measurement"
+  }
+}

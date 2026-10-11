@@ -26,7 +26,8 @@ for output in actual['outputs']:
         'audioSha256': clip['sha256'], 'chineseReferenceChars': len(reference_cn),
         'chineseEditDistance': distance(reference_cn, actual_cn), 'englishReferenceWords': len(reference_en),
         'englishEditDistance': distance(reference_en, actual_en), 'numericTokensMatch': reference_numbers == actual_numbers,
-        'speechIntervals': output['speechIntervals'], 'elapsedSeconds': output['elapsedSeconds']})
+        'speechIntervals': output['speechIntervals'], 'elapsedSeconds': output['elapsedSeconds'],
+        **({'inputContextPolicy': output['inputContextPolicy'], 'decodedWindows': output['decodedWindows']} if output.get('inputContextPolicy') else {})})
 groups = {}
 for language in sorted({row['language'] for row in rows}):
     selected = [row for row in rows if row['language'] == language]

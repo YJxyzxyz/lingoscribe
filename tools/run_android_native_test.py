@@ -110,6 +110,7 @@ while time.monotonic() - started < (900 if args.qwen_directory else 600):
             codecs = adb('exec-out', 'run-as', package, 'cat', 'files/qa/codec-result.json', capture_output=True).stdout
             report['codecChecks'] = json.loads(codecs)
             report['microphoneChecks'] = json.loads(adb('exec-out', 'run-as', package, 'cat', 'files/qa/microphone-result.json', capture_output=True).stdout)
+            report['microphoneChecks']['scope'] = 'Real native microphone lifecycle on ' + ('a dedicated emulator' if emulator else 'a physical phone') + '; not human voice accuracy or power measurement'
             assert report['modelSha256'] == expected
         assert report['audioSha256'] == hashlib.sha256(Path(args.audio).read_bytes()).hexdigest()
         report['deviceSerial'] = args.device
