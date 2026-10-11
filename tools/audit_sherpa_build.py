@@ -33,7 +33,8 @@ for folder in folders:
         texts.append(f'{folder.name} / {notice.name}\n{text}\n')
         if folder.name != 'onnxruntime-src':
             packaged = (ROOT / 'apps/mobile/assets/licenses/SHERPA_NOTICES.txt').read_text(encoding='utf-8')
-            assert text.strip() in packaged, f'Notice must be packaged in the app: {folder.name}/{notice.name}'
+            normalized = '\n'.join(line.rstrip() for line in text.splitlines()).strip()
+            assert normalized in packaged, f'Notice must be packaged in the app: {folder.name}/{notice.name}'
 output = ROOT / args.output
 output.mkdir(parents=True, exist_ok=True)
 (output / 'SHERPA_NOTICES.txt').write_text('\n\n'.join(texts), encoding='utf-8')
