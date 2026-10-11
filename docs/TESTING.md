@@ -67,7 +67,7 @@ python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/
 ```
 
 该脚本默认只安装独立包名 `io.github.yjxyzxyz.lingoscribe.qa`（桌面名称“聆写 QA”），通过 `run-as` 写入此安装的私有夹具，无需 root，不使用生产资料库。运行前会用 Android SDK 的 `aapt` 检查 APK 包名和 Debug 标志；设置 `ANDROID_SDK_ROOT` 或通过 `--aapt` 指定工具。物理手机禁止使用生产包名进行测试夹具注入。旧 CI 的生产包名测试入口仅允许在专用模拟器上显式选择。日志只读取当前测试进程，不清除手机全局日志。
-连接手机后先运行 `python tools/android_device_preflight.py --device <序列号>`，只读取机型、系统、架构、总/可用内存、剩余空间和已有聆写包名。原生测试脚本每五秒采样 QA 进程 PSS/RSS，记录采样最大值；这覆盖整段 Debug 流程，不能代表精确瞬时峰值、发布速度或耗电。录音、编码与推理测试没有 WidgetTester 界面，使用 `integration_test/native_test.dart` 的纯原生服务入口，仍通过集成测试绑定记录真实异常/断言；界面和无障碍单独验收。
+连接手机后先运行 `python tools/android_device_preflight.py --device <序列号>`，只读取机型、系统、架构、总/可用内存、剩余空间和已有聆写包名。原生测试脚本每五秒采样 QA 进程 PSS/RSS，记录采样最大值；这覆盖整段 Debug 流程，不能代表精确瞬时峰值、发布速度或耗电。录音、编码与推理测试没有 WidgetTester 界面，使用 `integration_test/native_service_harness.dart` 的纯原生服务入口，仍通过集成测试绑定记录真实异常/断言；界面和无障碍单独验收。
 当前 Android 测试入口增加真实原生麦克风采集、暂停/继续及 WAV 保存断言；脚本会在指定 QA 安装上预授予麦克风权限。虚拟麦克风结果不代表真实人声或物理手机麦克风质量。
 `android-runtime` CI 在专用 Linux/KVM 模拟器上已通过此入口，见 `validation/android-native-ci-integration.json`。首次未优化的 Debug 原生运行中，11 秒英文推理为约 292 秒；后续 Debug 内核启用 `-O3` 并保留调试符号。Android 发布构建使用已优化的 `RelWithDebInfo` 配置（本机实际编译指令为 `-O2`），该变更不修改发布配置。不同宿主和构建模式的时间不能作为手机速度比较。
 FFmpeg 仅用于测试工具生成不同编码的真实音频夹具，不进入 App；可通过 `--ffmpeg` 指定本机路径。

@@ -9,7 +9,7 @@ import 'package:lingoscribe/domain/transcript.dart';
 import 'package:lingoscribe/services/model_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'native_test.dart';
+import 'native_service_harness.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();

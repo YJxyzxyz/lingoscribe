@@ -12,7 +12,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:offline_engine/offline_engine.dart';
 import 'package:flutter/services.dart';
-import 'native_test.dart';
+import 'native_service_harness.dart';
 
 // Inject test media into this test installation's private files/qa directory.
 // Fixtures are not bundled into the production application and no inference is mocked.
