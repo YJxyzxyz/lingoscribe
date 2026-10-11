@@ -20,6 +20,7 @@
 - 已扩大固定语料到中文、英文、混合各 30 条，约 316.6 秒；仍为两位说话人，不是独立人群验收。Small 混合原始中文 CER 51.4% / 英文 WER 73.6%，准确率目标尚未达到。
 - `codex/qwen-offline` 草案分支已接入 Qwen3-ASR int8：六文件原子安装、摘要校验、真实 VAD、有界音频读取、原生 Dart 工作线程推理、协作取消和语音段时间戳；模型约 987 MB，首次主动下载或导入，不随 APK 打包。两端从固定 ASR-only 源码构建，关闭 TTS 及其不同许可依赖；许可通知与真实构建审核通过。该分支尚未合并正式主线，见 `QWEN_INTEGRATION.md` 和 PR #1。
 - 8a3075a 的双平台源码构建、发布包静态/许可检查及两端 Whisper/Qwen 真实模拟器管线全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38108630652)。iOS 测试入口修复已实际验证，四份带来源摘要的原生报告保存在 `validation/*-native-8a3075a.json`。这不是物理 iPhone 验收。
+- 70da5ab 的 51 项质量检查、两端构建及 Whisper/Qwen 真实模拟器管线也全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38132712801)，覆盖上下文与精确尾部读入。随后核查发现默认 iOS 工具链 Xcode 16.4 / SDK 18.5 不满足当前 Apple 上传要求；已明确配置 Xcode 26.3，并在实际产物读取编译 SDK/Xcode 加入门槛。旧包经新检查拒绝，升级工具链的完整构建仍待实际 CI 结果。
 - Qwen 的真实 Dart/VAD 开发宿主路径，在原两位说话人的 90 条上混合原始中文 CER 17.5% / 英文 WER 31.9%；新增三位说话人的 90 条为 26.6% / 44.3%。完整原始计分均保留，覆盖与错误率未满足 `COMMERCIAL_ACCEPTANCE.md`。整段音频诊断更好，但仍未达到验收，且复用诊断语料不能作为新独立验收集。
 - 94150a8 的上下文策略与精确 PCM 读入已完成同一 180 条真实 Dart 回归：合并五位说话人后，纯中文 CER 5.9% → 5.6%、纯英文 WER 21.5% → 18.7%，混合中文 CER 22.0% → 17.2%、英文 WER 40.4% → 35.7%；原先一批混合英文略退步，全部条目保留。见 `validation/qwen-context-exact-comparison.json`。模型六文件摘要再次核对通过；该集已用于诊断与回归，不是新的独立商业验收集，仍未达到准确率及覆盖门槛。先前 cbfde89/旧读取策略报告保留。
 - SenseVoice 对照研究在该小样本表现更好，尚未接入 App；需扩展语料、验证双平台性能及单独确认模型权重商业再分发许可，见 `MODEL_EVALUATION.md`。
