@@ -12,6 +12,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:offline_engine/offline_engine.dart';
 import 'package:flutter/services.dart';
+import 'native_test.dart';
 
 // Inject test media into this test installation's private files/qa directory.
 // Fixtures are not bundled into the production application and no inference is mocked.
@@ -37,9 +38,9 @@ void main() {
     }),
   );
   if (Platform.isAndroid) {
-    testWidgets(
+    nativeTest(
       'native microphone capture pauses, resumes and saves actual WAV',
-      (tester) async {
+      () async {
         final app = await AppController.create();
         try {
           await app.startRecording();
@@ -91,102 +92,105 @@ void main() {
       timeout: const Timeout(Duration(minutes: 1)),
     );
   }
-  testWidgets('native codecs preserve real audio, downmix and sample rate', (
-    tester,
-  ) async {
-    final qa = p.join((await getApplicationSupportDirectory()).path, 'qa');
-    final engine = OfflineEngine();
-    List<double> pcm(Uint8List bytes) {
-      final view = ByteData.sublistView(bytes);
-      var offset = 12;
-      while (offset + 8 <= bytes.length) {
-        final size = view.getUint32(offset + 4, Endian.little);
-        if (String.fromCharCodes(bytes.sublist(offset, offset + 4)) == 'data') {
-          return List<double>.generate(
-            size ~/ 2,
-            (i) => view.getInt16(offset + 8 + i * 2, Endian.little) / 32768,
-          );
+  nativeTest(
+    'native codecs preserve real audio, downmix and sample rate',
+    () async {
+      final qa = p.join((await getApplicationSupportDirectory()).path, 'qa');
+      final engine = OfflineEngine();
+      List<double> pcm(Uint8List bytes) {
+        final view = ByteData.sublistView(bytes);
+        var offset = 12;
+        while (offset + 8 <= bytes.length) {
+          final size = view.getUint32(offset + 4, Endian.little);
+          if (String.fromCharCodes(bytes.sublist(offset, offset + 4)) ==
+              'data') {
+            return List<double>.generate(
+              size ~/ 2,
+              (i) => view.getInt16(offset + 8 + i * 2, Endian.little) / 32768,
+            );
+          }
+          offset += 8 + size + size % 2;
         }
-        offset += 8 + size + size % 2;
+        throw const FormatException('Missing audio data');
       }
-      throw const FormatException('Missing audio data');
-    }
 
-    final reference = pcm(await File(p.join(qa, 'sample.wav')).readAsBytes());
-    final reports = <Map<String, Object>>[];
-    for (final name in [
-      'stereo48.wav',
-      'stereo44.wav',
-      'sample.mp3',
-      'sample.m4a',
-      'sample.flac',
-      'sample.ogg',
-    ]) {
-      final output = p.join(qa, '$name.normalized.wav');
-      expect(await File(p.join(qa, name)).exists(), true, reason: name);
-      int duration;
-      try {
-        duration = await engine.normalize(p.join(qa, name), output);
-      } on PlatformException catch (error) {
-        // OGG container support is platform-dependent; an explicit rejection is required.
-        if (Platform.isIOS &&
-            name == 'sample.ogg' &&
-            error.code == 'decode' &&
-            error.message == 'No supported audio track') {
-          expect(await File(output).exists(), false);
-          reports.add({
-            'format': name,
-            'supported': false,
-            'behavior': 'explicit_unsupported_audio_track',
-          });
-          continue;
+      final reference = pcm(await File(p.join(qa, 'sample.wav')).readAsBytes());
+      final reports = <Map<String, Object>>[];
+      for (final name in [
+        'stereo48.wav',
+        'stereo44.wav',
+        'sample.mp3',
+        'sample.m4a',
+        'sample.flac',
+        'sample.ogg',
+      ]) {
+        final output = p.join(qa, '$name.normalized.wav');
+        expect(await File(p.join(qa, name)).exists(), true, reason: name);
+        int duration;
+        try {
+          duration = await engine.normalize(p.join(qa, name), output);
+        } on PlatformException catch (error) {
+          // OGG container support is platform-dependent; an explicit rejection is required.
+          if (Platform.isIOS &&
+              name == 'sample.ogg' &&
+              error.code == 'decode' &&
+              error.message == 'No supported audio track') {
+            expect(await File(output).exists(), false);
+            reports.add({
+              'format': name,
+              'supported': false,
+              'behavior': 'explicit_unsupported_audio_track',
+            });
+            continue;
+          }
+          rethrow;
         }
-        rethrow;
-      }
-      expect((duration - 11000).abs(), lessThan(200), reason: name);
-      final bytes = await File(output).readAsBytes();
-      final header = ByteData.sublistView(bytes);
-      expect(header.getUint32(24, Endian.little), 16000, reason: name);
-      expect(header.getUint16(22, Endian.little), 1, reason: name);
-      expect(header.getUint16(34, Endian.little), 16, reason: name);
-      final decoded = pcm(bytes);
-      double best = 0;
-      // Codec padding may shift the waveform. Check the real signal, not a mock duration.
-      for (var shift = -3200; shift <= 3200; shift += 16) {
-        double dot = 0, left = 0, right = 0;
-        for (
-          var i = 3200;
-          i < min(reference.length, decoded.length) - 3200;
-          i += 8
-        ) {
-          final a = reference[i], b = decoded[i + shift];
-          dot += a * b;
-          left += a * a;
-          right += b * b;
+        expect((duration - 11000).abs(), lessThan(200), reason: name);
+        final bytes = await File(output).readAsBytes();
+        final header = ByteData.sublistView(bytes);
+        expect(header.getUint32(24, Endian.little), 16000, reason: name);
+        expect(header.getUint16(22, Endian.little), 1, reason: name);
+        expect(header.getUint16(34, Endian.little), 16, reason: name);
+        final decoded = pcm(bytes);
+        double best = 0;
+        // Codec padding may shift the waveform. Check the real signal, not a mock duration.
+        for (var shift = -3200; shift <= 3200; shift += 16) {
+          double dot = 0, left = 0, right = 0;
+          for (
+            var i = 3200;
+            i < min(reference.length, decoded.length) - 3200;
+            i += 8
+          ) {
+            final a = reference[i], b = decoded[i + shift];
+            dot += a * b;
+            left += a * a;
+            right += b * b;
+          }
+          if (left > 0 && right > 0) best = max(best, dot / sqrt(left * right));
         }
-        if (left > 0 && right > 0) best = max(best, dot / sqrt(left * right));
+        expect(best, greaterThan(.9), reason: '$name signal correlation');
+        reports.add({
+          'format': name,
+          'durationMs': duration,
+          'signalCorrelation': best,
+        });
       }
-      expect(best, greaterThan(.9), reason: '$name signal correlation');
-      reports.add({
-        'format': name,
-        'durationMs': duration,
-        'signalCorrelation': best,
-      });
-    }
-    final invalid = File(p.join(qa, 'not-audio.wav'));
-    await invalid.writeAsString('invalid audio');
-    await expectLater(
-      engine.normalize(invalid.path, p.join(qa, 'invalid-out.wav')),
-      throwsA(isA<Exception>()),
-    );
-    expect(await File(p.join(qa, 'invalid-out.wav')).exists(), false);
-    await File(
-      p.join(qa, 'codec-result.json'),
-    ).writeAsString(jsonEncode(reports), flush: true);
-  }, timeout: const Timeout(Duration(minutes: 2)));
-  testWidgets(
+      final invalid = File(p.join(qa, 'not-audio.wav'));
+      await invalid.writeAsString('invalid audio');
+      await expectLater(
+        engine.normalize(invalid.path, p.join(qa, 'invalid-out.wav')),
+        throwsA(isA<Exception>()),
+      );
+      expect(await File(p.join(qa, 'invalid-out.wav')).exists(), false);
+      await File(
+        p.join(qa, 'codec-result.json'),
+      ).writeAsString(jsonEncode(reports), flush: true);
+    },
+    timeout: const Timeout(Duration(minutes: 2)),
+  );
+  nativeTest(
     'native decoding, verified model import, isolate inference and persisted transcript',
-    (tester) async {
+    () async {
       final app = await AppController.create();
       try {
         final qa = p.join(p.dirname(app.root.path), 'qa');

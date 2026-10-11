@@ -47,7 +47,9 @@ void main() {
     'production Dart worker and native VAD on the fixed licensed 90-clip corpus',
     () async {
       final root = Platform.environment['LINGO_RESEARCH_ROOT']!;
-      final directory = '$root/corpus/ascend-expanded';
+      final directory =
+          Platform.environment['LINGO_CORPUS_DIRECTORY'] ??
+          '$root/corpus/ascend-expanded';
       final manifest =
           jsonDecode(await File('$directory/manifest.json').readAsString())
               as Map<String, dynamic>;
@@ -88,7 +90,10 @@ void main() {
           'Native corpus ${outputs.length}/${(manifest['clips'] as List).length}',
         );
       }
-      await File('$root/qwen-dart-native-outputs.json').writeAsString(
+      await File(
+        Platform.environment['LINGO_CORPUS_OUTPUT'] ??
+            '$root/qwen-dart-native-outputs.json',
+      ).writeAsString(
         jsonEncode({
           'manifestSha256':
               (await sha256

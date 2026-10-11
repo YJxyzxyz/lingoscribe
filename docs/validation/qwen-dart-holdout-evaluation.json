@@ -1,0 +1,1704 @@
+{
+  "manifestSha256": "a06d19a8a0dd809cce512f54246a650f48bb091fb6de82a7e66b9fdbe6718665",
+  "scope": "Production Dart worker and GGML VAD on Windows using the explicit upstream reference runtime. Not shipped Android/iOS binaries or phone performance.",
+  "normalization": "Same NFKC/Han-CER/Latin-WER rules as evaluate_transcription.py; no script conversion",
+  "corpusSelection": "First 30 rows per language with duration >= 2 seconds; round-robin across first up to three numeric speaker IDs in validation split, preserving source row order per speaker; exhausted speakers skipped; chosen before inference",
+  "corpusAttribution": "HKUST CAiRE; Lovenia et al., ASCEND (LREC 2022)",
+  "aggregates": {
+    "en": {
+      "clips": 30,
+      "chineseCER": null,
+      "englishWER": 0.20353982300884957,
+      "chineseReferenceChars": 0,
+      "englishReferenceWords": 339
+    },
+    "mixed": {
+      "clips": 30,
+      "chineseCER": 0.26605504587155965,
+      "englishWER": 0.4430379746835443,
+      "chineseReferenceChars": 327,
+      "englishReferenceWords": 158
+    },
+    "zh": {
+      "clips": 30,
+      "chineseCER": 0.03764320785597381,
+      "englishWER": 1.5,
+      "chineseReferenceChars": 611,
+      "englishReferenceWords": 2
+    }
+  },
+  "clips": [
+    {
+      "id": "ascend-00345",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "bc2f68a03b6186f3c4f8a7c7e0a993bf6149783087ed2bf0cc2e6af3a87f5bbf",
+      "chineseReferenceChars": 45,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 10430
+        }
+      ],
+      "elapsedSeconds": 6.607
+    },
+    {
+      "id": "ascend-00109",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "5e15b77ec80cd5b29c4b68d2c991af3af4d43406f1dc333f63527ec1347ab4e8",
+      "chineseReferenceChars": 29,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 6940
+        }
+      ],
+      "elapsedSeconds": 5.458
+    },
+    {
+      "id": "ascend-00006",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "7f2e9c012aac32883ac32e78b902b39ed6ef7446092f9acda68bbad6e9c85d9f",
+      "chineseReferenceChars": 6,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2680
+        }
+      ],
+      "elapsedSeconds": 4.719
+    },
+    {
+      "id": "ascend-00351",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "568d8097c6a563ae3f00f09cb804d66eda1d384595d491c5d129e057f7e5c394",
+      "chineseReferenceChars": 55,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 10290
+        }
+      ],
+      "elapsedSeconds": 6.183
+    },
+    {
+      "id": "ascend-00113",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "b9bace25ec0865691fcccf2900cc1a7fd61af7667e81bf004f2fdcd53eda5441",
+      "chineseReferenceChars": 27,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 1170
+        },
+        {
+          "startMs": 1420,
+          "endMs": 5660
+        }
+      ],
+      "elapsedSeconds": 5.377
+    },
+    {
+      "id": "ascend-00009",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "b0086a8dc6eae6a6716284029628d43af1cf5116ac227d345a66269738bb0559",
+      "chineseReferenceChars": 8,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2140
+        }
+      ],
+      "elapsedSeconds": 4.549
+    },
+    {
+      "id": "ascend-00352",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "2ed66b2d23d088226749f1dbec5fa12978bded5e7b861bc124e749b9e90f625a",
+      "chineseReferenceChars": 28,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 6890
+        }
+      ],
+      "elapsedSeconds": 7.427
+    },
+    {
+      "id": "ascend-00114",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "5a6d4bdfd6476410c45d9e40ff1d9b9a2767490b709082af5c6af9fe97ee813f",
+      "chineseReferenceChars": 20,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3190
+        }
+      ],
+      "elapsedSeconds": 6.06
+    },
+    {
+      "id": "ascend-00012",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "4114a750a815d1f82746022bb2cf58021f9ab0255bd3c364a80dc721719b0127",
+      "chineseReferenceChars": 11,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2620
+        }
+      ],
+      "elapsedSeconds": 4.829
+    },
+    {
+      "id": "ascend-00360",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "a27b87236d335101dced522e59b2e8092aea7212cc4a688a33b2df2e796605f4",
+      "chineseReferenceChars": 36,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 8510
+        }
+      ],
+      "elapsedSeconds": 5.486
+    },
+    {
+      "id": "ascend-00115",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "e35ed63aff7a0b4dd01a29221efd1874f0be4ba0878bfe109ff567006785b975",
+      "chineseReferenceChars": 8,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2370
+        }
+      ],
+      "elapsedSeconds": 4.372
+    },
+    {
+      "id": "ascend-00013",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "c0e7577ac999185bb2856aa2e14bd27acbd8dd125e4bd27f5f825e8fbd718215",
+      "chineseReferenceChars": 7,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2720
+        }
+      ],
+      "elapsedSeconds": 4.39
+    },
+    {
+      "id": "ascend-00361",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "a6daab9cb7ce4912b5a786f21bd4e376e4d979e5c2b67f4f92571651df42e8e4",
+      "chineseReferenceChars": 23,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 4840
+        }
+      ],
+      "elapsedSeconds": 4.881
+    },
+    {
+      "id": "ascend-00116",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "bc6bc195c2c30d765cd4b9c588e60ec05e6dfe8f8bc54cb0c2fc1f2cade12e3a",
+      "chineseReferenceChars": 18,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3510
+        }
+      ],
+      "elapsedSeconds": 4.485
+    },
+    {
+      "id": "ascend-00014",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "16330862b4119db5e9106a9bceeb7ac8a6ec88db71873c255e92c840cc94c3c4",
+      "chineseReferenceChars": 13,
+      "chineseEditDistance": 4,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3130
+        }
+      ],
+      "elapsedSeconds": 4.368
+    },
+    {
+      "id": "ascend-00362",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "4038b0f807af87d815c36d811601d4bbf2ed62e3bc4d95799420f30309758469",
+      "chineseReferenceChars": 20,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 3650
+        }
+      ],
+      "elapsedSeconds": 4.693
+    },
+    {
+      "id": "ascend-00117",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "ec18d162502bb89b412c64ea46a28c9b51169703558ad1f566e4e11f7ef3c6d4",
+      "chineseReferenceChars": 26,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2030
+        },
+        {
+          "startMs": 2220,
+          "endMs": 5850
+        }
+      ],
+      "elapsedSeconds": 5.396
+    },
+    {
+      "id": "ascend-00019",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "927b936bbcc7b4b0fd41aaa709abc8545b37a36043d9fef6a3ca7b154f26366b",
+      "chineseReferenceChars": 14,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3959
+        }
+      ],
+      "elapsedSeconds": 4.445
+    },
+    {
+      "id": "ascend-00364",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "98e611b0542b8edbb13033c250c018d2d64ffa3a310a8d68d119a1fc70133739",
+      "chineseReferenceChars": 9,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 940
+        },
+        {
+          "startMs": 1230,
+          "endMs": 2870
+        }
+      ],
+      "elapsedSeconds": 4.674
+    },
+    {
+      "id": "ascend-00118",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "380472cdb5095213c382760f5b2868c1fddb7c1df14cae171633278cbc7facae",
+      "chineseReferenceChars": 17,
+      "chineseEditDistance": 4,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2960
+        }
+      ],
+      "elapsedSeconds": 4.449
+    },
+    {
+      "id": "ascend-00020",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "6c593280fd047259a0d90ac763e833ea572d9d599806fe044007e5434a2b234f",
+      "chineseReferenceChars": 14,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 3480
+        }
+      ],
+      "elapsedSeconds": 4.532
+    },
+    {
+      "id": "ascend-00367",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "eccfea432823e7dd8b574ffa4ab186ede9e5a2967ac3d9edc3aaf30204583530",
+      "chineseReferenceChars": 10,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 2300
+        }
+      ],
+      "elapsedSeconds": 4.299
+    },
+    {
+      "id": "ascend-00125",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "7af241374c8d5a34e5bdeb0f34b1a543186262d85c7f1f0e6450f6f81aeb20a7",
+      "chineseReferenceChars": 13,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2740
+        }
+      ],
+      "elapsedSeconds": 4.527
+    },
+    {
+      "id": "ascend-00022",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "627c1aaabf5e19c37171ee3b852d997f36aaed2bae8f9e2c2a8cbbf7cd023250",
+      "chineseReferenceChars": 19,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 4500
+        }
+      ],
+      "elapsedSeconds": 4.638
+    },
+    {
+      "id": "ascend-00369",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "ae4d2ebe1a8b849a96355d93117217a4202e0b99945f60968732b103d1446d57",
+      "chineseReferenceChars": 24,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 5030
+        }
+      ],
+      "elapsedSeconds": 4.839
+    },
+    {
+      "id": "ascend-00126",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "d41edbd99cca7a68b421f74a68ce05d066b3c606e2c457c5cb7118c91bd15009",
+      "chineseReferenceChars": 27,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 4810
+        }
+      ],
+      "elapsedSeconds": 4.827
+    },
+    {
+      "id": "ascend-00025",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "1b97e8bc7303ca1ca5c291b2fcdacc0a1fb856ed9e85779d2fd20d71e07d79aa",
+      "chineseReferenceChars": 21,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 5140
+        }
+      ],
+      "elapsedSeconds": 4.734
+    },
+    {
+      "id": "ascend-00373",
+      "language": "zh",
+      "speakerId": 7,
+      "audioSha256": "6c38a6ecd87eef7099401df66b70bc41e3ee0d694436b752bc2297dc7e2392ce",
+      "chineseReferenceChars": 42,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 8760
+        }
+      ],
+      "elapsedSeconds": 5.489
+    },
+    {
+      "id": "ascend-00129",
+      "language": "zh",
+      "speakerId": 12,
+      "audioSha256": "c27a1c9e524cbd7ba3b7e66031f01c332749ab645bb8bc214a27deb06533758f",
+      "chineseReferenceChars": 12,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 2690
+        }
+      ],
+      "elapsedSeconds": 4.269
+    },
+    {
+      "id": "ascend-00026",
+      "language": "zh",
+      "speakerId": 20,
+      "audioSha256": "44b9c4855b2704fcb7f85529fb702d12224122a395cae942a24888c825cc42de",
+      "chineseReferenceChars": 9,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 0,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2780
+        }
+      ],
+      "elapsedSeconds": 4.209
+    },
+    {
+      "id": "ascend-00343",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "32fffcc637920f1b986bde8bfaef53f24a2c37e2fe3c75d93207476d557acedd",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 8,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 2870
+        }
+      ],
+      "elapsedSeconds": 4.284
+    },
+    {
+      "id": "ascend-00096",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "72f99af4bec14545699e550f813decb88722f8aadf1e9d6601d5530ce32617ca",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2420
+        }
+      ],
+      "elapsedSeconds": 4.31
+    },
+    {
+      "id": "ascend-00003",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "e22a268692336dfb5fcb432dd9baa75746ea84c1cd797f651710096f94c86807",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 13,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3500
+        }
+      ],
+      "elapsedSeconds": 4.616
+    },
+    {
+      "id": "ascend-00347",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "24ada2a0ac2c2375195cb00525d205146d5b4842b395071a60a1ff2604ffe200",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 6,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 3750
+        }
+      ],
+      "elapsedSeconds": 4.398
+    },
+    {
+      "id": "ascend-00097",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "b037577db137ae40294abb1410a5753a16782e64543a4748ec347487c1642734",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 13,
+      "englishEditDistance": 13,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 5470
+        }
+      ],
+      "elapsedSeconds": 4.923
+    },
+    {
+      "id": "ascend-00017",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "32dee0ad4eee99bdc5304c757c2f92ea267a05b32f9c9b3a866667ce35384a61",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 11,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 4020
+        }
+      ],
+      "elapsedSeconds": 4.549
+    },
+    {
+      "id": "ascend-00348",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "34ea934962549a2e57221d09565cf44eb1b20bb94b77659951eb2a9fb9bc3e6f",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 7,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 2790
+        }
+      ],
+      "elapsedSeconds": 4.278
+    },
+    {
+      "id": "ascend-00099",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "ace93dba6150a7e961cd4d67f2eb9e4dfb3422a2b80b38d4cdf7cb26a195dfe8",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 7,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 4180
+        }
+      ],
+      "elapsedSeconds": 4.405
+    },
+    {
+      "id": "ascend-00046",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "1928773ce0ef708af82c4fc9a6526bd69bf6cc365a6d360d81b8a4510457ee1b",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 9,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 4000
+        }
+      ],
+      "elapsedSeconds": 4.442
+    },
+    {
+      "id": "ascend-00349",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "9b1133cd124ea2be8d1bbe96aec1ad28e71345cbf5e3df5913298fad8bf7e614",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 25,
+      "englishEditDistance": 4,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 9150
+        }
+      ],
+      "elapsedSeconds": 5.495
+    },
+    {
+      "id": "ascend-00104",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "fa68d8c648e80449b016d8ec1f97983bcd3439f48e259d9068d96b0f5e3775fc",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 9,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3240
+        }
+      ],
+      "elapsedSeconds": 4.396
+    },
+    {
+      "id": "ascend-00047",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "8282ac872d022de006cbc42a293e195c5f960bd9f409bed63ec5cca36a7b82a0",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 14,
+      "englishEditDistance": 4,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 210,
+          "endMs": 5130
+        }
+      ],
+      "elapsedSeconds": 4.654
+    },
+    {
+      "id": "ascend-00355",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "f7bb72162a6e62b2a889ca36b310f1612f06d0c940b899fbea9b2529513a4f08",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 1230
+        },
+        {
+          "startMs": 1490,
+          "endMs": 2930
+        }
+      ],
+      "elapsedSeconds": 4.46
+    },
+    {
+      "id": "ascend-00105",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "857ce3eaa172072fd3487ffa5340e73b6ed502ed1488a9367a8a30f9a00f80a4",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 11,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3720
+        }
+      ],
+      "elapsedSeconds": 4.444
+    },
+    {
+      "id": "ascend-00048",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "44580fe621ded98771404c4ba0045f5bba4a7c712b0d2ef2739baa4cf47f9ea0",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 23,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 8380
+        }
+      ],
+      "elapsedSeconds": 5.379
+    },
+    {
+      "id": "ascend-00356",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "8f0ffed92183e806d16624a418b20f1cb977892ce6f6718378e6e1a88fec87c7",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 19,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 6830
+        }
+      ],
+      "elapsedSeconds": 5.101
+    },
+    {
+      "id": "ascend-00110",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "46b2ca1be46ec6494f3578e2129eb9fecb0b2e51154279dccbfc1a0b626aa5a4",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 11,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 5280
+        }
+      ],
+      "elapsedSeconds": 4.593
+    },
+    {
+      "id": "ascend-00052",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "d8f4fe6dbf791bb6554fdcb9243167b264b4bd54589d01b7baa18c2b73968852",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 8,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 3900
+        }
+      ],
+      "elapsedSeconds": 4.458
+    },
+    {
+      "id": "ascend-00357",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "7a1baf302a5bb3f0125e16ca27246d5eb9a9ca8047fb125a96ca9ee468915f9f",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 10,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 4540
+        }
+      ],
+      "elapsedSeconds": 4.599
+    },
+    {
+      "id": "ascend-00111",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "657aad406a5a2b243146059b80521b4198bb373a7d71a93c756ef63a1a65ba74",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 8,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 1070
+        },
+        {
+          "startMs": 1260,
+          "endMs": 6410
+        }
+      ],
+      "elapsedSeconds": 4.858
+    },
+    {
+      "id": "ascend-00053",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "b4bfa0d7bd2cd8252eac81cde4379111b296716bf8a9dea06846973bd0bfa37c",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 7,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 2420
+        }
+      ],
+      "elapsedSeconds": 4.328
+    },
+    {
+      "id": "ascend-00359",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "58e2d5dc0b8f3b79308a288f871b5770376fbd19e35cebe7ba54af19f0ff7933",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 4,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 2490
+        }
+      ],
+      "elapsedSeconds": 4.223
+    },
+    {
+      "id": "ascend-00120",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "37f3188189c1aec57b240d3c202df4034632775a9e931f69c3a5d8b35b85163b",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 18,
+      "englishEditDistance": 6,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 5170
+        },
+        {
+          "startMs": 5710,
+          "endMs": 8790
+        }
+      ],
+      "elapsedSeconds": 5.369
+    },
+    {
+      "id": "ascend-00079",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "315a377fe1aaaae4cde2c568515558f119922aeeb7e70d0d581f6b52a8a19207",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 8,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2290
+        },
+        {
+          "startMs": 2510,
+          "endMs": 4020
+        }
+      ],
+      "elapsedSeconds": 4.661
+    },
+    {
+      "id": "ascend-00371",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "a56f0c51d6e8614cb071c168d0a34d252727473c6664efaa09a472dd99eb76b3",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 15,
+      "englishEditDistance": 5,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 270,
+          "endMs": 6650
+        }
+      ],
+      "elapsedSeconds": 4.944
+    },
+    {
+      "id": "ascend-00121",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "c1f54fa041b740ecfbe86f26247020aed607278d4bd51f3a5601d4c2aa6f5968",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 4,
+      "englishReferenceWords": 25,
+      "englishEditDistance": 4,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 4140
+        },
+        {
+          "startMs": 4660,
+          "endMs": 9740
+        },
+        {
+          "startMs": 10320,
+          "endMs": 11240
+        }
+      ],
+      "elapsedSeconds": 6.297
+    },
+    {
+      "id": "ascend-00250",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "0810842bd121a3d855e0c756a2c99182d69f8524f1c38b1ba3c8400f69df3aeb",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 2140
+        }
+      ],
+      "elapsedSeconds": 4.429
+    },
+    {
+      "id": "ascend-00379",
+      "language": "en",
+      "speakerId": 7,
+      "audioSha256": "b08d405da20e7c0a800e21008f620eb2bf0013fa89438aef86abbe144ad0828d",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 22,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 6520
+        }
+      ],
+      "elapsedSeconds": 5.303
+    },
+    {
+      "id": "ascend-00123",
+      "language": "en",
+      "speakerId": 12,
+      "audioSha256": "c6f1a5647cd66b8f1885ec909f7bf738d855554b06b8f66693aa16651d148db2",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 8,
+      "englishEditDistance": 4,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3570
+        }
+      ],
+      "elapsedSeconds": 4.646
+    },
+    {
+      "id": "ascend-00252",
+      "language": "en",
+      "speakerId": 20,
+      "audioSha256": "452fd5539da05bb7a1137093232bfb4c0749614e30c609c806f291edc02847af",
+      "chineseReferenceChars": 0,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 3900
+        }
+      ],
+      "elapsedSeconds": 4.405
+    },
+    {
+      "id": "ascend-00340",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "14d31f941536e18c6b73c69ead3a3bbad3cb72f1f3b7e70945933a8436ab1878",
+      "chineseReferenceChars": 4,
+      "chineseEditDistance": 14,
+      "englishReferenceWords": 17,
+      "englishEditDistance": 14,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 7960
+        }
+      ],
+      "elapsedSeconds": 5.977
+    },
+    {
+      "id": "ascend-00095",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "03c0993105dee43cc6319995a34ceda06d6c691f8d42d30b93d94a7fe0743605",
+      "chineseReferenceChars": 2,
+      "chineseEditDistance": 16,
+      "englishReferenceWords": 10,
+      "englishEditDistance": 10,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 3230
+        }
+      ],
+      "elapsedSeconds": 5.17
+    },
+    {
+      "id": "ascend-00001",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "6c57e9b2cc15abbc193fc8f80a7b304ed5093e35ec6c40bc0b982003f37d0ec3",
+      "chineseReferenceChars": 8,
+      "chineseEditDistance": 7,
+      "englishReferenceWords": 6,
+      "englishEditDistance": 5,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 4600
+        }
+      ],
+      "elapsedSeconds": 4.742
+    },
+    {
+      "id": "ascend-00366",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "80d6ea3bc8d4138e72ac3a134d05c908bf207739ec228d94b5460d6cc93276df",
+      "chineseReferenceChars": 1,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 1070,
+          "endMs": 3430
+        }
+      ],
+      "elapsedSeconds": 4.196
+    },
+    {
+      "id": "ascend-00119",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "ec37350247f595e61f3f386973a60c96abdd1dec80e74c4619b5595ba67c10b7",
+      "chineseReferenceChars": 3,
+      "chineseEditDistance": 3,
+      "englishReferenceWords": 15,
+      "englishEditDistance": 4,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 6220
+        }
+      ],
+      "elapsedSeconds": 4.784
+    },
+    {
+      "id": "ascend-00004",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "1ddf5e38615cf7ac77e63ffea9cb50521e38a95702c6e7dbb40f2a5e119d1fb4",
+      "chineseReferenceChars": 19,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 6020
+        }
+      ],
+      "elapsedSeconds": 4.88
+    },
+    {
+      "id": "ascend-00368",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "a72010dfb6aa563f5b3cf51e60d5e85f6c3859a89ec8d0af302dd8b13c1dec08",
+      "chineseReferenceChars": 12,
+      "chineseEditDistance": 4,
+      "englishReferenceWords": 3,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 4270
+        }
+      ],
+      "elapsedSeconds": 4.846
+    },
+    {
+      "id": "ascend-00134",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "4f7a602633164525174a3ebf86ba935c26185f99bb19bf6a0bcbec11957d13ec",
+      "chineseReferenceChars": 22,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 5200
+        }
+      ],
+      "elapsedSeconds": 5.287
+    },
+    {
+      "id": "ascend-00005",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "d8d8233fe8815254c5be9e10888b36c726a595a4bcdba137ab9dbaa82e2d23b5",
+      "chineseReferenceChars": 5,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 3240
+        }
+      ],
+      "elapsedSeconds": 4.866
+    },
+    {
+      "id": "ascend-00372",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "8c142c77704be85116beaf9e0912ae10381259088109df962910a4d13fbe0a24",
+      "chineseReferenceChars": 9,
+      "chineseEditDistance": 3,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 5400
+        }
+      ],
+      "elapsedSeconds": 5.117
+    },
+    {
+      "id": "ascend-00142",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "58072845faaade0c74ec183eb93295cec49e4c264d05cb9de230f198267fdbaf",
+      "chineseReferenceChars": 41,
+      "chineseEditDistance": 4,
+      "englishReferenceWords": 3,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 7100
+        }
+      ],
+      "elapsedSeconds": 6.982
+    },
+    {
+      "id": "ascend-00007",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "edbc983b0a2c95938fdbe319106cf4e5ef351314b3794622b770ec1baf0d29df",
+      "chineseReferenceChars": 6,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2390
+        }
+      ],
+      "elapsedSeconds": 5.284
+    },
+    {
+      "id": "ascend-00378",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "1208b1f6cd8f96b829beb0ce05eea775cc5c187b1fb2fe3b616c484395d1d9f7",
+      "chineseReferenceChars": 23,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 5950
+        }
+      ],
+      "elapsedSeconds": 5.863
+    },
+    {
+      "id": "ascend-00158",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "6ad56512d04dace8ffc66bab7518ff1bc0f3b1f49b7c6f1a9df11aa431b1f971",
+      "chineseReferenceChars": 19,
+      "chineseEditDistance": 3,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3800
+        }
+      ],
+      "elapsedSeconds": 5.211
+    },
+    {
+      "id": "ascend-00010",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "c191b8cad3893f8510fca2fede3e9be0195b80f874fdb0f56fa567a83e09b5b3",
+      "chineseReferenceChars": 37,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 9360
+        }
+      ],
+      "elapsedSeconds": 5.971
+    },
+    {
+      "id": "ascend-00383",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "6f08e13b60eec38fe7bbf9cf937d4dba4cfb725b125eba1f821a60993de5ae08",
+      "chineseReferenceChars": 1,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 9,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 5430
+        }
+      ],
+      "elapsedSeconds": 5.243
+    },
+    {
+      "id": "ascend-00191",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "9c49e9171b31334aec0a47b271da984421c354a1f719744d40a74bafa0437392",
+      "chineseReferenceChars": 1,
+      "chineseEditDistance": 4,
+      "englishReferenceWords": 14,
+      "englishEditDistance": 5,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 2700
+        },
+        {
+          "startMs": 3090,
+          "endMs": 6580
+        },
+        {
+          "startMs": 6830,
+          "endMs": 7800
+        }
+      ],
+      "elapsedSeconds": 5.986
+    },
+    {
+      "id": "ascend-00011",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "b4ef83b34bc6e35bf821626cfcb169ceea9969b194473d088810bdfffe57cc9d",
+      "chineseReferenceChars": 12,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 3,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 3560
+        }
+      ],
+      "elapsedSeconds": 4.944
+    },
+    {
+      "id": "ascend-00391",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "845125f3e7eb1211462f030c680083c133fa1fd563d54710c57146aa380b53ad",
+      "chineseReferenceChars": 1,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 5,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 110,
+          "endMs": 2570
+        }
+      ],
+      "elapsedSeconds": 4.857
+    },
+    {
+      "id": "ascend-00196",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "af4fcc39e78ae9e6326d48467108c2479cbfe595ceed8523a1f362963d506ebd",
+      "chineseReferenceChars": 2,
+      "chineseEditDistance": 6,
+      "englishReferenceWords": 15,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 0,
+          "endMs": 780
+        },
+        {
+          "startMs": 1260,
+          "endMs": 6380
+        },
+        {
+          "startMs": 6740,
+          "endMs": 7690
+        }
+      ],
+      "elapsedSeconds": 6.472
+    },
+    {
+      "id": "ascend-00015",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "8510d356626777f9b0a9359197670607fba2858fda0d9a9a9b9d27b08a3b10df",
+      "chineseReferenceChars": 24,
+      "chineseEditDistance": 2,
+      "englishReferenceWords": 4,
+      "englishEditDistance": 3,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 6920
+        }
+      ],
+      "elapsedSeconds": 5.764
+    },
+    {
+      "id": "ascend-00394",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "b591bb199be9e09203a1a83a23d1f0b46e12fc18ba6737b760a3d2d7de7501ad",
+      "chineseReferenceChars": 1,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 10,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 690,
+          "endMs": 4780
+        }
+      ],
+      "elapsedSeconds": 5.158
+    },
+    {
+      "id": "ascend-00245",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "b376e60b74c514ea4c1300704fe3c509bd679336b6559d030d37f27b1774bf30",
+      "chineseReferenceChars": 17,
+      "chineseEditDistance": 6,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 180,
+          "endMs": 4020
+        }
+      ],
+      "elapsedSeconds": 5.196
+    },
+    {
+      "id": "ascend-00016",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "b7dfb36bd922f0686ff345d2786dcb5aaf6c7a37ed5d407bec8dc1d23f5f3242",
+      "chineseReferenceChars": 8,
+      "chineseEditDistance": 3,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 2400
+        }
+      ],
+      "elapsedSeconds": 4.634
+    },
+    {
+      "id": "ascend-00395",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "46d51db119ae14d154e000d68d33f76222b3fd8287989f05c168174873115722",
+      "chineseReferenceChars": 1,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 11,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 590,
+          "endMs": 4789
+        }
+      ],
+      "elapsedSeconds": 4.889
+    },
+    {
+      "id": "ascend-00416",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "ed07c0bc34d385a2226a4b44dd92707e42560d8f6682f33ad778db1dbdd09ad9",
+      "chineseReferenceChars": 5,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 3,
+      "englishEditDistance": 1,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 110,
+          "endMs": 2680
+        }
+      ],
+      "elapsedSeconds": 4.703
+    },
+    {
+      "id": "ascend-00021",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "3946d6c4399cdf5c5c3def8ba4c912d74e4c32454db37eee06987a116b12a017",
+      "chineseReferenceChars": 8,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 2,
+      "englishEditDistance": 2,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 80,
+          "endMs": 2840
+        }
+      ],
+      "elapsedSeconds": 4.633
+    },
+    {
+      "id": "ascend-00403",
+      "language": "mixed",
+      "speakerId": 7,
+      "audioSha256": "dac90a8149f7125ea6f9de2dc26e12dee5ecd23557b0d224d7034520c297ab19",
+      "chineseReferenceChars": 22,
+      "chineseEditDistance": 1,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 140,
+          "endMs": 4800
+        }
+      ],
+      "elapsedSeconds": 4.999
+    },
+    {
+      "id": "ascend-00419",
+      "language": "mixed",
+      "speakerId": 12,
+      "audioSha256": "60ee622293ce57680ebefcc9feff443897667ccdf36b912db527b3c29e1a812b",
+      "chineseReferenceChars": 7,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 50,
+          "endMs": 2200
+        }
+      ],
+      "elapsedSeconds": 4.476
+    },
+    {
+      "id": "ascend-00023",
+      "language": "mixed",
+      "speakerId": 20,
+      "audioSha256": "cefe7de1a2c2c57db906568f87b37e4f92f8af8fe10383d0d50a7382787d0bab",
+      "chineseReferenceChars": 6,
+      "chineseEditDistance": 0,
+      "englishReferenceWords": 1,
+      "englishEditDistance": 0,
+      "numericTokensMatch": true,
+      "speechIntervals": [
+        {
+          "startMs": 20,
+          "endMs": 2720
+        }
+      ],
+      "elapsedSeconds": 4.664
+    }
+  ]
+}

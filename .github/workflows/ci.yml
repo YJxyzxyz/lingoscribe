@@ -27,7 +27,7 @@ jobs:
         run: |
           cd ../../packages/offline_engine
           flutter pub get --enforce-lockfile
-      - run: dart format --output=none --set-exit-if-changed lib test ../../packages/offline_engine/lib
+      - run: dart format --output=none --set-exit-if-changed lib test integration_test ../../packages/offline_engine/lib
       - run: flutter analyze
       - name: Analyze native engine Dart bindings
         run: |
@@ -61,9 +61,12 @@ jobs:
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/lingoscribe-debug.apk
           flutter build appbundle --release --target-platform android-arm64
           python ../../tools/check_android_artifact.py build/app/outputs/bundle/release/app-release.aab --report build/qa/android-aab-alignment.json
-          flutter build apk --debug --target-platform android-x64 --target integration_test/native_pipeline_test.dart
+          export ORG_GRADLE_PROJECT_lingoQa=true
+          flutter build apk --debug --target-platform android-arm64,android-x64
+          cp build/app/outputs/flutter-apk/app-debug.apk build/qa/lingoscribe-qa-debug.apk
+          flutter build apk --debug --target-platform android-arm64,android-x64 --target integration_test/native_pipeline_test.dart
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/native-pipeline-debug.apk
-          flutter build apk --debug --target-platform android-x64 --target integration_test/qwen_pipeline_test.dart
+          flutter build apk --debug --target-platform android-arm64,android-x64 --target integration_test/qwen_pipeline_test.dart
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/qwen-pipeline-debug.apk
           SHERPA_SCOPE=$(find ../../packages/offline_engine/android/.cxx -path '*arm64-v8a/sherpa-build-scope.json' -print -quit)
           python ../../tools/audit_sherpa_build.py --build-directory "$(dirname "$SHERPA_SCOPE")" --output build/android-sherpa-license-audit

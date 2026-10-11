@@ -14,6 +14,8 @@ corpus = json.loads(Path(args.manifest).read_text(encoding='utf-8'))
 assert actual['manifestSha256'] == digest(args.manifest)
 references = {clip['id']: clip for clip in corpus['clips']}
 assert len(actual['outputs']) == len(references)
+assert len(references) == len(corpus['clips']), 'Duplicate reference clip IDs'
+assert {output['id'] for output in actual['outputs']} == set(references), 'Missing or duplicated output clip IDs'
 rows = []
 for output in actual['outputs']:
     clip = references[output['id']]

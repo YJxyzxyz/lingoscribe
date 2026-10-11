@@ -18,6 +18,8 @@ val targetAbis = (project.findProperty("target-platform") as? String ?: "android
             else -> error("Unsupported LingoScribe target: $target")
         }
     }
+// Set ORG_GRADLE_PROJECT_lingoQa=true for a separate, disposable QA installation.
+val lingoQa = providers.gradleProperty("lingoQa").orNull == "true"
 
 android {
     namespace = "io.github.yjxyzxyz.lingoscribe"
@@ -30,7 +32,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.github.yjxyzxyz.lingoscribe"
+        applicationId = "io.github.yjxyzxyz.lingoscribe" + if (lingoQa) ".qa" else ""
+        manifestPlaceholders["lingoAppLabel"] = if (lingoQa) "聆写 QA" else "@string/app_name"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26

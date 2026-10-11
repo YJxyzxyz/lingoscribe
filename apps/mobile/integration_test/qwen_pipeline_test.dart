@@ -9,6 +9,7 @@ import 'package:lingoscribe/domain/transcript.dart';
 import 'package:lingoscribe/services/model_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'native_test.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -31,9 +32,9 @@ void main() {
       }),
     );
   });
-  testWidgets(
+  nativeTest(
     'Qwen3 real verified bundle, speech detection, native decode and persistence',
-    (tester) async {
+    () async {
       final app = await AppController.create();
       try {
         final qa = p.join(p.dirname(app.root.path), 'qa');

@@ -37,6 +37,7 @@ python tools/native_smoke.py --library <原生动态库> --model <官方模型.b
 真实人声小规模回归使用 HKUST CAiRE 的 [ASCEND 数据集](https://huggingface.co/datasets/CAiRE/ASCEND)，数据许可为 CC-BY-SA-4.0；其 GitHub 工具代码的 MIT 许可不能代替数据许可。
 `tools/prepare_ascend_corpus.py` 校验固定测试 Parquet 的 SHA-256，按预先设定规则选取最多三个说话人、每人每种语言前三条不少于两秒的片段，输出音频和参考清单均留在被忽略的 `build/`。
 实际测试 split 只有两个说话人，选出 18 条、约 66.5 秒音频。此样本不能代表真实用户、长会议或整体准确率。
+`--split validation --clips-per-language 30 --output build/corpus/ascend-holdout` 校验另一固定 Parquet 的 SHA-256，并在推理前选出三位不同说话人各语言轮转共 90 条。此处“holdout”仅表示未用于此前本项目调参，不能排除模型预训练重叠。真实 Dart/GGML VAD/Qwen 路径的完整无正文报告见 `validation/qwen-dart-holdout-evaluation.json`，包括全部失败项，不作为手机性能或商业验收结论。
 另使用 `--clips-per-language 30 --output build/corpus/ascend-expanded`，按语言与说话人轮转、保留每人的原始行顺序，预先选取中文、英文、混合各 30 条（共约 316.6 秒）。说话人仍只有两位；这增加回归覆盖，不增加人群代表性。实际结果见 `validation/ascend-expanded-evaluation.json`，原始 18 条基线保留。
 两模型实际推理的聚合指标见 `validation/ascend-regression-evaluation.json`：Small 的中文组原始 CER 23.6%，混合组原始中文 CER 47.0%、英文 WER 65.0%；错误包含简繁体差异、语气词省略、英文词误识别和缩写分词差异。
 这些结果显示混合自然对话仍需优化，不能以两个合成片段的良好结果宣传高准确率。后续调参需保留当前基线和失败样例，并用额外语料验证，防止只适配此子集。
@@ -58,16 +59,19 @@ Qwen3 引擎候选用 `tools/evaluate_qwen3.py --model-directory <固定快照�
 ```sh
 cd apps/mobile
 flutter pub get --enforce-lockfile
-flutter build apk --debug --target-platform android-x64 --target integration_test/native_pipeline_test.dart
+# Windows PowerShell: $env:ORG_GRADLE_PROJECT_lingoQa='true'
+export ORG_GRADLE_PROJECT_lingoQa=true
+flutter build apk --debug --target-platform android-arm64,android-x64 --target integration_test/native_pipeline_test.dart
 cd ../..
 python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/mobile/build/app/outputs/flutter-apk/app-debug.apk --model <官方BaseQ5.bin> --audio <whisper.cpp上游samples/jfk.wav> --report build/android-native-result.json
 ```
 
-该脚本通过 `run-as` 写入测试安装的私有夹具，无需 root；必须使用专用测试设备及相容的测试签名。
+该脚本默认只安装独立包名 `io.github.yjxyzxyz.lingoscribe.qa`（桌面名称“聆写 QA”），通过 `run-as` 写入此安装的私有夹具，无需 root，不使用生产资料库。运行前会用 Android SDK 的 `aapt` 检查 APK 包名和 Debug 标志；设置 `ANDROID_SDK_ROOT` 或通过 `--aapt` 指定工具。物理手机禁止使用生产包名进行测试夹具注入。旧 CI 的生产包名测试入口仅允许在专用模拟器上显式选择。日志只读取当前测试进程，不清除手机全局日志。
+连接手机后先运行 `python tools/android_device_preflight.py --device <序列号>`，只读取机型、系统、架构、总/可用内存、剩余空间和已有聆写包名。原生测试脚本每五秒采样 QA 进程 PSS/RSS，记录采样最大值；这覆盖整段 Debug 流程，不能代表精确瞬时峰值、发布速度或耗电。录音、编码与推理测试没有 WidgetTester 界面，使用 `integration_test/native_test.dart` 的纯原生服务入口，仍通过集成测试绑定记录真实异常/断言；界面和无障碍单独验收。
 当前 Android 测试入口增加真实原生麦克风采集、暂停/继续及 WAV 保存断言；脚本会在指定 QA 安装上预授予麦克风权限。虚拟麦克风结果不代表真实人声或物理手机麦克风质量。
 `android-runtime` CI 在专用 Linux/KVM 模拟器上已通过此入口，见 `validation/android-native-ci-integration.json`。首次未优化的 Debug 原生运行中，11 秒英文推理为约 292 秒；后续 Debug 内核启用 `-O3` 并保留调试符号。Android 发布构建使用已优化的 `RelWithDebInfo` 配置（本机实际编译指令为 `-O2`），该变更不修改发布配置。不同宿主和构建模式的时间不能作为手机速度比较。
 FFmpeg 仅用于测试工具生成不同编码的真实音频夹具，不进入 App；可通过 `--ffmpeg` 指定本机路径。
-构建入口改变后用正常 `lib/main.dart` 重新构建安装。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
+构建入口改变后保持 QA 环境变量、用正常 `lib/main.dart` 重新构建，恢复 QA 应用界面；构建生产产物前取消 `ORG_GRADLE_PROJECT_lingoQa` 环境变量。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
 切换 Debug/Release 时使用完整 `flutter build`，不要跳过需要按构建模式生成的插件配置；不要与同一工程的 pub/analyze 命令并行执行。
 CI 与正式构建使用 `pub get --enforce-lockfile`，避免依赖来源变化时悄悄升级版本。
 

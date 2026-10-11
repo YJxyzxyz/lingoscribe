@@ -25,6 +25,10 @@ class _ModelScreenState extends State<ModelScreen> {
       );
       if (selected != null &&
           selected.files.every((file) => file.path != null)) {
+        if (selected.files.length > 1) {
+          await app.engine.ensureAdvancedModelCapacity();
+        }
+        if (app.busy) return;
         await app.models.importFiles(
           selected.files.map((file) => file.path!).toList(),
         );
@@ -41,6 +45,17 @@ class _ModelScreenState extends State<ModelScreen> {
       }
       if (app.busy) return;
       await app.models.download(model, mirror: mirror);
+    } catch (error) {
+      if (mounted) showError(context, error);
+    }
+  }
+
+  Future<void> _select(ModelSpec model) async {
+    try {
+      if (model.engine == 'qwen3') {
+        await app.engine.ensureAdvancedModelCapacity();
+      }
+      if (!app.busy) app.models.select(model.id);
     } catch (error) {
       if (mounted) showError(context, error);
     }
@@ -208,7 +223,7 @@ class _ModelScreenState extends State<ModelScreen> {
                   child: OutlinedButton(
                     onPressed: selected || app.busy
                         ? null
-                        : () => app.models.select(model.id),
+                        : () => _select(model),
                     child: Text(
                       selected
                           ? l10n(context).currentModel

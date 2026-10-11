@@ -339,6 +339,7 @@ class ModelManager extends ChangeNotifier {
           await File(sources[p.basename(asset.path)]!).copy(file.path);
         } else {
           verifying = false;
+          notifyListeners();
           final response = await client
               .send(
                 http.Request(
@@ -385,6 +386,7 @@ class ModelManager extends ChangeNotifier {
         backedUp = true;
       }
       try {
+        if (_cancelled) throw const HttpException('下载已取消');
         await part.rename(target.path);
         committed = true;
       } catch (_) {
