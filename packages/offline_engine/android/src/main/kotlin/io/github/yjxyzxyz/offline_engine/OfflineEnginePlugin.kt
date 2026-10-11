@@ -1,6 +1,8 @@
 package io.github.yjxyzxyz.offline_engine
 
 import android.media.AudioFormat
+import android.app.ActivityManager
+import android.content.Context
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
@@ -19,10 +21,12 @@ import java.util.concurrent.Executors
 import kotlin.math.*
 
 class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
+    private lateinit var context: Context
     private lateinit var channel: MethodChannel
     private val worker = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        context = binding.applicationContext
         channel = MethodChannel(binding.binaryMessenger, "lingoscribe/offline_engine")
         channel.setMethodCallHandler(this)
     }
@@ -31,6 +35,13 @@ class OfflineEnginePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         worker.shutdown()
     }
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        if (call.method == "deviceMemory") {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val memory = ActivityManager.MemoryInfo()
+            manager.getMemoryInfo(memory)
+            result.success(mapOf("totalBytes" to memory.totalMem, "availableBytes" to memory.availMem))
+            return
+        }
         if (call.method == "protectDirectory") { result.success(null); return }
         if (call.method != "normalize") { result.notImplemented(); return }
         val source = call.argument<String>("source")

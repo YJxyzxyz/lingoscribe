@@ -23,7 +23,7 @@ detector = root / 'Frameworks/App.framework/flutter_assets/assets/models/ggml-si
 digest = hashlib.sha256(detector.read_bytes()).hexdigest()
 native = root / 'Frameworks/offline_engine.framework/offline_engine'
 symbols = subprocess.run([args.nm, '-g', str(native)], check=True, capture_output=True, text=True).stdout
-required = ['ls_job_create_v2', 'ls_job_run', 'ls_job_progress', 'ls_job_phase', 'ls_job_cancel', 'ls_job_result', 'ls_job_free']
+required = ['ls_job_create_v2', 'ls_job_run', 'ls_job_detect_speech', 'ls_sherpa_anchor', 'ls_job_progress', 'ls_job_phase', 'ls_job_cancel', 'ls_job_result', 'ls_job_free', 'SherpaOnnxCreateOfflineRecognizer', 'SherpaOnnxDecodeOfflineStream']
 exports = {name: any(line.endswith(f' T _{name}') for line in symbols.splitlines()) for name in required}
 report = {'sourceCommit': args.commit, 'bundleId': info.get('CFBundleIdentifier'),
           'version': info.get('CFBundleShortVersionString'), 'build': info.get('CFBundleVersion'),

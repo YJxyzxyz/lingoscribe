@@ -576,4 +576,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String revisionTitle(String title) {
     return '$title · New transcription';
   }
+
+  @override
+  String get qwenModel => 'Bilingual · Qwen3';
+
+  @override
+  String get qwenModelDescription =>
+      'A stronger candidate for Chinese and bilingual speech. About 987 MB to download; needs substantial memory. Timestamps use detected speech intervals.';
+
+  @override
+  String qwenModelDetail(String size) {
+    return '$size · Apache-2.0 · At least 6 GB device memory';
+  }
+
+  @override
+  String get qwenMemoryRequired =>
+      'Qwen3 requires at least 6 GB device memory and sufficient available memory. Please choose a smaller model.';
+
+  @override
+  String get completeModelFilesRequired =>
+      'Select one official model file, or all six Qwen3 files.';
+
+  @override
+  String get cancellingTranscription => 'Cancelling transcription';
 }

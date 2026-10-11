@@ -1081,6 +1081,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{title} · New transcription'**
   String revisionTitle(String title);
+
+  /// No description provided for @qwenModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bilingual · Qwen3'**
+  String get qwenModel;
+
+  /// No description provided for @qwenModelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A stronger candidate for Chinese and bilingual speech. About 987 MB to download; needs substantial memory. Timestamps use detected speech intervals.'**
+  String get qwenModelDescription;
+
+  /// No description provided for @qwenModelDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} · Apache-2.0 · At least 6 GB device memory'**
+  String qwenModelDetail(String size);
+
+  /// No description provided for @qwenMemoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Qwen3 requires at least 6 GB device memory and sufficient available memory. Please choose a smaller model.'**
+  String get qwenMemoryRequired;
+
+  /// No description provided for @completeModelFilesRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one official model file, or all six Qwen3 files.'**
+  String get completeModelFilesRequired;
+
+  /// No description provided for @cancellingTranscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelling transcription'**
+  String get cancellingTranscription;
 }
 
 class _AppLocalizationsDelegate

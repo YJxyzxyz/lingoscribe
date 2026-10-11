@@ -11,6 +11,9 @@ public class OfflineEnginePlugin: NSObject, FlutterPlugin {
         guard let args = call.arguments as? [String: Any] else {
             result(FlutterError(code: "arguments", message: "Invalid arguments", details: nil)); return
         }
+        if call.method == "deviceMemory" {
+            result(["totalBytes": ProcessInfo.processInfo.physicalMemory]); return
+        }
         if call.method == "protectDirectory", let path = args["path"] as? String {
             do {
                 var url = URL(fileURLWithPath: path)

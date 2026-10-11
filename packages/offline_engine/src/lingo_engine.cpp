@@ -265,6 +265,70 @@ int32_t ls_job_run(void *handle) {
     }
 }
 int32_t ls_job_progress(void *j) { return j ? static_cast<Job *>(j)->progress.load() : 0; }
+int32_t ls_job_detect_speech(void *handle) {
+    auto *j = static_cast<Job *>(handle);
+    if (!j) return -1;
+    try {
+        Wave wav(j->wav);
+        if (j->vad.empty()) throw std::runtime_error("Missing bundled speech detector");
+        if (j->cancel.load()) throw std::runtime_error("cancelled");
+        whisper_log_set(quiet, nullptr);
+        auto contextParams = whisper_vad_default_context_params();
+        contextParams.n_threads = std::min(j->threads, 2); contextParams.use_gpu = false;
+        std::unique_ptr<whisper_vad_context, decltype(&whisper_vad_free)> detector(
+            whisper_vad_init_from_file_with_params(j->vad.c_str(), contextParams), &whisper_vad_free);
+        if (!detector) throw std::runtime_error("Unable to load bundled speech detector");
+        j->phase.store(4);
+        std::ostringstream json; json << "{\"segments\":[";
+        uint32_t position = 0;
+        int64_t previousEnd = 0;
+        bool first = true;
+        while (position < wav.samples) {
+            if (j->cancel.load()) throw std::runtime_error("cancelled");
+            const auto count = std::min(16000u * 30u, wav.samples - position);
+            std::vector<unsigned char> bytes(count * 2);
+            if (!wav.f.read(reinterpret_cast<char *>(bytes.data()), bytes.size())) throw std::runtime_error("Audio read failed");
+            std::vector<float> pcm(count);
+            for (uint32_t i = 0; i < count; ++i)
+                pcm[i] = int16_t(uint16_t(bytes[i*2]) | uint16_t(bytes[i*2+1]) << 8) / 32768.0f;
+            if (!whisper_vad_detect_speech(detector.get(), pcm.data(), int(count)))
+                throw std::runtime_error("Speech detection failed");
+            auto params = whisper_vad_default_params();
+            params.speech_pad_ms = 80; params.min_silence_duration_ms = 300;
+            params.max_speech_duration_s = 20;
+            std::unique_ptr<whisper_vad_segments, decltype(&whisper_vad_free_segments)> ranges(
+                whisper_vad_segments_from_probs(detector.get(), params), &whisper_vad_free_segments);
+            if (!ranges) throw std::runtime_error("Speech interval extraction failed");
+            for (int i = 0; i < whisper_vad_segments_n_segments(ranges.get()); ++i) {
+                int64_t begin = std::max(previousEnd, int64_t(position / 16) +
+                    int64_t(std::max(0.0f, whisper_vad_segments_get_segment_t0(ranges.get(), i)) * 10));
+                const int64_t end = std::min<int64_t>((position + count) / 16,
+                    position / 16 + int64_t(std::max(0.0f, whisper_vad_segments_get_segment_t1(ranges.get(), i)) * 10));
+                // Bound each recognition call and its cancellation latency. These
+                // are measured speech interval boundaries, not word alignment.
+                while (begin < end) {
+                    const auto partEnd = std::min(begin + 20000, end);
+                    if (!first) json << ',';
+                    first = false;
+                    json << "{\"startMs\":" << begin << ",\"endMs\":" << partEnd << '}';
+                    previousEnd = partEnd; begin = partEnd;
+                }
+            }
+            position += count;
+            j->progress.store(std::min(99, int(double(position) / wav.samples * 100)));
+        }
+        if (j->cancel.load()) throw std::runtime_error("cancelled");
+        json << "],\"durationMs\":" << wav.samples / 16 << '}';
+        j->result = json.str(); j->progress.store(100); j->phase.store(3);
+        return 0;
+    } catch (const std::exception &error) {
+        j->result = "{\"error\":" + quote(error.what()) + '}';
+        return j->cancel.load() ? 1 : -1;
+    } catch (...) {
+        j->result = "{\"error\":\"Native speech detection failed\"}";
+        return -1;
+    }
+}
 int32_t ls_job_phase(void *j) { return j ? static_cast<Job *>(j)->phase.load() : 0; }
 void *ls_job_create_v2(const char *model, const char *wav, const char *language, const char *prompt, const char *vad, int32_t threads) {
     auto *job = static_cast<Job *>(ls_job_create(model, wav, language, prompt, threads));

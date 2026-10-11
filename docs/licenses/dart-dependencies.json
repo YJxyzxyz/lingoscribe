@@ -560,6 +560,13 @@
     "licenseFound": true
   },
   {
+    "name": "sherpa_onnx",
+    "version": "1.13.8-lingoscribe.1",
+    "source": "path",
+    "dependency": "transitive",
+    "licenseFound": true
+  },
+  {
     "name": "sky_engine",
     "version": "0.0.0",
     "source": "sdk",

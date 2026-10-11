@@ -19,14 +19,30 @@ class _ModelScreenState extends State<ModelScreen> {
     try {
       final selected = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['bin'],
+        allowedExtensions: ['bin', 'onnx', 'json', 'txt'],
+        allowMultiple: true,
         withData: false,
       );
-      if (selected?.files.single.path != null) {
-        await app.models.importFile(selected!.files.single.path!);
+      if (selected != null &&
+          selected.files.every((file) => file.path != null)) {
+        await app.models.importFiles(
+          selected.files.map((file) => file.path!).toList(),
+        );
       }
     } catch (e) {
       if (mounted) showError(context, e);
+    }
+  }
+
+  Future<void> _download(ModelSpec model) async {
+    try {
+      if (model.engine == 'qwen3') {
+        await app.engine.ensureAdvancedModelCapacity();
+      }
+      if (app.busy) return;
+      await app.models.download(model, mirror: mirror);
+    } catch (error) {
+      if (mounted) showError(context, error);
     }
   }
 
@@ -155,7 +171,9 @@ class _ModelScreenState extends State<ModelScreen> {
           ),
           SizedBox(height: 12),
           Text(
-            l10n(context).modelLanguagesAndLicense(model.sizeLabel),
+            model.engine == 'qwen3'
+                ? l10n(context).qwenModelDetail(model.sizeLabel)
+                : l10n(context).modelLanguagesAndLicense(model.sizeLabel),
             style: TextStyle(color: forest, fontSize: 12),
           ),
           SizedBox(height: 18),
@@ -214,7 +232,7 @@ class _ModelScreenState extends State<ModelScreen> {
               child: FilledButton.icon(
                 onPressed: app.busy || app.models.downloadingId != null
                     ? null
-                    : () => app.models.download(model, mirror: mirror),
+                    : () => _download(model),
                 icon: Icon(Icons.download_outlined),
                 label: Text(l10n(context).downloadModelSize(model.sizeLabel)),
               ),

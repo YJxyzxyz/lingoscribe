@@ -1,0 +1,16 @@
+{
+  "package": "sherpa_onnx",
+  "version": "1.13.8",
+  "archiveSha256": "b7e65d5956f8c9213fd339c68ea058cdec7ad24bd35f9bfc5c18178d3d73b2f9",
+  "source": "https://pub.dev/api/archives/sherpa_onnx-1.13.8.tar.gz",
+  "modifications": "Native offline API only; local loader; no upstream platform binary dependencies",
+  "files": [
+    "lib/src/feature_config.dart",
+    "lib/src/homophone_replacer_config.dart",
+    "lib/src/offline_recognizer.dart",
+    "lib/src/offline_recognizer_config.dart",
+    "lib/src/offline_stream.dart",
+    "lib/src/sherpa_onnx_bindings.dart",
+    "lib/src/utils.dart"
+  ]
+}

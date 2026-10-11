@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
+export 'qwen_engine.dart';
 
 typedef _CreateNative =
     Pointer<Void> Function(
@@ -43,6 +44,7 @@ class _Bindings {
           );
     create = lib.lookupFunction<_CreateNative, _Create>('ls_job_create_v2');
     run = lib.lookupFunction<_IntNative, _Int>('ls_job_run');
+    detect = lib.lookupFunction<_IntNative, _Int>('ls_job_detect_speech');
     progress = lib.lookupFunction<_IntNative, _Int>('ls_job_progress');
     phase = lib.lookupFunction<_IntNative, _Int>('ls_job_phase');
     cancel = lib.lookupFunction<_VoidNative, _Void>('ls_job_cancel');
@@ -50,15 +52,20 @@ class _Bindings {
     free = lib.lookupFunction<_VoidNative, _Void>('ls_job_free');
   }
   late final _Create create;
-  late final _Int run, progress, phase;
+  late final _Int run, detect, progress, phase;
   late final _Void cancel, free;
   late final _Result result;
 }
 
-int _runNative(int address) =>
-    _Bindings().run(Pointer<Void>.fromAddress(address));
-Future<int> _dispatchNative(int address) =>
-    Isolate.run(() => _runNative(address));
+int _runNative(int address, bool detectOnly) {
+  final bindings = _Bindings();
+  return (detectOnly ? bindings.detect : bindings.run)(
+    Pointer<Void>.fromAddress(address),
+  );
+}
+
+Future<int> _dispatchNative(int address, bool detectOnly) =>
+    Isolate.run(() => _runNative(address, detectOnly));
 
 class OfflineEngine {
   static const _channel = MethodChannel('lingoscribe/offline_engine');
@@ -78,12 +85,58 @@ class OfflineEngine {
     await _channel.invokeMethod<void>('protectDirectory', {'path': path});
   }
 
+  Future<void> ensureAdvancedModelCapacity() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return;
+    final memory = await _channel.invokeMapMethod<String, dynamic>(
+      'deviceMemory',
+      {},
+    );
+    final total = memory?['totalBytes'] as int?;
+    final available = memory?['availableBytes'] as int?;
+    if (total == null ||
+        total < 6000000000 ||
+        (available != null && available < 2000000000)) {
+      throw StateError('Qwen3 需要至少 6 GB 设备内存及足够可用内存，请选择轻量模型');
+    }
+  }
+
   Future<Map<String, dynamic>> transcribe({
     required String model,
     required String wav,
     String language = 'auto',
     String prompt = '',
     String vad = '',
+    void Function(double)? onProgress,
+    void Function(int)? onPhase,
+  }) => _run(
+    model: model,
+    wav: wav,
+    language: language,
+    prompt: prompt,
+    vad: vad,
+    onProgress: onProgress,
+    onPhase: onPhase,
+  );
+
+  Future<Map<String, dynamic>> detectSpeech({
+    required String wav,
+    required String vad,
+    void Function(double)? onProgress,
+  }) => _run(
+    model: '',
+    wav: wav,
+    vad: vad,
+    detectOnly: true,
+    onProgress: onProgress,
+  );
+
+  Future<Map<String, dynamic>> _run({
+    required String model,
+    required String wav,
+    String language = 'auto',
+    String prompt = '',
+    String vad = '',
+    bool detectOnly = false,
     void Function(double)? onProgress,
     void Function(int)? onPhase,
   }) async {
@@ -120,7 +173,7 @@ class OfflineEngine {
     });
     try {
       // Static function avoids capturing unsendable native bindings in this isolate.
-      final code = await _dispatchNative(address);
+      final code = await _dispatchNative(address, detectOnly);
       final result =
           jsonDecode(bindings.result(job).toDartString())
               as Map<String, dynamic>;

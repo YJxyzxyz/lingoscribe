@@ -13,11 +13,20 @@ Future<void> main() async {
     'MODEL_LICENSE.txt',
     'SILERO_LICENSE.txt',
     'NATIVE_NOTICES.txt',
+    'QWEN_LICENSE.txt',
+    'ONNX_NOTICES.txt',
+    'SHERPA_NOTICES.txt',
   ]) {
     LicenseRegistry.addLicense(() async* {
       yield LicenseEntryWithLineBreaks([
         asset == 'WHISPER_LICENSE.txt'
             ? 'whisper.cpp / ggml'
+            : asset == 'QWEN_LICENSE.txt'
+            ? 'Qwen3-ASR model weights'
+            : asset == 'ONNX_NOTICES.txt'
+            ? 'ONNX Runtime / native third-party notices'
+            : asset == 'SHERPA_NOTICES.txt'
+            ? 'sherpa-onnx ASR-only / native dependency notices'
             : asset == 'NATIVE_NOTICES.txt'
             ? 'Native source attributions'
             : asset == 'SILERO_LICENSE.txt'

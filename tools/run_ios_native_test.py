@@ -9,10 +9,13 @@ import subprocess
 import time
 from pathlib import Path
 from codec_fixtures import create_fixtures
+from prepare_qwen_fixture import verify as verify_qwen, MANIFEST as QWEN_MANIFEST
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', required=True, help='Simulator App built from native_pipeline_test.dart')
-parser.add_argument('--model', required=True)
+model_group = parser.add_mutually_exclusive_group(required=True)
+model_group.add_argument('--model')
+model_group.add_argument('--qwen-directory')
 parser.add_argument('--audio', required=True)
 parser.add_argument('--ffmpeg', default=shutil.which('ffmpeg'))
 parser.add_argument('--report', default='build/ios-native-result.json')
@@ -20,7 +23,10 @@ args = parser.parse_args()
 assert platform.system() == 'Darwin', 'This runner needs macOS and Xcode'
 assert args.ffmpeg, 'FFmpeg is required for real codec QA fixtures'
 expected = '422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898'
-assert hashlib.sha256(Path(args.model).read_bytes()).hexdigest() == expected
+if args.qwen_directory:
+    verify_qwen(args.qwen_directory)
+else:
+    assert hashlib.sha256(Path(args.model).read_bytes()).hexdigest() == expected
 def run(*command):
     return subprocess.run(list(command), check=True, capture_output=True, text=True).stdout.strip()
 def sim(*command):
@@ -47,9 +53,13 @@ try:
     container = Path(sim('get_app_container', device, package, 'data'))
     qa = container / 'Library/Application Support/qa'
     qa.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(args.model, qa / 'ggml-base-q5_1.bin')
+    if args.qwen_directory:
+        shutil.copytree(args.qwen_directory, qa / 'qwen')
+    else:
+        shutil.copy2(args.model, qa / 'ggml-base-q5_1.bin')
     shutil.copy2(args.audio, qa / 'sample.wav')
-    create_fixtures(args.audio, qa, args.ffmpeg)
+    if not args.qwen_directory:
+        create_fixtures(args.audio, qa, args.ffmpeg)
     with log_path.open('w', encoding='utf-8') as log, system_log_path.open('w', encoding='utf-8') as system_log:
         system_process = subprocess.Popen(['xcrun', 'simctl', 'spawn', device, 'log', 'stream', '--style', 'compact',
                                           '--level', 'debug', '--predicate', 'process == "Runner"'],
@@ -57,7 +67,7 @@ try:
         process = subprocess.Popen(['xcrun', 'simctl', 'launch', '--terminate-running-process', '--console', device, package],
                                    stdout=log, stderr=subprocess.STDOUT, text=True)
         started = time.monotonic()
-        while time.monotonic() - started < 480:
+        while time.monotonic() - started < (900 if args.qwen_directory else 480):
             output = log_path.read_text(encoding='utf-8', errors='replace') + system_log_path.read_text(encoding='utf-8', errors='replace')
             status_file = qa / 'test-status.json'
             status = json.loads(status_file.read_text()) if status_file.exists() else None
@@ -66,11 +76,16 @@ try:
             if 'Some tests failed.' in output:
                 raise RuntimeError(output[-12000:])
             if status is not None:
-                assert status['passed'] and status['testCount'] == 2, status
+                assert status['passed'] and status['testCount'] == (1 if args.qwen_directory else 2), status
                 report = json.loads((qa / 'native-result.json').read_text())
-                assert report['modelSha256'] == expected
+                if args.qwen_directory:
+                    assert report['engine'] == 'qwen3'
+                    assert report['modelHashes'] == {asset['path']: asset['sha256'] for asset in QWEN_MANIFEST['files']}
+                else:
+                    assert report['modelSha256'] == expected
                 assert report['audioSha256'] == hashlib.sha256(Path(args.audio).read_bytes()).hexdigest()
-                report['codecChecks'] = json.loads((qa / 'codec-result.json').read_text())
+                if not args.qwen_directory:
+                    report['codecChecks'] = json.loads((qa / 'codec-result.json').read_text())
                 report['runtime'] = runtime['version']
                 report['simulatorDevice'] = 'iPhone 16'
                 report['scope'] = 'Real iOS Simulator decoding and inference; not physical iPhone performance or store acceptance'

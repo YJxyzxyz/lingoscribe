@@ -38,4 +38,7 @@ flutter:
     - assets/licenses/MODEL_LICENSE.txt
     - assets/licenses/SILERO_LICENSE.txt
     - assets/licenses/NATIVE_NOTICES.txt
+    - assets/licenses/QWEN_LICENSE.txt
+    - assets/licenses/ONNX_NOTICES.txt
+    - assets/licenses/SHERPA_NOTICES.txt
     - assets/models/ggml-silero-v6.2.0.bin

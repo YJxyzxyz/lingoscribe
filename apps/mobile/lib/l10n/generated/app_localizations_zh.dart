@@ -527,4 +527,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String revisionTitle(String title) {
     return '$title · 新转写';
   }
+
+  @override
+  String get qwenModel => '双语 · Qwen3';
+
+  @override
+  String get qwenModelDescription =>
+      '更强的中文与双语候选模型。约 987 MB 下载，需要较多内存；时间戳按检测到的语音区间生成。';
+
+  @override
+  String qwenModelDetail(String size) {
+    return '$size · Apache-2.0 · 至少 6 GB 设备内存';
+  }
+
+  @override
+  String get qwenMemoryRequired => 'Qwen3 需要至少 6 GB 设备内存及足够可用内存，请选择轻量模型';
+
+  @override
+  String get completeModelFilesRequired => '请选择一个官方模型文件，或完整的 Qwen3 六个文件';
+
+  @override
+  String get cancellingTranscription => '正在取消转写';
 }
