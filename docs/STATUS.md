@@ -21,7 +21,7 @@
 - `codex/qwen-offline` 草案分支已接入 Qwen3-ASR int8：六文件原子安装、摘要校验、真实 VAD、有界音频读取、原生 Dart 工作线程推理、协作取消和语音段时间戳；模型约 987 MB，首次主动下载或导入，不随 APK 打包。两端从固定 ASR-only 源码构建，关闭 TTS 及其不同许可依赖；许可通知与真实构建审核通过。该分支尚未合并正式主线，见 `QWEN_INTEGRATION.md` 和 PR #1。
 - 8a3075a 的双平台源码构建、发布包静态/许可检查及两端 Whisper/Qwen 真实模拟器管线全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38108630652)。iOS 测试入口修复已实际验证，四份带来源摘要的原生报告保存在 `validation/*-native-8a3075a.json`。这不是物理 iPhone 验收。
 - Qwen 的真实 Dart/VAD 开发宿主路径，在原两位说话人的 90 条上混合原始中文 CER 17.5% / 英文 WER 31.9%；新增三位说话人的 90 条为 26.6% / 44.3%。完整原始计分均保留，覆盖与错误率未满足 `COMMERCIAL_ACCEPTANCE.md`。整段音频诊断更好，但仍未达到验收，且复用诊断语料不能作为新独立验收集。
-- cbfde89 的上下文策略已完成同一 180 条真实 Dart 回归：合并五位说话人后，纯英文 WER 21.5% → 19.0%，混合中文 CER 22.0% → 17.2%、英文 WER 40.4% → 35.7%；原先一批混合英文略退步，全部条目保留。见 `validation/qwen-context-comparison.json`。后续 94150a8 修复 PCM 尾部不足一毫秒的样本丢失，精确读入后的完整回归仍在执行，不能用 cbfde89 的结果冒充后续源码验收。
+- 94150a8 的上下文策略与精确 PCM 读入已完成同一 180 条真实 Dart 回归：合并五位说话人后，纯中文 CER 5.9% → 5.6%、纯英文 WER 21.5% → 18.7%，混合中文 CER 22.0% → 17.2%、英文 WER 40.4% → 35.7%；原先一批混合英文略退步，全部条目保留。见 `validation/qwen-context-exact-comparison.json`。模型六文件摘要再次核对通过；该集已用于诊断与回归，不是新的独立商业验收集，仍未达到准确率及覆盖门槛。先前 cbfde89/旧读取策略报告保留。
 - SenseVoice 对照研究在该小样本表现更好，尚未接入 App；需扩展语料、验证双平台性能及单独确认模型权重商业再分发许可，见 `MODEL_EVALUATION.md`。
 - CocoaPods 实际解析的九项许可已导出，未使用的图库依赖已移除；固定原生快照 60 项文件归属已纳入许可页。
 - 已通过 iOS 发布包精简检查：Release 不含 `integration_test.framework`，Debug 模式仍通过真实原生集成断言。
