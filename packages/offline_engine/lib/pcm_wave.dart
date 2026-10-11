@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:math' as math;
 
 /// Bounded reads of the normalized private PCM file, including chunked WAVs.
 /// Does not load a long recording into a Dart list.
@@ -7,7 +8,8 @@ class PcmWaveReader {
   PcmWaveReader._(this._file, this._offset, this.samples);
   final RandomAccessFile _file;
   final int _offset, samples;
-  int get durationMs => samples ~/ 16;
+  // Round the envelope up so the final fractional millisecond is accessible.
+  int get durationMs => (samples + 15) ~/ 16;
 
   static PcmWaveReader open(String path) {
     final file = File(path).openSync();
@@ -62,10 +64,11 @@ class PcmWaveReader {
   }
 
   Float32List readRange(int startMs, int endMs) {
-    final start = startMs * 16, end = endMs * 16;
+    final start = startMs * 16, end = math.min(endMs * 16, samples);
     if (start < 0 ||
         end <= start ||
-        end > samples ||
+        endMs > durationMs ||
+        endMs - startMs > 20000 ||
         end - start > 16000 * 20) {
       throw const FormatException('Invalid speech interval');
     }

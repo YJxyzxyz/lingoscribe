@@ -84,6 +84,7 @@ void main() {
           'elapsedSeconds': clock.elapsedMilliseconds / 1000,
           'speechIntervals': detected['segments'],
           'inputContextPolicy': result['inputContextPolicy'],
+          'pcmReadPolicy': result['pcmReadPolicy'],
           'decodedWindows': result['decodedWindows'],
         });
         // Progress only; reference/hypothesis text stays in ignored local build/.

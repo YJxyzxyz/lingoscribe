@@ -27,7 +27,7 @@ for output in actual['outputs']:
         'chineseEditDistance': distance(reference_cn, actual_cn), 'englishReferenceWords': len(reference_en),
         'englishEditDistance': distance(reference_en, actual_en), 'numericTokensMatch': reference_numbers == actual_numbers,
         'speechIntervals': output['speechIntervals'], 'elapsedSeconds': output['elapsedSeconds'],
-        **({'inputContextPolicy': output['inputContextPolicy'], 'decodedWindows': output['decodedWindows']} if output.get('inputContextPolicy') else {})})
+        **({'inputContextPolicy': output['inputContextPolicy'], 'pcmReadPolicy': output.get('pcmReadPolicy', 'floor_ms'), 'decodedWindows': output['decodedWindows']} if output.get('inputContextPolicy') else {})})
 groups = {}
 for language in sorted({row['language'] for row in rows}):
     selected = [row for row in rows if row['language'] == language]

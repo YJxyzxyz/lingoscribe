@@ -180,6 +180,7 @@ Future<void> _qwenWorker(Map<String, dynamic> args) async {
         'segments': segments,
         'timestampSource': 'speech_intervals',
         'inputContextPolicy': 'qwen_context_v1',
+        'pcmReadPolicy': 'pcm_exact_tail_v1',
         'decodedWindows': [
           for (final window in windows)
             {

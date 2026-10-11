@@ -2518,5 +2518,7 @@
         }
       ]
     }
-  ]
+  ],
+  "implementationCommit": "cbfde89b6e3c1206bcfbe97e4d1da06b38a2c203",
+  "pcmReadPolicy": "Original floor-ms reader; later exact-tail fix requires its own validation"
 }
