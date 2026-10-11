@@ -61,7 +61,7 @@ jobs:
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/lingoscribe-debug.apk
           flutter build appbundle --release --target-platform android-arm64
           python ../../tools/check_android_artifact.py build/app/outputs/bundle/release/app-release.aab --report build/qa/android-aab-alignment.json
-          export ORG_GRADLE_PROJECT_lingoQa=true
+          export LINGO_QA_BUILD=true
           flutter build apk --debug --target-platform android-arm64,android-x64
           cp build/app/outputs/flutter-apk/app-debug.apk build/qa/lingoscribe-qa-debug.apk
           flutter build apk --debug --target-platform android-arm64,android-x64 --target integration_test/native_pipeline_test.dart

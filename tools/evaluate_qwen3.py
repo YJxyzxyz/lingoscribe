@@ -32,6 +32,9 @@ def main():
     parser.add_argument('--audio-root', required=True)
     parser.add_argument('--report', default='build/qwen3-research-evaluation.json')
     parser.add_argument('--include-text', action='store_true')
+    parser.add_argument('--max-total-len', type=int, default=512)
+    parser.add_argument('--max-new-tokens', type=int, default=128)
+    parser.add_argument('--reuse-model', action='store_true', help='Accuracy research only: reuse the native model across clips')
     args = parser.parse_args()
     model = Path(args.model_directory)
     for name, expected in HASHES.items():
@@ -40,6 +43,8 @@ def main():
     corpus = json.loads(Path(args.manifest).read_text(encoding='utf-8'))
     assert corpus['clips'], 'Reference clips are required'
     rows = []
+    recognizer = None
+    assert 0 < args.max_new_tokens < args.max_total_len <= 1024
     for index, clip in enumerate(corpus['clips']):
         assert clip['kind'] == 'licensed_human' and clip.get('license') and clip.get('source')
         audio = Path(args.audio_root) / clip['file']
@@ -48,10 +53,11 @@ def main():
             assert wav.getnchannels() == 1 and wav.getsampwidth() == 2 and wav.getframerate() == 16000
             samples = np.frombuffer(wav.readframes(wav.getnframes()), dtype='<i2').astype(np.float32) / 32768
         started = time.perf_counter()
-        recognizer = sherpa_onnx.OfflineRecognizer.from_qwen3_asr(
-            conv_frontend=str(model / 'conv_frontend.onnx'), encoder=str(model / 'encoder.int8.onnx'),
-            decoder=str(model / 'decoder.int8.onnx'), tokenizer=str(model / 'tokenizer'),
-            num_threads=4, max_total_len=512, max_new_tokens=128, provider='cpu', debug=False)
+        if recognizer is None:
+            recognizer = sherpa_onnx.OfflineRecognizer.from_qwen3_asr(
+                conv_frontend=str(model / 'conv_frontend.onnx'), encoder=str(model / 'encoder.int8.onnx'),
+                decoder=str(model / 'decoder.int8.onnx'), tokenizer=str(model / 'tokenizer'),
+                num_threads=4, max_total_len=args.max_total_len, max_new_tokens=args.max_new_tokens, provider='cpu', debug=False)
         loaded = time.perf_counter()
         stream = recognizer.create_stream()
         stream.accept_waveform(16000, samples)
@@ -70,7 +76,9 @@ def main():
         if args.include_text:
             row.update(reference=clip['text'], hypothesis=hypothesis)
         rows.append(row)
-        del stream, recognizer
+        del stream
+        if not args.reuse_model:
+            recognizer = None
         print(f'Completed {index + 1}/{len(corpus["clips"])}', flush=True)
     groups = {}
     for group in sorted({row['datasetLanguage'] for row in rows}):
@@ -96,8 +104,8 @@ def main():
         'manifestSha256': digest(args.manifest), 'corpusAttribution': corpus['attribution'],
         'corpusSelection': corpus.get('selection'),
         'normalization': 'Same NFKC/Han-CER/Latin-WER rules as evaluate_transcription.py; no script conversion',
-        'settings': {'threads': 4, 'provider': 'cpu', 'maxTotalLen': 512, 'maxNewTokens': 128,
-                     'modelLifetime': 'Reload for each clip; load and inference measured separately'},
+        'settings': {'threads': 4, 'provider': 'cpu', 'maxTotalLen': args.max_total_len, 'maxNewTokens': args.max_new_tokens,
+                     'modelLifetime': 'Shared across clips; research only' if args.reuse_model else 'Reload for each clip; load and inference measured separately'},
         'aggregates': groups, 'clips': rows,
         'scope': 'Desktop research, not mobile integration, distribution clearance, representative accuracy or phone performance.',
     }

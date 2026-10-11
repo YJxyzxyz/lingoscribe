@@ -1,0 +1,117 @@
+{
+  "manifestSha256": "a06d19a8a0dd809cce512f54246a650f48bb091fb6de82a7e66b9fdbe6718665",
+  "corpusSelection": "First 30 rows per language with duration >= 2 seconds; round-robin across first up to three numeric speaker IDs in validation split, preserving source row order per speaker; exhausted speakers skipped; chosen before inference",
+  "normalization": "Same NFKC/Han-CER/Latin-WER rules as evaluate_transcription.py; no script conversion",
+  "scope": "Diagnostic reuse of the initial holdout after its first evaluation. Not a new independent commercial acceptance set or phone benchmark. Matched whole-clip settings isolate VAD/context trimming from token-buffer settings.",
+  "runs": {
+    "dart_vad_intervals": {
+      "maxTotalLen": 1024,
+      "maxNewTokens": 512,
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "chineseCER": null,
+          "englishWER": 0.20353982300884957,
+          "chineseReferenceChars": 0,
+          "englishReferenceWords": 339
+        },
+        "mixed": {
+          "clips": 30,
+          "chineseCER": 0.26605504587155965,
+          "englishWER": 0.4430379746835443,
+          "chineseReferenceChars": 327,
+          "englishReferenceWords": 158
+        },
+        "zh": {
+          "clips": 30,
+          "chineseCER": 0.03764320785597381,
+          "englishWER": 1.5,
+          "chineseReferenceChars": 611,
+          "englishReferenceWords": 2
+        }
+      }
+    },
+    "python_whole_512": {
+      "settings": {
+        "threads": 4,
+        "provider": "cpu",
+        "maxTotalLen": 512,
+        "maxNewTokens": 128,
+        "modelLifetime": "Reload for each clip; load and inference measured separately"
+      },
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 144.25,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 339,
+          "englishWER": 0.1887905604719764,
+          "rtfIncludingLoad": 1.118,
+          "rtfInferenceOnly": 0.24
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 143.37,
+          "chineseReferenceChars": 327,
+          "chineseCER": 0.1743119266055046,
+          "englishReferenceWords": 158,
+          "englishWER": 0.3670886075949367,
+          "rtfIncludingLoad": 0.988,
+          "rtfInferenceOnly": 0.217
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 137.44,
+          "chineseReferenceChars": 611,
+          "chineseCER": 0.03764320785597381,
+          "englishReferenceWords": 2,
+          "englishWER": 1.0,
+          "rtfIncludingLoad": 1.0,
+          "rtfInferenceOnly": 0.216
+        }
+      }
+    },
+    "python_whole_1024": {
+      "settings": {
+        "threads": 4,
+        "provider": "cpu",
+        "maxTotalLen": 1024,
+        "maxNewTokens": 512,
+        "modelLifetime": "Shared across clips; research only"
+      },
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 144.25,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 339,
+          "englishWER": 0.1887905604719764,
+          "rtfIncludingLoad": 0.195,
+          "rtfInferenceOnly": 0.195
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 143.37,
+          "chineseReferenceChars": 327,
+          "chineseCER": 0.1743119266055046,
+          "englishReferenceWords": 158,
+          "englishWER": 0.3670886075949367,
+          "rtfIncludingLoad": 0.193,
+          "rtfInferenceOnly": 0.193
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 137.44,
+          "chineseReferenceChars": 611,
+          "chineseCER": 0.03764320785597381,
+          "englishReferenceWords": 2,
+          "englishWER": 1.0,
+          "rtfIncludingLoad": 0.236,
+          "rtfInferenceOnly": 0.21
+        }
+      }
+    }
+  }
+}

@@ -7,15 +7,33 @@ buildscript {
 }
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+def qaEngineDirectory = System.getenv('LINGO_QA_ENGINE_DIRECTORY')
+if (qaEngineDirectory) {
+    def qaBuild = providers.gradleProperty('lingoQa').orNull == 'true' || System.getenv('LINGO_QA_BUILD') == 'true'
+    if (!qaBuild || gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }) {
+        throw new GradleException('Cached engine is restricted to independent Debug QA installations')
+    }
+    def qaPython = System.getenv('LINGO_BUILD_PYTHON') ?: 'python3'
+    def verified = providers.exec {
+        commandLine qaPython, "${projectDir}/../../../tools/android_qa_engine_cache.py", '--verify', qaEngineDirectory
+    }.result.get()
+    if (verified.exitValue != 0) throw new GradleException('QA engine cache verification failed')
+}
 android {
     namespace 'io.github.yjxyzxyz.offline_engine'
     compileSdk 36
     ndkVersion '28.2.13676358'
     defaultConfig {
         minSdk 26
-        externalNativeBuild { cmake { arguments '-DANDROID_STL=c++_shared'; abiFilters 'arm64-v8a', 'x86_64' } }
+        if (!qaEngineDirectory) {
+            externalNativeBuild { cmake { arguments '-DANDROID_STL=c++_shared'; abiFilters 'arm64-v8a', 'x86_64' } }
+        }
     }
-    externalNativeBuild { cmake { path '../src/CMakeLists.txt'; version '3.22.1' } }
+    if (qaEngineDirectory) {
+        sourceSets { debug { jniLibs.srcDirs = [qaEngineDirectory] } }
+    } else {
+        externalNativeBuild { cmake { path '../src/CMakeLists.txt'; version '3.22.1' } }
+    }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = '17' }
 }

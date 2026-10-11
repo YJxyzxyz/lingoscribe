@@ -59,8 +59,8 @@ Qwen3 引擎候选用 `tools/evaluate_qwen3.py --model-directory <固定快照�
 ```sh
 cd apps/mobile
 flutter pub get --enforce-lockfile
-# Windows PowerShell: $env:ORG_GRADLE_PROJECT_lingoQa='true'
-export ORG_GRADLE_PROJECT_lingoQa=true
+# Windows PowerShell: $env:LINGO_QA_BUILD='true'
+export LINGO_QA_BUILD=true
 flutter build apk --debug --target-platform android-arm64,android-x64 --target integration_test/native_pipeline_test.dart
 cd ../..
 python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/mobile/build/app/outputs/flutter-apk/app-debug.apk --model <官方BaseQ5.bin> --audio <whisper.cpp上游samples/jfk.wav> --report build/android-native-result.json
@@ -71,8 +71,9 @@ python tools/run_android_native_test.py --device <QA设备序列号> --apk apps/
 当前 Android 测试入口增加真实原生麦克风采集、暂停/继续及 WAV 保存断言；脚本会在指定 QA 安装上预授予麦克风权限。虚拟麦克风结果不代表真实人声或物理手机麦克风质量。
 `android-runtime` CI 在专用 Linux/KVM 模拟器上已通过此入口，见 `validation/android-native-ci-integration.json`。首次未优化的 Debug 原生运行中，11 秒英文推理为约 292 秒；后续 Debug 内核启用 `-O3` 并保留调试符号。Android 发布构建使用已优化的 `RelWithDebInfo` 配置（本机实际编译指令为 `-O2`），该变更不修改发布配置。不同宿主和构建模式的时间不能作为手机速度比较。
 FFmpeg 仅用于测试工具生成不同编码的真实音频夹具，不进入 App；可通过 `--ffmpeg` 指定本机路径。
-构建入口改变后保持 QA 环境变量、用正常 `lib/main.dart` 重新构建，恢复 QA 应用界面；构建生产产物前取消 `ORG_GRADLE_PROJECT_lingoQa` 环境变量。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
+构建入口改变后保持 QA 环境变量、用正常 `lib/main.dart` 重新构建，恢复 QA 应用界面；构建生产产物前取消 `LINGO_QA_BUILD` 环境变量。直接调用 Gradle 之前必须生成匹配构建模式的 Flutter 插件注册表。
 切换 Debug/Release 时使用完整 `flutter build`，不要跳过需要按构建模式生成的插件配置；不要与同一工程的 pub/analyze 命令并行执行。
+本机 QA 可用 `tools/android_qa_engine_cache.py` 从本项目已核对归档摘要的 CI APK 提取原生引擎。工具另核对 APK 摘要、完整源码提交、每项原生输入（只规范 CRLF）及每个库的真实字节摘要。`LINGO_QA_ENGINE_DIRECTORY` 指向此目录、`LINGO_QA_BUILD=true`，并通过 `LINGO_BUILD_PYTHON` 指定解释器；构建时重新校验。缓存只允许独立 Debug QA 包，生产和 Release 构建拒绝此选项、默认仍编译固定源码。此缓存不得使用上游通用预编译 SDK。Windows Gradle wrapper 的跨盘 junction 可能导致脚本类路径错误；先用 Flutter 生成正确 Debug 配置，必要时直接使用同版本 Gradle 的实际目录。
 CI 与正式构建使用 `pub get --enforce-lockfile`，避免依赖来源变化时悄悄升级版本。
 
 产物检查：`tools/check_android_artifact.py` 检查实际 ELF、APK 存储对齐和完整 ABI；`tools/check_ios_bundle.py` 检查实际 App 内的 FFI 导出、检测模型哈希与隐私声明。

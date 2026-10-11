@@ -18,8 +18,10 @@ val targetAbis = (project.findProperty("target-platform") as? String ?: "android
             else -> error("Unsupported LingoScribe target: $target")
         }
     }
-// Set ORG_GRADLE_PROJECT_lingoQa=true for a separate, disposable QA installation.
-val lingoQa = providers.gradleProperty("lingoQa").orNull == "true"
+// A separate, disposable QA installation; explicit environment flag also
+// avoids case-sensitive Gradle project-property names on Windows.
+val lingoQa = providers.gradleProperty("lingoQa").orNull == "true" ||
+    providers.environmentVariable("LINGO_QA_BUILD").orNull == "true"
 
 android {
     namespace = "io.github.yjxyzxyz.lingoscribe"
