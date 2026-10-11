@@ -4,6 +4,7 @@ import hashlib
 import json
 import plistlib
 import subprocess
+import re
 from pathlib import Path
 
 parser = argparse.ArgumentParser()
@@ -14,6 +15,11 @@ parser.add_argument('--report')
 args = parser.parse_args()
 root = Path(args.bundle)
 info = plistlib.loads((root / 'Info.plist').read_bytes())
+sdk_name = info.get('DTSDKName', '')
+sdk_match = re.fullmatch(r'iphoneos(\d+)(?:\.\d+)*', sdk_name)
+xcode_version = str(info.get('DTXcode', ''))
+sdk_baseline = bool(sdk_match and int(sdk_match.group(1)) >= 26 and
+                    xcode_version.isdigit() and int(xcode_version) // 100 >= 26)
 manifests = [{'path': path.relative_to(root).as_posix(), 'declaration': plistlib.loads(path.read_bytes())}
              for path in sorted(root.rglob('*.xcprivacy'))]
 tracking = [row['path'] for row in manifests if row['declaration'].get('NSPrivacyTracking') or
@@ -28,6 +34,10 @@ exports = {name: any(line.endswith(f' T _{name}') for line in symbols.splitlines
 report = {'sourceCommit': args.commit, 'bundleId': info.get('CFBundleIdentifier'),
           'version': info.get('CFBundleShortVersionString'), 'build': info.get('CFBundleVersion'),
           'minimumOS': info.get('MinimumOSVersion'), 'microphoneUsage': info.get('NSMicrophoneUsageDescription'),
+          'buildSdk': sdk_name, 'buildXcode': xcode_version,
+          'storeSdkBaseline': {'minimumIosSdkMajor': 26, 'minimumXcodeMajor': 26,
+              'passed': sdk_baseline, 'checkedOn': '2026-10-11',
+              'source': 'https://developer.apple.com/news/upcoming-requirements/?id=04282026a'},
           'nativeSha256': hashlib.sha256(native.read_bytes()).hexdigest(), 'nativeExports': exports,
           'detectorSha256': digest, 'manifests': manifests,
           'trackingDeclarations': tracking, 'collectedDataDeclarations': collected,
@@ -35,7 +45,7 @@ report = {'sourceCommit': args.commit, 'bundleId': info.get('CFBundleIdentifier'
 localizations = {language: (root / f'{language}.lproj/InfoPlist.strings').exists() for language in ('en', 'zh-Hans')}
 report['permissionLocalizations'] = localizations
 report['developmentFrameworks'] = [path.name for path in (root / 'Frameworks').glob('*integration_test*')]
-report['passed'] = bool(manifests) and not tracking and not collected and all(exports.values()) and bool(report['microphoneUsage']) and digest == '2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987'
+report['passed'] = sdk_baseline and bool(manifests) and not tracking and not collected and all(exports.values()) and bool(report['microphoneUsage']) and digest == '2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987'
 if report['developmentFrameworks']:
     report['passed'] = False
 if localizations and not all(localizations.values()):

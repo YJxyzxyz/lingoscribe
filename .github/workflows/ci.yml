@@ -127,8 +127,16 @@ jobs:
   ios:
     needs: quality
     runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify current App Store SDK baseline
+        run: |
+          test -d "$DEVELOPER_DIR"
+          xcodebuild -version
+          SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+          python3 -c 'import sys; assert int(sys.argv[1].split(".")[0]) >= 26, "App Store upload requires iOS 26 SDK or newer"' "$SDK_VERSION"
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2
         with:
           flutter-version: '3.47.7'

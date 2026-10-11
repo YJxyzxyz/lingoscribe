@@ -24,6 +24,7 @@
 ## 构建方式
 
 固定 Flutter 3.47.7，Java 17，Android SDK 36，NDK 28.2.13676358，CMake 3.22.1；iOS 15+，Android 8+，正式 Android 首发目标 arm64。
+2026-10-11 核查：Apple 已自 2026-04-28 起要求上传使用 Xcode 26+ 和 iOS 26 SDK+；iOS 15 最低运行系统不能代替编译 SDK 要求。CI 已配置 macOS 15 镜像内明确的 Xcode 26.3（iOS 26.2 SDK），构建前检查所选 SDK，产物检查再读取 `DTSDKName` / `DTXcode`。旧 iOS 18.5 SDK 包仅作历史开发验证，当前提交基线检查会拒绝。新工具链完整构建仍待实际运行结果。
 
 ```sh
 cd apps/mobile
@@ -51,6 +52,9 @@ flutter build ios --release --no-codesign
 CI 的 unsigned AAB / iOS .app 仅用于编译验证，不能当作已签名商店包。正式发布标签必须在真机验收及签名验证之后建立。
 
 ## 官方依据（2026-10-09 核查）
+
+- [Apple SDK minimum requirements（2026-10-11 更新核查）](https://developer.apple.com/news/upcoming-requirements/?id=04282026a)：自 2026-04-28 起上传 App Store Connect 使用 Xcode 26+ / iOS 26 SDK+。2027-04 起将改为 SDK 27+，见 [后续提交要求](https://developer.apple.com/app-store/submitting/)，正式提交前再次核对。
+- [GitHub macOS 15 ARM64 镜像](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md)：提供 Xcode 26.3 / iOS 26.2，但默认仍是 Xcode 16.4，因此 CI 明确选择编译器路径。
 
 - [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)：真实功能、隐私、许可和商店审核资料需与实际构建一致。
 - [Apple Privacy Manifest](https://developer.apple.com/documentation/bundleresources/privacy-manifest-files)：依赖及访问受管 API 的声明需要根据最终构建复核。
