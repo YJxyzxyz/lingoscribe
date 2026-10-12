@@ -1,0 +1,99 @@
+{
+  "sourceRevision": "737e9800ae31be9932ba8464c80366559bd28424",
+  "source": "https://huggingface.co/datasets/CAiRE/ASCEND/tree/737e9800ae31be9932ba8464c80366559bd28424",
+  "attribution": "HKUST CAiRE; Lovenia et al., ASCEND (LREC 2022)",
+  "license": "CC-BY-SA-4.0",
+  "split": "train (used only for evaluation)",
+  "selection": "Before inference: first ten sorted numeric speaker IDs excluding all five previously studied speakers; first 100 clips per language with duration >=2 s, round-robin preserving shard/row order; no selection by transcript or model result",
+  "excludedSpeakers": [
+    3,
+    7,
+    12,
+    17,
+    20
+  ],
+  "selectedSpeakers": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    13
+  ],
+  "sourceHashes": {
+    "train-00000.parquet": "3d66ba76f324e0711b779cfb01ee4e772a24a929e1d77a2063cde0506f75976f",
+    "train-00001.parquet": "569f84f771c3637ca8535bd35e10e62feed2c240833534711909a9c04f51e589",
+    "train-00002.parquet": "aa76b7ef4a74ff111fd1d2573d0b69e6b6f901df6054618d8e5658a7a394523e"
+  },
+  "selectionFrozenBeforeInference": true,
+  "priorManifestsSha256": {
+    "ascend-expanded": "d1f4b4bc6a5d24883b83b0142500154b3f1bc73d3357f882c337ad0b6b7f1ee7",
+    "ascend-holdout": "a06d19a8a0dd809cce512f54246a650f48bb091fb6de82a7e66b9fdbe6718665"
+  },
+  "audioAndSpeakersDisjointVerified": true,
+  "scope": "Disjoint from prior app tuning speakers. Unknown model pretraining overlap; short conversational clips do not cover long audio, noise, power or commercial acceptance alone.",
+  "manifestSha256": "d97be08de9c3a5fc63fe00091cf6d6b41deb97eab3ae2ca9aabf2f3c9ec99384",
+  "clipCount": 300,
+  "coverage": {
+    "zh": {
+      "clips": 100,
+      "speakers": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        13
+      ]
+    },
+    "en": {
+      "clips": 100,
+      "speakers": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        13
+      ]
+    },
+    "mixed": {
+      "clips": 100,
+      "speakers": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        13
+      ]
+    }
+  },
+  "modelPolicyFrozen": {
+    "applicationSourceCommit": "97a420f936d0ebeded9d0dcbc64985648e43a228",
+    "inputContextPolicy": "qwen_context_v1",
+    "pcmReadPolicy": "pcm_exact_tail_v1",
+    "language": "auto",
+    "prompt": "",
+    "maxTotalLen": 1024,
+    "maxNewTokens": 512,
+    "threads": 4
+  },
+  "inferenceStatus": "Not run when protocol was written; all clips selected before first inference"
+}
