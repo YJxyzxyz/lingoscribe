@@ -24,7 +24,7 @@
 ## 构建方式
 
 固定 Flutter 3.47.7，Java 17，Android SDK 36，NDK 28.2.13676358，CMake 3.22.1；iOS 15+，Android 8+，正式 Android 首发目标 arm64。
-2026-10-11 核查：Apple 已自 2026-04-28 起要求上传使用 Xcode 26+ 和 iOS 26 SDK+；iOS 15 最低运行系统不能代替编译 SDK 要求。CI 已配置 macOS 15 镜像内明确的 Xcode 26.3（iOS 26.2 SDK），构建前检查所选 SDK，产物检查再读取 `DTSDKName` / `DTXcode`。旧 iOS 18.5 SDK 包仅作历史开发验证，当前提交基线检查会拒绝。新工具链完整构建仍待实际运行结果。
+2026-10-12 复核：Apple 已自 2026-04-28 起要求上传使用 Xcode 26+ 和 iOS 26 SDK+；iOS 15 最低运行系统不能代替编译 SDK 要求。CI 明确使用 Xcode 26.3，构建前检查 SDK，产物检查再读取 `DTSDKName` / `DTXcode`。5ec087c 的完整 CI 已通过，下载归档摘要核对及实际 App 独立复查也通过：`iphoneos26.2` / `2630`，隐私声明、真实推理导出及测试组件排除检查通过，见 `validation/ios-bundle-5ec087c.json`。同次 iOS 26.2 模拟器的 Whisper/Qwen 管线通过。实际测试的是 PR 合成合并提交 5198227，已验证其源码树与分支 5ec087c 完全相同。旧 iOS 18.5 SDK 包仅作历史开发验证。当前包仍未签名，尚不代表 iPhone 或商店验收。
 
 ```sh
 cd apps/mobile

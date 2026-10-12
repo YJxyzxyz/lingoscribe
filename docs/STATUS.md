@@ -20,7 +20,7 @@
 - 已扩大固定语料到中文、英文、混合各 30 条，约 316.6 秒；仍为两位说话人，不是独立人群验收。Small 混合原始中文 CER 51.4% / 英文 WER 73.6%，准确率目标尚未达到。
 - `codex/qwen-offline` 草案分支已接入 Qwen3-ASR int8：六文件原子安装、摘要校验、真实 VAD、有界音频读取、原生 Dart 工作线程推理、协作取消和语音段时间戳；模型约 987 MB，首次主动下载或导入，不随 APK 打包。两端从固定 ASR-only 源码构建，关闭 TTS 及其不同许可依赖；许可通知与真实构建审核通过。该分支尚未合并正式主线，见 `QWEN_INTEGRATION.md` 和 PR #1。
 - 8a3075a 的双平台源码构建、发布包静态/许可检查及两端 Whisper/Qwen 真实模拟器管线全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38108630652)。iOS 测试入口修复已实际验证，四份带来源摘要的原生报告保存在 `validation/*-native-8a3075a.json`。这不是物理 iPhone 验收。
-- 70da5ab 的 51 项质量检查、两端构建及 Whisper/Qwen 真实模拟器管线也全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38132712801)，覆盖上下文与精确尾部读入。随后核查发现默认 iOS 工具链 Xcode 16.4 / SDK 18.5 不满足当前 Apple 上传要求；已明确配置 Xcode 26.3，并在实际产物读取编译 SDK/Xcode 加入门槛。旧包经新检查拒绝，升级工具链的完整构建仍待实际 CI 结果。
+- 70da5ab 的 51 项质量检查、两端构建及 Whisper/Qwen 真实模拟器管线全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38132712801)，覆盖上下文与精确尾部读入。随后将默认 Xcode 16.4 / SDK 18.5 升级为明确选择的 Xcode 26.3。5ec087c 的四项 CI 作业全部通过，见 [构建记录](https://github.com/YJxyzxyz/lingoscribe/actions/runs/38134839880)。下载并核对归档摘要后独立复查真实 iOS App，确认 SDK 26.2 / Xcode 26.3、FFI 导出、隐私及测试框架排除；四份模拟器原生报告及 App 检查保存在 `validation/*-5ec087c.json`。CI 使用 PR 合成合并提交 5198227，其源码树已验证与分支 5ec087c 相同。包仍未签名，尚未通过物理 iPhone 验收。
 - Qwen 的真实 Dart/VAD 开发宿主路径，在原两位说话人的 90 条上混合原始中文 CER 17.5% / 英文 WER 31.9%；新增三位说话人的 90 条为 26.6% / 44.3%。完整原始计分均保留，覆盖与错误率未满足 `COMMERCIAL_ACCEPTANCE.md`。整段音频诊断更好，但仍未达到验收，且复用诊断语料不能作为新独立验收集。
 - 94150a8 的上下文策略与精确 PCM 读入已完成同一 180 条真实 Dart 回归：合并五位说话人后，纯中文 CER 5.9% → 5.6%、纯英文 WER 21.5% → 18.7%，混合中文 CER 22.0% → 17.2%、英文 WER 40.4% → 35.7%；原先一批混合英文略退步，全部条目保留。见 `validation/qwen-context-exact-comparison.json`。模型六文件摘要再次核对通过；该集已用于诊断与回归，不是新的独立商业验收集，仍未达到准确率及覆盖门槛。先前 cbfde89/旧读取策略报告保留。
 - SenseVoice 对照研究在该小样本表现更好，尚未接入 App；需扩展语料、验证双平台性能及单独确认模型权重商业再分发许可，见 `MODEL_EVALUATION.md`。
@@ -33,7 +33,8 @@
 - 同一提交另构建约 24.5 MB 的 ARM64 Release 配置 APK，使用已有开发证书签名供试用；实际 v2/v3 签名、单架构、应用版本与 16 KB 静态对齐检查通过，尚未做该 APK 的手机运行验收。
 - 尚未验证：两端手机准确率/性能/功耗、长音频、来电/后台/低存储行为、iOS 签名归档、商店审核。
 - vivo V2073A / Android 13 / ARM64 的独立 `.qa` 安装已通过三项真实原生断言：实际录音 1.760 秒、暂停/继续、六种音频格式解码、Base 模型 11 秒英文转写约 12.894 秒、时间戳与 SQLite 校对/标记。Debug 全流程采样最大 PSS 493.4 MiB，不能代表精确瞬时峰值或正式版性能。报告见 `validation/android-physical-base-8a3075a.json`，序列号已脱敏。
-- 手机对 Qwen 更新安装再次返回 INSTALL_FAILED_ABORTED / User rejected permissions；等待用户确认下一次系统安装提示，尚无 Qwen 真机结果。完整界面 QA 包已生成；当前手机仍是原生测试入口。
+- 2026-10-12 手机在流式安装时返回 INSTALL_FAILED_ABORTED，用户确认没有显示弹窗；改用标准 `--no-streaming` 后完整界面及 Qwen 测试包实际安装成功。8a3075a Qwen 基线真机断言通过，11 秒英文流程 41.490 秒，采样最大 PSS 1,392,108 KiB（约 1.33 GiB），六文件校验、真实 VAD/推理、语音段时间戳、SQLite 校对/标记和准备阶段取消保留音频均通过。报告 `validation/android-physical-qwen-8a3075a.json` 已脱敏，明确为改进前基线。Debug RTF 3.77 尚不满足速度目标，不代表正式版、耗电或最新上下文策略性能。
+- 真机测试后已恢复含最新上下文与精确 PCM 读入的 5ec087c 完整 QA 界面，用户确认安装提示后成功启动。手机实际安装 APK 摘要与本机包一致，截图检查显示真实测试记录、已校对及标记内容，原有模型目录保留，见 `validation/android-physical-ui-5ec087c.json`。此项是完整界面恢复检查，不能替代最新策略的手机推理、全部交互或发布版验收。当前手机可使用“聆写 QA”，不再是空白原生测试入口。
 
 ## 已知局限
 

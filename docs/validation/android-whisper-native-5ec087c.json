@@ -1,0 +1,148 @@
+{
+  "platform": "android",
+  "buildMode": "debug",
+  "fixtureKind": "upstream",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "elapsedSeconds": 35.423,
+  "durationMs": 11000,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 10580,
+      "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "model_import_hash",
+    "native_normalization",
+    "isolate_asr",
+    "timestamps",
+    "sqlite_persistence",
+    "original_text_retained",
+    "bookmark"
+  ],
+  "codecChecks": [
+    {
+      "format": "stereo48.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "stereo44.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998616663192
+    },
+    {
+      "format": "sample.mp3",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999987269504103
+    },
+    {
+      "format": "sample.m4a",
+      "durationMs": 11008,
+      "signalCorrelation": 0.9999944863118821
+    },
+    {
+      "format": "sample.flac",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "sample.ogg",
+      "durationMs": 11013,
+      "signalCorrelation": 0.9990635245300317
+    }
+  ],
+  "microphoneChecks": {
+    "durationMs": 1792,
+    "bytes": 57388,
+    "pausedBytes": 28716,
+    "checks": [
+      "native_capture",
+      "pause_stops_file_growth",
+      "resume_grows_file",
+      "wav_duration",
+      "sqlite_persistence"
+    ],
+    "scope": "Real native microphone lifecycle on a dedicated emulator; not human voice accuracy or power measurement"
+  },
+  "deviceSerial": "emulator-5554",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "apkSha256": "3140572a2eec32fa8f7e36beda95290d8e65e459f266f684993b1e30f2ba4453",
+  "physicalDevice": false,
+  "deviceModel": "sdk_gphone64_x86_64",
+  "androidRelease": "15",
+  "androidSdk": "35",
+  "abi": "x86_64",
+  "scope": "Real native pipeline on a dedicated emulator; debug timing is not a release performance or power benchmark",
+  "testStatus": {
+    "passed": true,
+    "testCount": 3,
+    "failures": []
+  },
+  "memory": {
+    "sampleIntervalSeconds": 5,
+    "samples": [
+      {
+        "elapsedSeconds": 3.559,
+        "pssKiB": 253663,
+        "rssKiB": 368240
+      },
+      {
+        "elapsedSeconds": 10.075,
+        "pssKiB": 272128,
+        "rssKiB": 398336
+      },
+      {
+        "elapsedSeconds": 16.488,
+        "pssKiB": 292993,
+        "rssKiB": 422872
+      },
+      {
+        "elapsedSeconds": 23.014,
+        "pssKiB": 409212,
+        "rssKiB": 539192
+      },
+      {
+        "elapsedSeconds": 29.587,
+        "pssKiB": 408341,
+        "rssKiB": 538348
+      },
+      {
+        "elapsedSeconds": 35.903,
+        "pssKiB": 408760,
+        "rssKiB": 538776
+      },
+      {
+        "elapsedSeconds": 42.304,
+        "pssKiB": 449855,
+        "rssKiB": 579876
+      },
+      {
+        "elapsedSeconds": 48.681,
+        "pssKiB": 453721,
+        "rssKiB": 583776
+      },
+      {
+        "elapsedSeconds": 54.847,
+        "pssKiB": 311896,
+        "rssKiB": 441948
+      }
+    ],
+    "peakSampledPssKiB": 453721,
+    "peakSampledRssKiB": 583776,
+    "scope": "ADB dumpsys samples across the complete debug integration run including fixture import; sampled maxima can miss short peaks. Not power measurement."
+  },
+  "provenance": {
+    "headCommit": "5ec087c030ce6804acb8da354351eb05c2afabcc",
+    "testedMergeCommit": "519822744252b2de7d61920917f1c143bee8e41d",
+    "sourceTree": "e5426d779f030f1f495a0e08b3d7930bc17b2069",
+    "headAndMergeTreesIdentical": true,
+    "workflowRun": 38134839880,
+    "artifactId": 11700888804,
+    "runtimeArtifactSha256": "2998357f80ba5a376310ab5fe5406de34928db7b406186c61d39323cc147a221"
+  }
+}

@@ -16,6 +16,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--adb', default='adb')
 parser.add_argument('--device', required=True, help='Dedicated QA emulator/device serial')
 parser.add_argument('--apk', required=True, help='APK built from integration_test/native_pipeline_test.dart')
+parser.add_argument('--no-streaming-install', action='store_true',
+                    help='Use standard push installation for OEM installers that reject streamed APKs')
 parser.add_argument('--package-id', default='io.github.yjxyzxyz.lingoscribe.qa')
 parser.add_argument('--aapt', help='Android build-tools aapt; automatically found in ANDROID_HOME/ANDROID_SDK_ROOT')
 model_group = parser.add_mutually_exclusive_group(required=True)
@@ -52,7 +54,7 @@ else:
     model = Path(args.model)
     assert hashlib.sha256(model.read_bytes()).hexdigest() == expected, 'Model must match the official pinned Base Q5 file'
 adb('shell', 'am', 'force-stop', package, capture_output=True)
-adb('install', '-r', args.apk)
+adb('install', *(['--no-streaming'] if args.no_streaming_install else []), '-r', args.apk)
 adb('shell', 'pm', 'grant', package, 'android.permission.RECORD_AUDIO')
 adb('shell', 'run-as', package, 'mkdir', '-p', 'files/qa')
 inputs = [(Path(args.audio), 'sample.wav')]
@@ -115,6 +117,7 @@ while time.monotonic() - started < (900 if args.qwen_directory else 600):
         assert report['audioSha256'] == hashlib.sha256(Path(args.audio).read_bytes()).hexdigest()
         report['deviceSerial'] = args.device
         report['packageId'] = package
+        report['installationMode'] = 'non-streaming' if args.no_streaming_install else 'streaming'
         with Path(args.apk).open('rb') as apk_file:
             report['apkSha256'] = hashlib.file_digest(apk_file, 'sha256').hexdigest()
         report['physicalDevice'] = not emulator

@@ -1,0 +1,29 @@
+{
+  "deviceId": "physical-android-01",
+  "deviceModel": "V2073A",
+  "androidRelease": "13",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "buildMode": "debug",
+  "applicationSourceCommit": "5ec087c030ce6804acb8da354351eb05c2afabcc",
+  "nativeSourceCommit": "1c07d6ca9c7f042e14b455400cf9e81dc81b13c3",
+  "nativeCacheSourceInputsAndLibraryHashesVerified": true,
+  "installationMode": "non-streaming",
+  "apkSha256": "12175965c727230d617a24225a61c74a83c962cbb58bbeb73cd80b0c0c56e174",
+  "installedApkSha256Verified": true,
+  "foregroundActivity": "io.github.yjxyzxyz.lingoscribe.qa/io.github.yjxyzxyz.lingoscribe.MainActivity",
+  "screen": "Transcript detail with persisted Qwen integration fixture, bookmarked edited segment, search and audio controls",
+  "screenshotSha256": "84d118f786240280ad30f8dc677cebfc3a8cb5eab1fdf44f4ec083c7ece84562",
+  "modelDirectoryEntries": [
+    "ggml-base-q5_1.bin",
+    "ggml-silero-v6.2.0.bin",
+    "qwen3-asr-0.6b-int8"
+  ],
+  "checks": [
+    "system_install_success",
+    "installed_apk_hash",
+    "foreground_activity",
+    "visual_transcript_detail",
+    "retained_model_directory"
+  ],
+  "scope": "Real phone complete UI restored after native tests. Screenshot visually inspected and test record/model directories retained; not complete interaction, latest-context phone inference, release performance or commercial acceptance."
+}
