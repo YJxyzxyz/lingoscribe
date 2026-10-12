@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   int tab = 0;
   Timer? _search;
+  final _query = TextEditingController();
   Completer<void>? _permissionFocus;
   AppController get app => widget.controller;
   @override
@@ -105,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (!(_permissionFocus?.isCompleted ?? true)) _permissionFocus!.complete();
     WidgetsBinding.instance.removeObserver(this);
     _search?.cancel();
+    _query.dispose();
     super.dispose();
   }
 
@@ -156,10 +158,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               SliverToBoxAdapter(child: _empty())
             else
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(24, 4, 24, 20),
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
                 sliver: SliverList.separated(
                   itemCount: app.items.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, index) => _item(app.items[index]),
                 ),
               ),
@@ -170,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     ],
   );
   Widget _libraryHeader() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+    padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -193,15 +195,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             ),
           ],
         ),
-        SizedBox(height: 28),
+        SizedBox(height: 18),
         Text(
           l10n(context).yourAudioLibrary,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         SizedBox(height: 8),
         PrivacyBadge(),
-        SizedBox(height: 24),
+        SizedBox(height: 18),
         TextField(
+          controller: _query,
           onChanged: (value) {
             _search?.cancel();
             _search = Timer(
@@ -212,9 +215,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           decoration: InputDecoration(
             hintText: l10n(context).searchLibrary,
             prefixIcon: Icon(Icons.search),
+            suffixIcon: app.query.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: l10n(context).clearSearch,
+                    onPressed: () {
+                      _search?.cancel();
+                      _query.clear();
+                      unawaited(app.refresh(query: ''));
+                    },
+                    icon: Icon(Icons.close, size: 20),
+                  ),
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 16),
         Wrap(
           alignment: WrapAlignment.spaceBetween,
           spacing: 12,
@@ -253,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     ),
   );
   Widget _libraryActions() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 12, 24, 18),
+    padding: EdgeInsets.fromLTRB(20, 10, 20, 12),
     child: Row(
       children: [
         Expanded(
@@ -278,18 +292,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 30),
     child: Column(
       children: [
-        Container(
-          padding: EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xffe7eedf),
-          ),
-          child: Icon(
-            app.query.isEmpty ? Icons.graphic_eq : Icons.search_off,
-            size: 46,
-            color: forest,
-          ),
-        ),
+        if (app.query.isEmpty)
+          ExcludeSemantics(
+            child: Image.asset(
+              'assets/art/private-audio-library.png',
+              width: 190,
+              height: 126,
+              fit: BoxFit.contain,
+              cacheWidth: 570,
+            ),
+          )
+        else
+          Icon(Icons.search_off, size: 46, color: forest),
         SizedBox(height: 22),
         Text(
           app.query.isEmpty
@@ -317,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     ),
   );
   Widget _item(TranscriptSummary value) => InkWell(
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(20),
     onTap: () => _openSaved(value.id),
     child: SurfaceCard(
       child: Column(
@@ -327,10 +341,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Color(0xffedf3e8),
-                  borderRadius: BorderRadius.circular(14),
+                  color: softForest,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   value.source == 'import'
@@ -363,22 +377,32 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               Icon(Icons.chevron_right, color: muted),
             ],
           ),
-          SizedBox(height: 14),
-          if (value.preview.isNotEmpty)
+          if (value.preview.isNotEmpty) ...[
+            SizedBox(height: 10),
             Text(
               value.preview,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 13, color: muted),
             ),
+          ],
           SizedBox(height: 10),
-          Text(
-            localizedLabel(context, statusLabel(value.status)),
-            style: TextStyle(
-              fontSize: 12,
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
               color: value.status == TranscriptStatus.failed
-                  ? Colors.brown
-                  : forest,
+                  ? Theme.of(context).colorScheme.errorContainer
+                  : softForest,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              localizedLabel(context, statusLabel(value.status)),
+              style: TextStyle(
+                fontSize: 11,
+                color: value.status == TranscriptStatus.failed
+                    ? Theme.of(context).colorScheme.onErrorContainer
+                    : forest,
+              ),
             ),
           ),
         ],

@@ -275,6 +275,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourAudioLibrary => 'Your audio library';
 
   @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get showAllSegments => 'Show all segments';
+
+  @override
+  String get applyOptions => 'Save options';
+
+  @override
+  String get audioLanguageAdvice =>
+      'Use automatic detection for mixed speech. For English-only or Chinese-only audio, you can specify the language.';
+
+  @override
+  String get recordOptionsExplanation =>
+      'Only for this audio. Vocabulary hints do not guarantee recognition and do not change your defaults.';
+
+  @override
   String get searchLibrary => 'Search titles or transcripts';
 
   @override
@@ -338,7 +355,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modelVerificationExplanation =>
-      'Each model is checked with SHA-256 before installation, then checked again before transcription.';
+      'Models are checked before installation and transcription to keep your offline setup reliable.';
 
   @override
   String get importOfficialModel => 'Import an official model file';

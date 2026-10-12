@@ -251,7 +251,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get transcriptionPreferences => '转写偏好';
 
   @override
-  String get yourAudioLibrary => '你的声音资料库';
+  String get yourAudioLibrary => '声音资料库';
+
+  @override
+  String get clearSearch => '清除搜索';
+
+  @override
+  String get showAllSegments => '显示全部语音段';
+
+  @override
+  String get applyOptions => '保存选项';
+
+  @override
+  String get audioLanguageAdvice => '中英混合请选自动识别。仅含英文或中文时，可指定录音语言。';
+
+  @override
+  String get recordOptionsExplanation => '仅应用于这份音频。术语提示不能保证识别结果；不会修改默认偏好。';
 
   @override
   String get searchLibrary => '搜索标题或转写内容';
@@ -314,8 +329,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get modelsDescription => '下载一次，离线使用。\n模型只处理本地音频，录音不会上传。';
 
   @override
-  String get modelVerificationExplanation =>
-      '每个模型安装前都会验证 SHA-256。转写前再次检查文件，确保模型完整。';
+  String get modelVerificationExplanation => '安装和转写前检查模型完整性，让离线使用更安心。';
 
   @override
   String get importOfficialModel => '从文件导入官方模型';

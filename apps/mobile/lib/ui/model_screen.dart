@@ -92,9 +92,9 @@ class _ModelScreenState extends State<ModelScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: app.models,
     builder: (context, _) => ListView(
-      padding: EdgeInsets.all(24),
+      padding: EdgeInsets.all(20),
       children: [
-        SizedBox(height: 20),
+        SizedBox(height: 12),
         Text(
           l10n(context).modelsHeadline,
           style: Theme.of(context).textTheme.headlineMedium,
@@ -104,24 +104,27 @@ class _ModelScreenState extends State<ModelScreen> {
           l10n(context).modelsDescription,
           style: TextStyle(color: muted, height: 1.8),
         ),
-        SizedBox(height: 24),
-        SurfaceCard(
+        SizedBox(height: 20),
+        for (final model in [
+          ...models.where((model) => app.models.activeId == model.id),
+          ...models.where((model) => app.models.activeId != model.id),
+        ]) ...[_model(model), SizedBox(height: 12)],
+        Padding(
+          padding: EdgeInsets.only(bottom: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.verified_user_outlined, color: forest),
-              SizedBox(width: 12),
+              Icon(Icons.verified_user_outlined, color: forest, size: 18),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   l10n(context).modelVerificationExplanation,
-                  style: TextStyle(color: muted, fontSize: 13),
+                  style: TextStyle(color: muted, fontSize: 12),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 20),
-        for (final model in models) ...[_model(model), SizedBox(height: 16)],
         if (app.models.error != null)
           Padding(
             padding: EdgeInsets.only(bottom: 16),
@@ -163,6 +166,7 @@ class _ModelScreenState extends State<ModelScreen> {
     final selected = app.models.activeId == model.id && installed;
     final downloading = app.models.downloadingId == model.id;
     return SurfaceCard(
+      selected: selected,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -176,7 +180,11 @@ class _ModelScreenState extends State<ModelScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (selected) Icon(Icons.check_circle, color: forest),
+              if (selected)
+                Tooltip(
+                  message: l10n(context).currentModel,
+                  child: Icon(Icons.check_circle, color: forest),
+                ),
             ],
           ),
           SizedBox(height: 12),
@@ -221,6 +229,13 @@ class _ModelScreenState extends State<ModelScreen> {
               children: [
                 Expanded(
                   child: OutlinedButton(
+                    style: selected
+                        ? OutlinedButton.styleFrom(
+                            disabledForegroundColor: forest,
+                            disabledBackgroundColor: Color(0xffdceade),
+                            side: BorderSide.none,
+                          )
+                        : null,
                     onPressed: selected || app.busy
                         ? null
                         : () => _select(model),

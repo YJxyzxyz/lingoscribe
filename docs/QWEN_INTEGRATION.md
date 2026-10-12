@@ -31,6 +31,8 @@ vivo V2073A / Android 13 独立 `.qa` Debug 安装已通过真实录音、六种
 
 ## 手动开发宿主回归
 
+2026-10-12 完成五次固定语言提示的真实 Python 参考路径实验（90 条原始子集 auto/Chinese/English、90 条后续子集 auto/English），参数统一为 1024/512，全部条目保留，见 `validation/qwen-language-comparison.json`。60 条已知纯英文的合并 WER 为自动 18.7%、指定英文 18.0%（113 → 109 个错误 / 605 个参考词）；仍未达到 15% 门槛。强制英文严重损害中文与混合结果；强制中文没有改善混合英文。因此保持自动识别默认值，仅允许用户按实际录音选择语言。App 新增单份音频语言/术语选项并真实保存，不修改全局默认设置。这是复用语料的提示实验，不是新的独立验收或默认总体准确率提升。
+
 设置 `LINGO_ENGINE_LIBRARY` 为本机已编译的 VAD/Whisper 动态库，`LINGO_SHERPA_LIBRARY` 为参考运行库目录，`LINGO_RESEARCH_ROOT` 为本机 `build/`，`LINGO_NATIVE_AUDIO` 为固定上游 JFK WAV。
 运行 `flutter test test/qwen_desktop_native_test.dart --dart-define=RUN_NATIVE_QWEN=true --dart-define=RUN_QWEN_CORPUS=true`。
 原始识别正文仅保存在被忽略的 `build/qwen-dart-native-outputs.json`；`score_native_qwen_outputs.py` 输出无正文的聚合与逐条错误数。

@@ -11,6 +11,7 @@ import 'package:lingoscribe/services/model_manager.dart';
 import 'package:lingoscribe/ui/app.dart';
 import 'package:lingoscribe/ui/recording_screen.dart';
 import 'package:lingoscribe/ui/detail_screen.dart';
+import 'package:lingoscribe/ui/searchable_transcript_text.dart';
 import 'package:lingoscribe/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -89,6 +90,12 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('没有找到相关记录'), findsOneWidget);
+      await tester.tap(find.byTooltip('清除搜索'));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('自动化测试记录'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -105,6 +112,72 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'literal search highlights preserve selectable bilingual original text',
+    (tester) async {
+      const original = '学习 C++，c++ and Flutter。';
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SearchableTranscriptText(text: original, query: 'C++'),
+          ),
+        ),
+      );
+      final text = tester.widget<SelectableText>(find.byType(SelectableText));
+      expect(text.textSpan!.toPlainText(), original);
+      final spans = text.textSpan!.children!.cast<TextSpan>();
+      expect(
+        spans
+            .where((span) => span.style?.backgroundColor != null)
+            .map((span) => span.text),
+        ['C++', 'c++'],
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'per-record language and glossary save without altering defaults',
+    (tester) async {
+      final entry = Transcript(
+        id: 'options',
+        title: '待转写',
+        createdAt: DateTime.now(),
+        audioPath: '${directory.path}/options.wav',
+      );
+      await tester.runAsync(() => controller.save(entry));
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('zh'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: DetailScreen(controller: controller, initial: entry),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('转写偏好'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('English').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'LingoScribe, Flutter');
+      await tester.tap(find.text('保存选项'));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pumpAndSettle();
+      final saved = await tester.runAsync(() => controller.find(entry.id));
+      expect(saved!.language, 'en');
+      expect(saved.prompt, 'LingoScribe, Flutter');
+      expect(controller.language, 'auto');
+      expect(controller.prompt, '');
+      expect(saved.segments, isEmpty);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    },
+  );
   testWidgets(
     'English interface switches persistently without altering bilingual records',
     (tester) async {
@@ -332,7 +405,10 @@ void main() {
         );
         final image = await boundary.toImage();
         final data = await image.toByteData(format: ImageByteFormat.png);
-        final output = File('../../docs/validation/library-flutter.png');
+        final output = File(
+          Platform.environment['LINGO_UI_CAPTURE_PATH'] ??
+              '../../docs/validation/library-flutter.png',
+        );
         await output.parent.create(recursive: true);
         await output.writeAsBytes(data!.buffer.asUint8List());
       });

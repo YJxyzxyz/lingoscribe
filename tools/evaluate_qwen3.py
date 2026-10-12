@@ -35,6 +35,8 @@ def main():
     parser.add_argument('--max-total-len', type=int, default=512)
     parser.add_argument('--max-new-tokens', type=int, default=128)
     parser.add_argument('--reuse-model', action='store_true', help='Accuracy research only: reuse the native model across clips')
+    parser.add_argument('--language', choices=['auto', 'Chinese', 'English'], default='auto',
+                        help='Fixed inference hint for every clip; does not use reference text')
     args = parser.parse_args()
     model = Path(args.model_directory)
     for name, expected in HASHES.items():
@@ -60,6 +62,8 @@ def main():
                 num_threads=4, max_total_len=args.max_total_len, max_new_tokens=args.max_new_tokens, provider='cpu', debug=False)
         loaded = time.perf_counter()
         stream = recognizer.create_stream()
+        if args.language != 'auto':
+            stream.set_option('language', args.language)
         stream.accept_waveform(16000, samples)
         recognizer.decode_stream(stream)
         elapsed = time.perf_counter() - started
@@ -96,6 +100,7 @@ def main():
             'rtfInferenceOnly': round(sum(row['inferenceSeconds'] for row in selected) / duration, 3),
         }
     report = {
+        'languageHint': args.language,
         'engine': 'sherpa-onnx ' + sherpa_onnx.__version__, 'platform': platform.system(),
         'model': 'Qwen3-ASR 0.6B int8 ONNX 2026-03-25', 'modelHashes': HASHES,
         'source': f'https://huggingface.co/{REPOSITORY}/tree/{REVISION}',

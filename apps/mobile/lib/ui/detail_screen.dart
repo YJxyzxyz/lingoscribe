@@ -12,6 +12,8 @@ import '../services/export_service.dart';
 import 'home_screen.dart';
 import 'theme.dart';
 import 'text_editor_dialog.dart';
+import 'searchable_transcript_text.dart';
+import 'transcription_options_dialog.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({
@@ -29,8 +31,12 @@ class _DetailScreenState extends State<DetailScreen> {
   late Transcript item = widget.initial;
   final player = AudioPlayer();
   StreamSubscription<PlayerException>? _errors;
-  bool loading = true, bookmarksOnly = false, exporting = false;
+  bool loading = true,
+      bookmarksOnly = false,
+      exporting = false,
+      savingOptions = false;
   String search = '';
+  final _query = TextEditingController();
   int _serial = 0;
   int _revision = -1;
   @override
@@ -81,6 +87,7 @@ class _DetailScreenState extends State<DetailScreen> {
     widget.controller.removeListener(_refresh);
     unawaited(_errors?.cancel());
     unawaited(player.dispose());
+    _query.dispose();
     super.dispose();
   }
 
@@ -232,6 +239,27 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  Future<void> _options() async {
+    final result = await showDialog<TranscriptionOptions>(
+      context: context,
+      builder: (_) => TranscriptionOptionsDialog(transcript: item),
+    );
+    if (result == null || !mounted || widget.controller.busy) return;
+    setState(() => savingOptions = true);
+    try {
+      final updated = item.copyWith(
+        language: result.language,
+        prompt: result.prompt,
+      );
+      await widget.controller.save(updated);
+      if (mounted) setState(() => item = updated);
+    } catch (error) {
+      if (mounted) showError(context, error);
+    } finally {
+      if (mounted) setState(() => savingOptions = false);
+    }
+  }
+
   Future<void> _newRevision() async {
     try {
       await player.pause();
@@ -272,6 +300,9 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     final running = widget.controller.taskId == item.id;
+    final searchPattern = search.isEmpty
+        ? null
+        : RegExp(RegExp.escape(search), caseSensitive: false, unicode: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n(context).replayAndEdit),
@@ -315,7 +346,7 @@ class _DetailScreenState extends State<DetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(24, 16, 24, 12),
+                  padding: EdgeInsets.fromLTRB(20, 8, 20, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -323,19 +354,25 @@ class _DetailScreenState extends State<DetailScreen> {
                         item.title,
                         maxLines: MediaQuery.viewInsetsOf(context).bottom > 0
                             ? 1
-                            : 3,
+                            : 2,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headlineMedium,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        '${clock(item.durationMs)} · ${localizedLabel(context, statusLabel(item.status))}',
-                        style: TextStyle(color: muted, fontSize: 13),
+                      SizedBox(height: 8),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            '${clock(item.durationMs)} · ${localizedLabel(context, statusLabel(item.status))}',
+                            style: TextStyle(color: muted, fontSize: 12),
+                          ),
+                          PrivacyBadge(),
+                        ],
                       ),
-                      SizedBox(height: 14),
-                      PrivacyBadge(),
                       if (running) ...[
-                        SizedBox(height: 20),
+                        SizedBox(height: 16),
                         LinearProgressIndicator(
                           value: widget.controller.phase == '正在设备上转写'
                               ? widget.controller.progress
@@ -367,21 +404,42 @@ class _DetailScreenState extends State<DetailScreen> {
                       ],
                       if (item.segments.isNotEmpty) ...[
                         SizedBox(height: 20),
-                        TextField(
-                          onChanged: (value) =>
-                              setState(() => search = value.toLowerCase()),
-                          decoration: InputDecoration(
-                            hintText: l10n(context).searchThisTranscript,
-                            prefixIcon: Icon(Icons.search),
-                          ),
-                        ),
-                        SizedBox(height: 6),
-                        FilterChip(
-                          selected: bookmarksOnly,
-                          onSelected: (value) =>
-                              setState(() => bookmarksOnly = value),
-                          avatar: Icon(Icons.bookmark_outline, size: 16),
-                          label: Text(l10n(context).bookmarksOnly),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _query,
+                                onChanged: (value) =>
+                                    setState(() => search = value),
+                                decoration: InputDecoration(
+                                  hintText: l10n(context).searchThisTranscript,
+                                  prefixIcon: Icon(Icons.search),
+                                  suffixIcon: search.isEmpty
+                                      ? null
+                                      : IconButton(
+                                          tooltip: l10n(context).clearSearch,
+                                          onPressed: () {
+                                            _query.clear();
+                                            setState(() => search = '');
+                                          },
+                                          icon: Icon(Icons.close, size: 20),
+                                        ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            IconButton.filledTonal(
+                              tooltip: bookmarksOnly
+                                  ? l10n(context).showAllSegments
+                                  : l10n(context).bookmarksOnly,
+                              isSelected: bookmarksOnly,
+                              onPressed: () => setState(
+                                () => bookmarksOnly = !bookmarksOnly,
+                              ),
+                              icon: Icon(Icons.bookmark_border),
+                              selectedIcon: Icon(Icons.bookmark),
+                            ),
+                          ],
                         ),
                       ],
                     ],
@@ -421,10 +479,22 @@ class _DetailScreenState extends State<DetailScreen> {
                                 if (!running &&
                                     item.status != TranscriptStatus.ready) ...[
                                   SizedBox(height: 20),
+                                  TextButton.icon(
+                                    onPressed:
+                                        widget.controller.busy || savingOptions
+                                        ? null
+                                        : _options,
+                                    icon: Icon(Icons.tune, size: 18),
+                                    label: Text(
+                                      l10n(context).transcriptionPreferences,
+                                    ),
+                                  ),
                                   SizedBox(
                                     width: double.infinity,
                                     child: FilledButton.icon(
-                                      onPressed: widget.controller.busy
+                                      onPressed:
+                                          widget.controller.busy ||
+                                              savingOptions
                                           ? null
                                           : _transcribe,
                                       icon: Icon(Icons.auto_awesome_outlined),
@@ -467,9 +537,10 @@ class _DetailScreenState extends State<DetailScreen> {
                                   (entry) =>
                                       (!bookmarksOnly ||
                                           entry.value.bookmarked) &&
-                                      entry.value.text.toLowerCase().contains(
-                                        search,
-                                      ),
+                                      (searchPattern?.hasMatch(
+                                            entry.value.text,
+                                          ) ??
+                                          true),
                                 )
                                 .toList();
                             if (visible.isEmpty) {
@@ -481,9 +552,9 @@ class _DetailScreenState extends State<DetailScreen> {
                               );
                             }
                             return ListView.separated(
-                              padding: EdgeInsets.fromLTRB(24, 4, 24, 24),
+                              padding: EdgeInsets.fromLTRB(20, 4, 20, 20),
                               itemCount: visible.length,
-                              separatorBuilder: (_, _) => SizedBox(height: 12),
+                              separatorBuilder: (_, _) => SizedBox(height: 10),
                               itemBuilder: (context, i) {
                                 final index = visible[i].key;
                                 final segment = visible[i].value;
@@ -503,7 +574,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                         ? Color(0xffedf3e8)
                                         : Colors.white,
                                   ),
-                                  padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+                                  padding: EdgeInsets.fromLTRB(16, 4, 12, 14),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -511,7 +582,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                       Wrap(
                                         spacing: 4,
                                         runSpacing: 4,
-                                        alignment: WrapAlignment.spaceBetween,
+                                        alignment: WrapAlignment.start,
                                         children: [
                                           TextButton.icon(
                                             onPressed: loading
@@ -547,12 +618,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                           ),
                                         ],
                                       ),
-                                      SelectableText(
-                                        segment.text,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          height: 1.8,
-                                        ),
+                                      SearchableTranscriptText(
+                                        text: segment.text,
+                                        query: search,
                                       ),
                                       if (segment.originalText != null)
                                         Padding(

@@ -584,6 +584,36 @@ abstract class AppLocalizations {
   /// **'Your audio library'**
   String get yourAudioLibrary;
 
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @showAllSegments.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all segments'**
+  String get showAllSegments;
+
+  /// No description provided for @applyOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Save options'**
+  String get applyOptions;
+
+  /// No description provided for @audioLanguageAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Use automatic detection for mixed speech. For English-only or Chinese-only audio, you can specify the language.'**
+  String get audioLanguageAdvice;
+
+  /// No description provided for @recordOptionsExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for this audio. Vocabulary hints do not guarantee recognition and do not change your defaults.'**
+  String get recordOptionsExplanation;
+
   /// No description provided for @searchLibrary.
   ///
   /// In en, this message translates to:
@@ -707,7 +737,7 @@ abstract class AppLocalizations {
   /// No description provided for @modelVerificationExplanation.
   ///
   /// In en, this message translates to:
-  /// **'Each model is checked with SHA-256 before installation, then checked again before transcription.'**
+  /// **'Models are checked before installation and transcription to keep your offline setup reliable.'**
   String get modelVerificationExplanation;
 
   /// No description provided for @importOfficialModel.
