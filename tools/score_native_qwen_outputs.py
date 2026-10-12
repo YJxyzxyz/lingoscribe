@@ -10,6 +10,7 @@ parser.add_argument('--manifest', required=True)
 parser.add_argument('--report', required=True)
 args = parser.parse_args()
 actual = json.loads(Path(args.outputs).read_text(encoding='utf-8'))
+assert actual.get('complete', True), 'Incomplete native evaluation checkpoint'
 corpus = json.loads(Path(args.manifest).read_text(encoding='utf-8'))
 assert actual['manifestSha256'] == digest(args.manifest)
 references = {clip['id']: clip for clip in corpus['clips']}

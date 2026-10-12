@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../application/app_controller.dart';
 import '../services/model_manager.dart';
 import 'theme.dart';
+import 'model_bundle_import_dialog.dart';
+import 'package:path/path.dart' as p;
 
 class ModelScreen extends StatefulWidget {
   const ModelScreen({super.key, required this.controller});
@@ -17,25 +19,40 @@ class _ModelScreenState extends State<ModelScreen> {
   AppController get app => widget.controller;
   Future<void> _import() async {
     try {
-      final selected = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['bin', 'onnx', 'json', 'txt'],
-        allowMultiple: true,
-        withData: false,
-      );
-      if (selected != null &&
-          selected.files.every((file) => file.path != null)) {
-        if (selected.files.length > 1) {
-          await app.engine.ensureAdvancedModelCapacity();
-        }
-        if (app.busy) return;
-        await app.models.importFiles(
-          selected.files.map((file) => file.path!).toList(),
+      final selected = await _pickModelFiles();
+      if (selected == null || selected.isEmpty || !mounted || app.busy) return;
+      List<String>? paths = selected;
+      if (selected.length != 1 ||
+          p.extension(selected.single).toLowerCase() != '.bin') {
+        await app.engine.ensureAdvancedModelCapacity();
+        if (!mounted || app.busy) return;
+        paths = await showDialog<List<String>>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => ModelBundleImportDialog(
+            model: models.singleWhere((model) => model.engine == 'qwen3'),
+            initialPaths: selected,
+            pickMore: _pickModelFiles,
+          ),
         );
       }
+      if (paths != null && !app.busy) await app.models.importFiles(paths);
     } catch (e) {
       if (mounted) showError(context, e);
     }
+  }
+
+  Future<List<String>?> _pickModelFiles() async {
+    final selected = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['bin', 'onnx', 'json', 'txt'],
+      allowMultiple: true,
+      withData: false,
+    );
+    if (selected != null && selected.files.every((file) => file.path != null)) {
+      return selected.files.map((file) => file.path!).toList();
+    }
+    return null;
   }
 
   Future<void> _download(ModelSpec model) async {

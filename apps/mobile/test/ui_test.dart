@@ -12,6 +12,7 @@ import 'package:lingoscribe/ui/app.dart';
 import 'package:lingoscribe/ui/recording_screen.dart';
 import 'package:lingoscribe/ui/detail_screen.dart';
 import 'package:lingoscribe/ui/searchable_transcript_text.dart';
+import 'package:lingoscribe/ui/model_bundle_import_dialog.dart';
 import 'package:lingoscribe/l10n/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -176,6 +177,69 @@ void main() {
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
+    },
+  );
+  testWidgets(
+    'model files can be collected across folders without installing an incomplete bundle',
+    (tester) async {
+      final model = models.singleWhere((model) => model.engine == 'qwen3');
+      List<String>? result;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: TextButton(
+                onPressed: () async {
+                  result = await showDialog<List<String>>(
+                    context: context,
+                    builder: (_) => ModelBundleImportDialog(
+                      model: model,
+                      initialPaths: [
+                        for (final asset in model.assets.take(3))
+                          '/picked/models/${asset.path}',
+                      ],
+                      // File picker boundary only; actual model verification is exercised
+                      // by model bundle tests and the real native integration pipeline.
+                      pickMore: () async => [
+                        for (final asset
+                            in model.assets.skip(3).toList().reversed)
+                          '/picked/${asset.path}',
+                      ],
+                    ),
+                  );
+                },
+                child: const Text('Open import'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open import'));
+      await tester.pumpAndSettle();
+      expect(find.text('Verify and install'), findsNothing);
+      expect(find.text('3 of 6 files selected'), findsOneWidget);
+      await tester.tap(find.text('Add model files'));
+      await tester.pumpAndSettle();
+      expect(find.text('6 of 6 files selected'), findsOneWidget);
+      await tester.ensureVisible(find.byTooltip('Remove selected file').last);
+      await tester.tap(find.byTooltip('Remove selected file').last);
+      await tester.pumpAndSettle();
+      expect(find.text('5 of 6 files selected'), findsOneWidget);
+      expect(find.text('Verify and install'), findsNothing);
+      await tester.tap(find.text('Add model files'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Verify and install'));
+      await tester.pumpAndSettle();
+      expect(result, [
+        for (final asset in model.assets)
+          asset.path.startsWith('tokenizer/')
+              ? '/picked/${asset.path}'
+              : '/picked/models/${asset.path}',
+      ]);
+      expect(tester.takeException(), isNull);
     },
   );
   testWidgets(

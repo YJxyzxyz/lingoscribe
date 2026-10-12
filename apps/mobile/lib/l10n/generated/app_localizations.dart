@@ -596,6 +596,36 @@ abstract class AppLocalizations {
   /// **'Show all segments'**
   String get showAllSegments;
 
+  /// No description provided for @bundleImportExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the three model files and the three tokenizer files. You can add files from different folders in several steps. Installation starts only after all six files pass verification.'**
+  String get bundleImportExplanation;
+
+  /// No description provided for @removeSelectedFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove selected file'**
+  String get removeSelectedFile;
+
+  /// No description provided for @addModelFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add model files'**
+  String get addModelFiles;
+
+  /// No description provided for @verifyAndInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify and install'**
+  String get verifyAndInstall;
+
+  /// No description provided for @bundleFilesSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{selected} of {total} files selected'**
+  String bundleFilesSelected(int selected, int total);
+
   /// No description provided for @applyOptions.
   ///
   /// In en, this message translates to:

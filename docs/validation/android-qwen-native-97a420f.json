@@ -1,0 +1,116 @@
+{
+  "platform": "android",
+  "engine": "qwen3",
+  "buildMode": "debug",
+  "modelHashes": {
+    "conv_frontend.onnx": "d22dc4423e0940e49884e903d2ea2f7e5567c14fc1aed97e4e26d6b8f208ef9e",
+    "encoder.int8.onnx": "60748d3e6744a57c9c91e1b17424a6c2990567e8adceb0783940c03ed98fa9d9",
+    "decoder.int8.onnx": "4f6885be5959ae26af3089d38ee7972c5fafbeeb1cf8d5e76eab6d8b61ca5771",
+    "tokenizer/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "tokenizer/tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+    "tokenizer/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "durationMs": 11000,
+  "elapsedSeconds": 25.694,
+  "timestampSource": "speech_intervals",
+  "segments": [
+    {
+      "startMs": 270,
+      "endMs": 11000,
+      "text": "And so, my fellow Americans, ask not what your country can do for you. Ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "six_file_hash_import",
+    "native_normalization",
+    "native_vad",
+    "isolate_qwen_asr",
+    "speech_interval_timestamps",
+    "sqlite_edit_bookmark",
+    "preparation_cancel_keeps_audio"
+  ],
+  "scope": "Real native pipeline on a dedicated emulator; debug timing is not a release performance or power benchmark",
+  "deviceSerial": "emulator-5554",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "installationMode": "streaming",
+  "apkSha256": "ddd0e54e0e66f68e50dc5950957c1d8c9abd43cad14c25caa63eb7b0f23b5800",
+  "physicalDevice": false,
+  "deviceModel": "sdk_gphone64_x86_64",
+  "androidRelease": "15",
+  "androidSdk": "35",
+  "abi": "x86_64",
+  "testStatus": {
+    "passed": true,
+    "testCount": 1,
+    "failures": []
+  },
+  "memory": {
+    "sampleIntervalSeconds": 5,
+    "samples": [
+      {
+        "elapsedSeconds": 3.486,
+        "pssKiB": 271633,
+        "rssKiB": 392744
+      },
+      {
+        "elapsedSeconds": 9.692,
+        "pssKiB": 266315,
+        "rssKiB": 388132
+      },
+      {
+        "elapsedSeconds": 15.909,
+        "pssKiB": 268399,
+        "rssKiB": 390248
+      },
+      {
+        "elapsedSeconds": 22.132,
+        "pssKiB": 268995,
+        "rssKiB": 390996
+      },
+      {
+        "elapsedSeconds": 28.365,
+        "pssKiB": 268767,
+        "rssKiB": 390804
+      },
+      {
+        "elapsedSeconds": 34.576,
+        "pssKiB": 269539,
+        "rssKiB": 391580
+      },
+      {
+        "elapsedSeconds": 40.802,
+        "pssKiB": 269575,
+        "rssKiB": 391616
+      },
+      {
+        "elapsedSeconds": 47.025,
+        "pssKiB": 269388,
+        "rssKiB": 391456
+      },
+      {
+        "elapsedSeconds": 53.308,
+        "pssKiB": 1497968,
+        "rssKiB": 1621484
+      },
+      {
+        "elapsedSeconds": 59.788,
+        "pssKiB": 1725720,
+        "rssKiB": 1849256
+      }
+    ],
+    "peakSampledPssKiB": 1725720,
+    "peakSampledRssKiB": 1849256,
+    "scope": "ADB dumpsys samples across the complete debug integration run including fixture import; sampled maxima can miss short peaks. Not power measurement."
+  },
+  "provenance": {
+    "headCommit": "97a420f936d0ebeded9d0dcbc64985648e43a228",
+    "testedMergeCommit": "2a57e7f28297d9d6c5d11a439cfcac252a0bf089",
+    "sourceTree": "b70bf8a84f66166366311b179fba572826e1af10",
+    "headAndMergeTreesIdentical": true,
+    "workflowRun": 38229256536,
+    "runtimeArtifactSha256": "8517b15b5ab119afa0094d8f7b61b5a3d4d212c9aefe3fa16a04f188e34b69ce"
+  }
+}

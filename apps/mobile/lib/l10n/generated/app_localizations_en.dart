@@ -281,6 +281,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showAllSegments => 'Show all segments';
 
   @override
+  String get bundleImportExplanation =>
+      'Select the three model files and the three tokenizer files. You can add files from different folders in several steps. Installation starts only after all six files pass verification.';
+
+  @override
+  String get removeSelectedFile => 'Remove selected file';
+
+  @override
+  String get addModelFiles => 'Add model files';
+
+  @override
+  String get verifyAndInstall => 'Verify and install';
+
+  @override
+  String bundleFilesSelected(int selected, int total) {
+    return '$selected of $total files selected';
+  }
+
+  @override
   String get applyOptions => 'Save options';
 
   @override

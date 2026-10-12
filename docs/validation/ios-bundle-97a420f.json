@@ -1,0 +1,146 @@
+{
+  "sourceCommit": "2a57e7f28297d9d6c5d11a439cfcac252a0bf089",
+  "bundleId": "io.github.yjxyzxyz.lingoscribe",
+  "version": "0.1.0",
+  "build": "1",
+  "minimumOS": "15.0",
+  "microphoneUsage": "聆写需要麦克风来录制你选择保存的音频。录音和转写只在本机处理。",
+  "buildSdk": "iphoneos26.2",
+  "buildXcode": "2630",
+  "storeSdkBaseline": {
+    "minimumIosSdkMajor": 26,
+    "minimumXcodeMajor": 26,
+    "passed": true,
+    "checkedOn": "2026-10-11",
+    "source": "https://developer.apple.com/news/upcoming-requirements/?id=04282026a"
+  },
+  "nativeSha256": "6023038eb8f1cec38313a53b6d2f999a0462bf7fb4bd916a6d52745846263099",
+  "nativeExports": {
+    "ls_job_create_v2": true,
+    "ls_job_run": true,
+    "ls_job_detect_speech": true,
+    "ls_sherpa_anchor": true,
+    "ls_job_progress": true,
+    "ls_job_phase": true,
+    "ls_job_cancel": true,
+    "ls_job_result": true,
+    "ls_job_free": true,
+    "SherpaOnnxCreateOfflineRecognizer": true,
+    "SherpaOnnxDecodeOfflineStream": true
+  },
+  "detectorSha256": "2aa269b785eeb53a82983a20501ddf7c1d9c48e33ab63a41391ac6c9f7fb6987",
+  "manifests": [
+    {
+      "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "0A2A.1",
+              "C617.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "path": "Frameworks/file_picker.framework/file_picker_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/offline_engine.framework/offline_engine_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    },
+    {
+      "path": "Frameworks/record_ios.framework/record_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/share_plus.framework/share_plus_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "1C8F.1"
+            ]
+          }
+        ],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "Frameworks/sqflite_darwin.framework/sqflite_darwin_privacy.bundle/PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyAccessedAPITypes": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyTracking": false
+      }
+    },
+    {
+      "path": "PrivacyInfo.xcprivacy",
+      "declaration": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": []
+      }
+    }
+  ],
+  "trackingDeclarations": [],
+  "collectedDataDeclarations": [],
+  "scope": "Static unsigned bundle inspection; not signed-device runtime or App Store acceptance",
+  "permissionLocalizations": {
+    "en": true,
+    "zh-Hans": true
+  },
+  "developmentFrameworks": [],
+  "passed": true,
+  "provenance": {
+    "headCommit": "97a420f936d0ebeded9d0dcbc64985648e43a228",
+    "testedMergeCommit": "2a57e7f28297d9d6c5d11a439cfcac252a0bf089",
+    "sourceTree": "b70bf8a84f66166366311b179fba572826e1af10",
+    "headAndMergeTreesIdentical": true,
+    "workflowRun": 38229256536,
+    "artifactSha256": "316ca218e443f7fb58f1c4c02eb9efaf3881721c5d35d80e94f4d54cef394237",
+    "downloadedBundleRechecked": true,
+    "artSha256Verified": true
+  }
+}

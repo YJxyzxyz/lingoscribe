@@ -1,0 +1,158 @@
+{
+  "platform": "android",
+  "buildMode": "debug",
+  "fixtureKind": "upstream",
+  "modelSha256": "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898",
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "elapsedSeconds": 44.08,
+  "durationMs": 11000,
+  "segments": [
+    {
+      "startMs": 0,
+      "endMs": 10580,
+      "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "model_import_hash",
+    "native_normalization",
+    "isolate_asr",
+    "timestamps",
+    "sqlite_persistence",
+    "original_text_retained",
+    "bookmark"
+  ],
+  "codecChecks": [
+    {
+      "format": "stereo48.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "stereo44.wav",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998616663192
+    },
+    {
+      "format": "sample.mp3",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999987269504103
+    },
+    {
+      "format": "sample.m4a",
+      "durationMs": 11008,
+      "signalCorrelation": 0.9999944863118821
+    },
+    {
+      "format": "sample.flac",
+      "durationMs": 11000,
+      "signalCorrelation": 0.9999998412727191
+    },
+    {
+      "format": "sample.ogg",
+      "durationMs": 11013,
+      "signalCorrelation": 0.9990635245300317
+    }
+  ],
+  "microphoneChecks": {
+    "durationMs": 1728,
+    "bytes": 55340,
+    "pausedBytes": 26668,
+    "checks": [
+      "native_capture",
+      "pause_stops_file_growth",
+      "resume_grows_file",
+      "wav_duration",
+      "sqlite_persistence"
+    ],
+    "scope": "Real native microphone lifecycle on a dedicated emulator; not human voice accuracy or power measurement"
+  },
+  "deviceSerial": "emulator-5554",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "installationMode": "streaming",
+  "apkSha256": "0e33b23b32e07050d8b5fbd2669baa081bb0b375fa78e2e3d26361dd17fb94a9",
+  "physicalDevice": false,
+  "deviceModel": "sdk_gphone64_x86_64",
+  "androidRelease": "15",
+  "androidSdk": "35",
+  "abi": "x86_64",
+  "scope": "Real native pipeline on a dedicated emulator; debug timing is not a release performance or power benchmark",
+  "testStatus": {
+    "passed": true,
+    "testCount": 3,
+    "failures": []
+  },
+  "memory": {
+    "sampleIntervalSeconds": 5,
+    "samples": [
+      {
+        "elapsedSeconds": 3.909,
+        "pssKiB": 239720,
+        "rssKiB": 353192
+      },
+      {
+        "elapsedSeconds": 10.454,
+        "pssKiB": 277426,
+        "rssKiB": 402988
+      },
+      {
+        "elapsedSeconds": 16.823,
+        "pssKiB": 289975,
+        "rssKiB": 419112
+      },
+      {
+        "elapsedSeconds": 23.373,
+        "pssKiB": 292695,
+        "rssKiB": 421984
+      },
+      {
+        "elapsedSeconds": 30.459,
+        "pssKiB": 411271,
+        "rssKiB": 540764
+      },
+      {
+        "elapsedSeconds": 37.289,
+        "pssKiB": 410952,
+        "rssKiB": 540468
+      },
+      {
+        "elapsedSeconds": 43.795,
+        "pssKiB": 410976,
+        "rssKiB": 540504
+      },
+      {
+        "elapsedSeconds": 50.534,
+        "pssKiB": 451481,
+        "rssKiB": 581040
+      },
+      {
+        "elapsedSeconds": 57.015,
+        "pssKiB": 454668,
+        "rssKiB": 584228
+      },
+      {
+        "elapsedSeconds": 63.504,
+        "pssKiB": 455956,
+        "rssKiB": 585528
+      },
+      {
+        "elapsedSeconds": 69.785,
+        "pssKiB": 314956,
+        "rssKiB": 444640
+      }
+    ],
+    "peakSampledPssKiB": 455956,
+    "peakSampledRssKiB": 585528,
+    "scope": "ADB dumpsys samples across the complete debug integration run including fixture import; sampled maxima can miss short peaks. Not power measurement."
+  },
+  "provenance": {
+    "headCommit": "97a420f936d0ebeded9d0dcbc64985648e43a228",
+    "testedMergeCommit": "2a57e7f28297d9d6c5d11a439cfcac252a0bf089",
+    "sourceTree": "b70bf8a84f66166366311b179fba572826e1af10",
+    "headAndMergeTreesIdentical": true,
+    "workflowRun": 38229256536,
+    "runtimeArtifactSha256": "8517b15b5ab119afa0094d8f7b61b5a3d4d212c9aefe3fa16a04f188e34b69ce"
+  }
+}

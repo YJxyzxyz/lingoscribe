@@ -260,6 +260,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showAllSegments => '显示全部语音段';
 
   @override
+  String get bundleImportExplanation =>
+      '选择三个模型文件和 tokenizer 文件夹中的三个文件。可以分多次从不同文件夹补齐，六项校验通过后才会安装。';
+
+  @override
+  String get removeSelectedFile => '移除已选文件';
+
+  @override
+  String get addModelFiles => '补充模型文件';
+
+  @override
+  String get verifyAndInstall => '校验并安装';
+
+  @override
+  String bundleFilesSelected(int selected, int total) {
+    return '已选择 $selected / $total 个文件';
+  }
+
+  @override
   String get applyOptions => '保存选项';
 
   @override

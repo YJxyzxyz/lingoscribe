@@ -44,7 +44,7 @@ void main() {
     timeout: const Timeout(Duration(minutes: 5)),
   );
   test(
-    'production Dart worker and native VAD on the fixed licensed 90-clip corpus',
+    'production Dart worker and native VAD on the fixed licensed corpus',
     () async {
       final root = Platform.environment['LINGO_RESEARCH_ROOT']!;
       final directory =
@@ -55,6 +55,77 @@ void main() {
               as Map<String, dynamic>;
       final engine = OfflineEngine(), qwen = QwenEngine();
       final outputs = <Map<String, dynamic>>[];
+      final destination = File(
+        Platform.environment['LINGO_CORPUS_OUTPUT'] ??
+            '$root/qwen-dart-native-outputs.json',
+      );
+      final manifestHash =
+          (await sha256.bind(File('$directory/manifest.json').openRead()).first)
+              .toString();
+      final policyInputs = <String, String>{};
+      final paths = {
+        'hostTest': 'test/qwen_desktop_native_test.dart',
+        'qwenWorker': '$root/../packages/offline_engine/lib/qwen_engine.dart',
+        'windows': '$root/../packages/offline_engine/lib/qwen_windows.dart',
+        'pcm': '$root/../packages/offline_engine/lib/pcm_wave.dart',
+        'ffi': '$root/../packages/offline_engine/lib/offline_engine.dart',
+        'modelManifest': '$root/../tools/qwen_model_manifest.json',
+        'detector': '$root/../apps/mobile/assets/models/ggml-silero-v6.2.0.bin',
+        'nativeVad': Platform.environment['LINGO_ENGINE_LIBRARY']!,
+      };
+      final runtimeFiles =
+          await Directory(Platform.environment['LINGO_SHERPA_LIBRARY']!)
+              .list()
+              .where((file) => file is File && file.path.endsWith('.dll'))
+              .toList();
+      for (final file in runtimeFiles) {
+        paths['runtime/${file.uri.pathSegments.last}'] = file.path;
+      }
+      for (final entry in paths.entries) {
+        policyInputs[entry.key] =
+            (await sha256.bind(File(entry.value).openRead()).first).toString();
+      }
+      final policyKeys = policyInputs.keys.toList()..sort();
+      final policyHash = sha256
+          .convert(
+            utf8.encode(
+              jsonEncode({
+                for (final key in policyKeys) key: policyInputs[key],
+              }),
+            ),
+          )
+          .toString();
+      if (Platform.environment['LINGO_RESUME_CORPUS'] == '1' &&
+          await destination.exists()) {
+        final saved =
+            jsonDecode(await destination.readAsString())
+                as Map<String, dynamic>;
+        expect(saved['manifestSha256'], manifestHash);
+        expect(saved['policySha256'], policyHash);
+        outputs.addAll(
+          (saved['outputs'] as List).map(
+            (row) => Map<String, dynamic>.from(row as Map),
+          ),
+        );
+        expect(outputs.map((row) => row['id']).toSet().length, outputs.length);
+      }
+      Future<void> checkpoint({bool complete = false}) async {
+        final temporary = File('${destination.path}.part');
+        await temporary.writeAsString(
+          jsonEncode({
+            'manifestSha256': manifestHash,
+            'policySha256': policyHash,
+            'policyInputsSha256': policyInputs,
+            'complete': complete,
+            'scope':
+                'Production Dart worker and GGML VAD on Windows using the explicit upstream reference runtime. Not shipped Android/iOS binaries or phone performance.',
+            'outputs': outputs,
+          }),
+          flush: true,
+        );
+        await temporary.rename(destination.path);
+      }
+
       for (final clip in manifest['clips'] as List) {
         final audio = File('$directory/${clip['file']}');
         expect(clip['kind'], 'licensed_human');
@@ -62,6 +133,11 @@ void main() {
           (await sha256.bind(audio.openRead()).first).toString(),
           clip['sha256'],
         );
+        final previous = outputs.where((row) => row['id'] == clip['id']);
+        if (previous.isNotEmpty) {
+          expect(previous.single['audioSha256'], clip['sha256']);
+          continue;
+        }
         final clock = Stopwatch()..start();
         final detected = await engine.detectSpeech(
           wav: audio.path,
@@ -87,29 +163,17 @@ void main() {
           'pcmReadPolicy': result['pcmReadPolicy'],
           'decodedWindows': result['decodedWindows'],
         });
+        await checkpoint();
         // Progress only; reference/hypothesis text stays in ignored local build/.
         // ignore: avoid_print
         print(
           'Native corpus ${outputs.length}/${(manifest['clips'] as List).length}',
         );
       }
-      await File(
-        Platform.environment['LINGO_CORPUS_OUTPUT'] ??
-            '$root/qwen-dart-native-outputs.json',
-      ).writeAsString(
-        jsonEncode({
-          'manifestSha256':
-              (await sha256
-                      .bind(File('$directory/manifest.json').openRead())
-                      .first)
-                  .toString(),
-          'scope':
-              'Production Dart worker and GGML VAD on Windows using the explicit upstream reference runtime. Not shipped Android/iOS binaries or phone performance.',
-          'outputs': outputs,
-        }),
-      );
+      expect(outputs.length, (manifest['clips'] as List).length);
+      await checkpoint(complete: true);
     },
     skip: !const bool.fromEnvironment('RUN_QWEN_CORPUS'),
-    timeout: const Timeout(Duration(minutes: 20)),
+    timeout: const Timeout(Duration(minutes: 60)),
   );
 }

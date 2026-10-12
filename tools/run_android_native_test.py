@@ -18,6 +18,8 @@ parser.add_argument('--device', required=True, help='Dedicated QA emulator/devic
 parser.add_argument('--apk', required=True, help='APK built from integration_test/native_pipeline_test.dart')
 parser.add_argument('--no-streaming-install', action='store_true',
                     help='Use standard push installation for OEM installers that reject streamed APKs')
+parser.add_argument('--reuse-installed', action='store_true',
+                    help='Skip installation only when the device APK SHA-256 matches --apk exactly')
 parser.add_argument('--package-id', default='io.github.yjxyzxyz.lingoscribe.qa')
 parser.add_argument('--aapt', help='Android build-tools aapt; automatically found in ANDROID_HOME/ANDROID_SDK_ROOT')
 model_group = parser.add_mutually_exclusive_group(required=True)
@@ -54,7 +56,17 @@ else:
     model = Path(args.model)
     assert hashlib.sha256(model.read_bytes()).hexdigest() == expected, 'Model must match the official pinned Base Q5 file'
 adb('shell', 'am', 'force-stop', package, capture_output=True)
-adb('install', *(['--no-streaming'] if args.no_streaming_install else []), '-r', args.apk)
+if args.reuse_installed:
+    installed_paths = adb('shell', 'pm', 'path', package, capture_output=True).stdout.decode().splitlines()
+    assert len(installed_paths) == 1 and installed_paths[0].startswith('package:/'), 'Expected one installed QA APK'
+    installed_path = installed_paths[0].removeprefix('package:').strip()
+    with tempfile.TemporaryDirectory(prefix='lingoscribe-installed-qa-') as folder:
+        installed_apk = Path(folder) / 'installed.apk'
+        adb('pull', installed_path, str(installed_apk), capture_output=True)
+        with installed_apk.open('rb') as current, Path(args.apk).open('rb') as requested:
+            assert hashlib.file_digest(current, 'sha256').digest() == hashlib.file_digest(requested, 'sha256').digest(), 'Installed APK differs; install the requested QA build first'
+else:
+    adb('install', *(['--no-streaming'] if args.no_streaming_install else []), '-r', args.apk)
 adb('shell', 'pm', 'grant', package, 'android.permission.RECORD_AUDIO')
 adb('shell', 'run-as', package, 'mkdir', '-p', 'files/qa')
 inputs = [(Path(args.audio), 'sample.wav')]
@@ -73,6 +85,8 @@ if not args.qwen_directory:
             with fixture.open('rb') as input_file:
                 adb('exec-in', 'run-as', package, 'sh', '-c', f'cat > files/qa/{fixture.name}', stdin=input_file)
 adb('shell', 'run-as', package, 'rm', '-f', 'files/qa/native-result.json', 'files/qa/codec-result.json', 'files/qa/microphone-result.json', 'files/qa/test-status.json')
+# OEM installers can launch the app before fixture staging finishes.
+adb('shell', 'am', 'force-stop', package, capture_output=True)
 adb('shell', 'am', 'start', '-n', f'{package}/io.github.yjxyzxyz.lingoscribe.MainActivity')
 started = time.monotonic()
 memory_samples = []
@@ -118,6 +132,7 @@ while time.monotonic() - started < (900 if args.qwen_directory else 600):
         report['deviceSerial'] = args.device
         report['packageId'] = package
         report['installationMode'] = 'non-streaming' if args.no_streaming_install else 'streaming'
+        report['reusedVerifiedInstallation'] = args.reuse_installed
         with Path(args.apk).open('rb') as apk_file:
             report['apkSha256'] = hashlib.file_digest(apk_file, 'sha256').hexdigest()
         report['physicalDevice'] = not emulator
