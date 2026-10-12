@@ -30,4 +30,6 @@
 
 ## 当前结论
 
+最新 97a420f 上下文策略已在同一 vivo 真机完成真实 Qwen 集成断言：11 秒英文夹具流程 38.416 秒（Debug RTF 3.49），全流程采样最大 PSS 1,466,939 KiB（约 1.40 GiB）。见 `validation/android-physical-qwen-97a420f.json`。OEM 安装成功后自动启动影响了最初测试启动，超时记录未算通过；核对已安装 APK 摘要后重新完整运行，断言全部通过。该单样例速度仍不达标，不能从一次 Debug 结果推断正式版优化收益、总体准确率或功耗。
+
 尚未达到商业发布验收。vivo V2073A / Android 13 的独立 QA 安装已通过真实短录音、六种解码、Base 与 Qwen 转写、SQLite 校对/标记及 Qwen 准备阶段取消保留音频。8a3075a Debug 基线中，11 秒英文 Base 流程约 12.894 秒、Qwen 流程约 41.490 秒（RTF 3.77），Qwen 全流程采样最大 PSS 1,392,108 KiB（约 1.33 GiB）；尚不能满足速度目标。报告见 `validation/android-physical-{base,qwen}-8a3075a.json`。这些是单个英文夹具及稀疏内存采样，不代表最新上下文策略的物理性能、整体准确率、长录音、中断、精确峰值或耗电。5ec087c 双平台 CI 及 iOS 26.2 编译产物检查通过，仍缺签名及物理 iPhone 验收。开发者账号、发行资料、更多 Android 机型及 iPhone 仍待补齐。

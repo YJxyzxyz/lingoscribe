@@ -1,0 +1,129 @@
+{
+  "platform": "android",
+  "engine": "qwen3",
+  "buildMode": "debug",
+  "modelHashes": {
+    "conv_frontend.onnx": "d22dc4423e0940e49884e903d2ea2f7e5567c14fc1aed97e4e26d6b8f208ef9e",
+    "encoder.int8.onnx": "60748d3e6744a57c9c91e1b17424a6c2990567e8adceb0783940c03ed98fa9d9",
+    "decoder.int8.onnx": "4f6885be5959ae26af3089d38ee7972c5fafbeeb1cf8d5e76eab6d8b61ca5771",
+    "tokenizer/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "tokenizer/tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+    "tokenizer/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "audioSha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e",
+  "durationMs": 11000,
+  "elapsedSeconds": 38.416,
+  "timestampSource": "speech_intervals",
+  "segments": [
+    {
+      "startMs": 270,
+      "endMs": 11000,
+      "text": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country.",
+      "originalText": null,
+      "bookmarked": false
+    }
+  ],
+  "checks": [
+    "six_file_hash_import",
+    "native_normalization",
+    "native_vad",
+    "isolate_qwen_asr",
+    "speech_interval_timestamps",
+    "sqlite_edit_bookmark",
+    "preparation_cancel_keeps_audio"
+  ],
+  "scope": "Real native pipeline on a physical phone; debug timing is not a release performance or power benchmark",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "installationMode": "non-streaming",
+  "reusedVerifiedInstallation": true,
+  "apkSha256": "3e8c4d274d0d6a32999fa5d0eec14c2327c6bf32ba6cac85a0f224b2cb1faac8",
+  "physicalDevice": true,
+  "deviceModel": "V2073A",
+  "androidRelease": "13",
+  "androidSdk": "33",
+  "abi": "arm64-v8a",
+  "testStatus": {
+    "passed": true,
+    "testCount": 1,
+    "failures": []
+  },
+  "memory": {
+    "sampleIntervalSeconds": 5,
+    "samples": [
+      {
+        "elapsedSeconds": 3.859,
+        "pssKiB": 239299,
+        "rssKiB": 345748
+      },
+      {
+        "elapsedSeconds": 11.109,
+        "pssKiB": 236511,
+        "rssKiB": 339236
+      },
+      {
+        "elapsedSeconds": 18.39,
+        "pssKiB": 238457,
+        "rssKiB": 342188
+      },
+      {
+        "elapsedSeconds": 25.734,
+        "pssKiB": 238954,
+        "rssKiB": 342944
+      },
+      {
+        "elapsedSeconds": 33.0,
+        "pssKiB": 238970,
+        "rssKiB": 342976
+      },
+      {
+        "elapsedSeconds": 40.296,
+        "pssKiB": 238986,
+        "rssKiB": 343092
+      },
+      {
+        "elapsedSeconds": 47.531,
+        "pssKiB": 239162,
+        "rssKiB": 343284
+      },
+      {
+        "elapsedSeconds": 54.765,
+        "pssKiB": 239282,
+        "rssKiB": 343484
+      },
+      {
+        "elapsedSeconds": 62.031,
+        "pssKiB": 238766,
+        "rssKiB": 343028
+      },
+      {
+        "elapsedSeconds": 69.375,
+        "pssKiB": 238614,
+        "rssKiB": 342900
+      },
+      {
+        "elapsedSeconds": 76.718,
+        "pssKiB": 259107,
+        "rssKiB": 365028
+      },
+      {
+        "elapsedSeconds": 84.343,
+        "pssKiB": 1466939,
+        "rssKiB": 1573000
+      },
+      {
+        "elapsedSeconds": 91.984,
+        "pssKiB": 356054,
+        "rssKiB": 464836
+      }
+    ],
+    "peakSampledPssKiB": 1466939,
+    "peakSampledRssKiB": 1573000,
+    "scope": "ADB dumpsys samples across the complete debug integration run including fixture import; sampled maxima can miss short peaks. Not power measurement."
+  },
+  "deviceId": "physical-android-01",
+  "applicationSourceCommit": "97a420f936d0ebeded9d0dcbc64985648e43a228",
+  "nativeSourceCommit": "1c07d6ca9c7f042e14b455400cf9e81dc81b13c3",
+  "nativeCacheSourceInputsAndLibraryHashesVerified": true,
+  "inputContextPolicy": "qwen_context_v1",
+  "pcmReadPolicy": "pcm_exact_tail_v1"
+}
