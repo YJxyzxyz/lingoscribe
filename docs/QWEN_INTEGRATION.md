@@ -1,0 +1,44 @@
+# Qwen3 客户端接入与验收
+
+2026-10-12 在 `codex/qwen-offline` 分支推进。尚未宣称达到商业发布验收。
+
+## 实际实现
+
+- 固定六文件快照，共 987,015,347 字节；流式下载、独立 SHA-256 校验、整套目录提交、失败保留旧模型、安装中断恢复、完整文件导入和删除。
+- 通过真实 GGML Silero 检测语音区间，按不超过 20 秒的区间有界读取 PCM；Qwen 模型在一个转写任务中只加载一次，在独立 Dart 工作线程执行真实原生推理。
+- Qwen 时间戳来自实际检测的语音区间，不是逐字对齐；模型说明和 JSON 导出明确记录来源。
+- 取消覆盖模型校验、音频准备与原生区间之间；区间推理期间采取协作取消，完成当前原生调用后释放模型，不强杀工作线程。
+- 暂设至少 6 GB 设备总内存；Android 另检查可用内存。阈值是保守开发保护，不代表所有满足条件的手机都已通过性能验收。
+
+## 原生运行库与许可
+
+维护者已明确上游通用 TTS 运行包存在 espeak/piper 许可约束，见 [说明](https://github.com/k2-fsa/sherpa-onnx/issues/3731)。实际参考 Windows DLL 包含相关字符串，不能把顶层 Apache-2.0 标签当作全部预编译依赖的许可结论。
+客户端已移除全部上游平台预编译包依赖；只保留已核对来源的原生 Dart API 文件。Android/iOS 从固定 sherpa-onnx 1.13.8 源码构建，强制关闭 TTS、说话人分离、GPU、网络服务和示例，启用 Eigen 的 MPL2-only 保护。
+构建脚本校验源码归档和 ONNX Runtime 字节摘要；许可页保留 Qwen 权重声明、原生依赖完整许可及 ONNX Runtime 完整第三方通知。实际构建另运行 `audit_sherpa_build.py`，检查解析依赖、配置与打包通知。
+
+源码归档 SHA-256：`0a8db6c55dd318f4a688faba85f7760b99a6c92e8ef8864479d418531bee1ac2`，上游提交 `11afbd009a7f8c08f4bcf2fc1b265d0df4670fbf`。准备工具将公开 GitHub 源码归档 URL 改为其直接 codeload 地址，保留原始依赖摘要；不会下载或链接 piper/espeak。
+
+## 已验证与待验证
+
+45 项应用测试通过；另显式运行真实 Windows 原生 VAD + Dart Qwen 烟测及 90 条许可人声回归。该开发宿主使用明确指定的上游参考 DLL，参考 DLL不随手机 App 分发；不能代替新 ASR-only Android/iOS 运行库验证。
+90 条真实路径回归：中文原始 CER 9.5%，混合原始中文 CER 17.5% / 英文 WER 31.9%，纯英文 WER 22.9%。仅两位说话人，仍不是独立人群或商业准确率验收。
+
+两平台 CI 的真实 Qwen 六文件导入、音频归一化、语音检测、原生推理、区间时间戳、SQLite 校对与准备阶段取消断言已在 8a3075a 实际通过，双平台构建及许可/静态检查也通过。iOS 语义句柄测试入口问题修复已验证。四份原生报告见 `validation/*-native-8a3075a.json`，构建记录：<https://github.com/YJxyzxyz/lingoscribe/actions/runs/38108630652>。模拟器结果不能代替物理手机。
+vivo V2073A / Android 13 独立 `.qa` Debug 安装已通过真实录音、六种解码、Base 与 Qwen 推理/SQLite 测试。流式安装没有显示弹窗并被系统中止，改用标准非流式安装后成功。8a3075a Qwen 基线的 11 秒英文流程耗时 41.490 秒，全流程采样最大 PSS 1,392,108 KiB；真实模型摘要、VAD、推理、时间戳、校对/标记及准备阶段取消保留音频断言通过，见 `validation/android-physical-qwen-8a3075a.json`。这是改进前策略，不能作为最新上下文策略或正式版性能证据，速度尚未达标。正式验收还需要更广且有授权的人声、长对话、噪声、不同手机的速度/峰值内存/功耗/热状态、系统中断及低存储测试，随后完成签名和商店审核。
+5ec087c 的 51 项质量检查、两端构建与 Whisper/Qwen 模拟器管线全部通过；iOS 使用 Xcode 26.3 / SDK 26.2，实际 App 下载复查通过。报告见 `validation/*-5ec087c.json`。PR 合成合并提交 5198227 与分支提交 5ec087c 的源码树一致，报告分别保留两者来源，不将模拟器计时当作手机性能。
+三位额外说话人的初次 90 条评测显示混合中文 CER 26.6% / 英文 WER 44.3%。后续诊断复用该子集，统一 token 配置的整段输入为 17.4% / 36.7%，与另一 token 配置的整段结果相同；说明保留上下文值得继续验证。诊断不再视为新独立验收样本，结果见 `validation/qwen-context-diagnostic.json`。cbfde89 加入短音频完整上下文、长音频邻近区间合并和最多 200 ms 邻近静音上下文；保持单次读取 ≤20 秒，时间戳为实际 VAD 语音段的包络，非逐字对齐。实际 180 条合计混合中文 CER 22.0% → 17.2%、英文 WER 40.4% → 35.7%，原先一批混合英文有轻微退步，见 `validation/qwen-context-comparison.json`。仍未满足准确率验收，且不是新的独立验收集。
+94150a8 另修复不足一毫秒的 PCM 尾部样本丢失，读取器保留全部尾部样本，同时严格限制每次不超过 320,000 帧（20 秒）。51 项本机测试、原生英文烟测及完整 180 条真实回归通过执行；六文件模型摘要再次核对通过。精确读入后五位说话人的合计纯中文 CER 为 5.6%、纯英文 WER 18.7%、混合中文 CER 17.2% / 英文 WER 35.7%，见 `validation/qwen-context-exact-comparison.json`。这仍不是准确率验收通过；原先一批混合英文有轻微退步，全部原始计分保留。cbfde89 的已存报告保留旧读取策略标记，不能混用源码版本。
+
+## 手动开发宿主回归
+
+97a420f 最新策略已在 vivo V2073A / Android 13 实际运行：11 秒固定英文样例 38.416 秒，采样最大 PSS 1,466,939 KiB；六文件摘要导入、真实 VAD、原生工作线程转写、区间时间戳、SQLite 校对/标记以及准备阶段取消保留音频断言通过。见 `validation/android-physical-qwen-97a420f.json`，仍为 Debug 单样例、速度未达标。测试工具在 OEM 安装与夹具写入后强制重新启动自己的 QA 包；新增复用安装选项要求手机 APK SHA-256 与指定测试包完全一致，不绕过系统安装安全检查。
+
+2026-10-12 完成新增 300 条、十位不同于此前调参样本的说话人评测。选样协议在推理前冻结，每种语言 100 条，真实生产 Dart 工作线程、GGML VAD 和固定六文件模型全部执行；自动语言、空提示及上下文/精确尾部策略保持不变。中文 CER 5.0%、英文 WER 17.1%、混合中文 CER 11.6% / 英文 WER 33.3%，仍未通过英文门槛。报告 `validation/qwen-unseen-speakers-evaluation.json` 保留全部逐条错误数、音频摘要和执行策略。短对话语料与前一批不同，不能据此作前后提升比较，也不能证明与模型预训练语料无交集。
+
+开发宿主测试在每条完成后原子保存检查点，只有全部条目完成才标记 `complete: true`；计分工具拒绝未完成的新报告。可用 `LINGO_RESUME_CORPUS=1` 恢复，但要求语料清单、相关 Dart 源码、模型声明、VAD 及参考运行库摘要与保存策略完全相同。完整 300 条实际执行通过；默认单元测试仍明确跳过此耗时原生测试，不以跳过作为原生通过记录。
+
+2026-10-12 完成五次固定语言提示的真实 Python 参考路径实验（90 条原始子集 auto/Chinese/English、90 条后续子集 auto/English），参数统一为 1024/512，全部条目保留，见 `validation/qwen-language-comparison.json`。60 条已知纯英文的合并 WER 为自动 18.7%、指定英文 18.0%（113 → 109 个错误 / 605 个参考词）；仍未达到 15% 门槛。强制英文严重损害中文与混合结果；强制中文没有改善混合英文。因此保持自动识别默认值，仅允许用户按实际录音选择语言。App 新增单份音频语言/术语选项并真实保存，不修改全局默认设置。这是复用语料的提示实验，不是新的独立验收或默认总体准确率提升。
+
+设置 `LINGO_ENGINE_LIBRARY` 为本机已编译的 VAD/Whisper 动态库，`LINGO_SHERPA_LIBRARY` 为参考运行库目录，`LINGO_RESEARCH_ROOT` 为本机 `build/`，`LINGO_NATIVE_AUDIO` 为固定上游 JFK WAV。
+运行 `flutter test test/qwen_desktop_native_test.dart --dart-define=RUN_NATIVE_QWEN=true --dart-define=RUN_QWEN_CORPUS=true`。
+原始识别正文仅保存在被忽略的 `build/qwen-dart-native-outputs.json`；`score_native_qwen_outputs.py` 输出无正文的聚合与逐条错误数。

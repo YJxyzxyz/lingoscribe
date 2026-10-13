@@ -28,6 +28,14 @@ class AppController extends ChangeNotifier {
   final TranscriptRepository repository;
   final Directory root;
   final ModelManager models;
+  final QwenEngine _qwen = QwenEngine();
+  bool _transcriptionCancelled = false;
+  void _checkTranscriptionCancellation() {
+    if (_transcriptionCancelled) {
+      throw const EngineException('cancelled', cancelled: true);
+    }
+  }
+
   final SharedPreferences preferences;
   final OfflineEngine engine;
   final AudioRecorder recorder;
@@ -434,6 +442,7 @@ class AppController extends ChangeNotifier {
     final model = models.active;
     if (model == null) throw StateError('请在模型管理中下载或导入模型，然后离线转写');
     taskId = value.id;
+    _transcriptionCancelled = false;
     progress = 0;
     error = null;
     phase = '正在验证本地模型';
@@ -445,8 +454,13 @@ class AppController extends ChangeNotifier {
     );
     try {
       await save(working);
-      await models.verifyActive();
+      _checkTranscriptionCancellation();
+      await models.verify(model);
+      _checkTranscriptionCancellation();
+      if (model.engine == 'qwen3') await engine.ensureAdvancedModelCapacity();
+      _checkTranscriptionCancellation();
       final detector = await prepareSpeechDetector(root);
+      _checkTranscriptionCancellation();
       phase = '正在准备音频';
       notifyListeners();
       final normalized = p.join(
@@ -455,31 +469,65 @@ class AppController extends ChangeNotifier {
         '${value.id}.normalized.wav',
       );
       final duration = await engine.normalize(value.audioPath, normalized);
+      _checkTranscriptionCancellation();
       working = working.copyWith(durationMs: duration);
       await repository.save(working);
       dataRevision++;
       phase = '正在设备上转写';
       notifyListeners();
-      final result = await engine.transcribe(
-        model: models.pathFor(model),
-        wav: normalized,
-        language: value.language,
-        prompt: value.prompt,
-        vad: detector,
-        onPhase: (state) {
-          phase = switch (state) {
-            0 => '正在载入本地模型',
-            2 => '正在检查可能遗漏的语音',
-            4 => '正在检测语音区间',
-            _ => '正在设备上转写',
-          };
-          notifyListeners();
-        },
-        onProgress: (fraction) {
-          progress = fraction;
-          notifyListeners();
-        },
-      );
+      void updateProgress(double fraction) {
+        if (_transcriptionCancelled) return;
+        progress = fraction;
+        notifyListeners();
+      }
+
+      Map<String, dynamic> result;
+      if (model.engine == 'qwen3') {
+        phase = '正在检测语音区间';
+        notifyListeners();
+        final detected = await engine.detectSpeech(
+          wav: normalized,
+          vad: detector,
+          onProgress: (fraction) => updateProgress(fraction * 0.1),
+        );
+        _checkTranscriptionCancellation();
+        phase = '正在载入本地模型';
+        notifyListeners();
+        result = await _qwen.transcribe(
+          model: models.pathFor(model),
+          wav: normalized,
+          intervals: (detected['segments'] as List)
+              .map((r) => Map<String, dynamic>.from(r as Map))
+              .toList(),
+          durationMs: duration,
+          language: value.language,
+          prompt: value.prompt,
+          onProgress: (fraction) {
+            if (!_transcriptionCancelled) phase = '正在设备上转写';
+            updateProgress(0.1 + fraction * 0.89);
+          },
+        );
+      } else {
+        result = await engine.transcribe(
+          model: models.pathFor(model),
+          wav: normalized,
+          language: value.language,
+          prompt: value.prompt,
+          vad: detector,
+          onPhase: (state) {
+            if (_transcriptionCancelled) return;
+            phase = switch (state) {
+              0 => '正在载入本地模型',
+              2 => '正在检查可能遗漏的语音',
+              4 => '正在检测语音区间',
+              _ => '正在设备上转写',
+            };
+            notifyListeners();
+          },
+          onProgress: updateProgress,
+        );
+      }
+      _checkTranscriptionCancellation();
       final segments = (result['segments'] as List)
           .map((s) => Segment.fromJson(s as Map<String, dynamic>))
           .toList();
@@ -549,13 +597,21 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  void cancelTranscription() => engine.cancel();
+  void cancelTranscription() {
+    if (taskId == null) return;
+    _transcriptionCancelled = true;
+    phase = '正在取消转写';
+    engine.cancel();
+    _qwen.cancel();
+    notifyListeners();
+  }
 
   @override
   void dispose() {
     _timer?.cancel();
     unawaited(_amplitude?.cancel());
     engine.cancel();
+    _qwen.cancel();
     unawaited(recorder.dispose());
     models.removeListener(_onModelsChanged);
     models.dispose();

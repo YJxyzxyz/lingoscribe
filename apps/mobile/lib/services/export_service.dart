@@ -55,6 +55,11 @@ String exportTranscript(Transcript transcript, ExportFormat format) {
         'durationMs': transcript.durationMs,
         'language': transcript.language,
         'model': transcript.modelId,
+        'timestampSource': switch (transcript.modelId) {
+          'qwen3-int8' => 'speech_intervals',
+          'base-q5' || 'small-q5' => 'whisper_segments',
+          _ => 'unknown',
+        },
         'segments': transcript.segments.map((s) => s.toJson()).toList(),
       });
   }

@@ -5,17 +5,32 @@ const forest = Color(0xff245b49);
 const paper = Color(0xfff7f8f4);
 const ink = Color(0xff172b25);
 const muted = Color(0xff64746d);
+const outline = Color(0xffdde5df);
+const softForest = Color(0xffedf4ee);
 
 ThemeData appTheme({String? fontFamily}) {
-  final scheme = ColorScheme.fromSeed(
-    seedColor: forest,
-    brightness: Brightness.light,
-    surface: paper,
-  );
+  final scheme =
+      ColorScheme.fromSeed(
+        seedColor: forest,
+        brightness: Brightness.light,
+        surface: paper,
+      ).copyWith(
+        primary: forest,
+        onPrimary: Colors.white,
+        primaryContainer: Color(0xffdceade),
+        onPrimaryContainer: ink,
+        secondary: forest,
+        onSecondary: Colors.white,
+        secondaryContainer: softForest,
+        onSecondaryContainer: forest,
+        onSurface: ink,
+        onSurfaceVariant: muted,
+      );
   return ThemeData(
     fontFamily: fontFamily,
     useMaterial3: true,
     colorScheme: scheme,
+    visualDensity: VisualDensity.standard,
     scaffoldBackgroundColor: paper,
     appBarTheme: AppBarTheme(
       backgroundColor: paper,
@@ -33,7 +48,7 @@ ThemeData appTheme({String? fontFamily}) {
         letterSpacing: -1,
       ),
       headlineMedium: TextStyle(
-        fontSize: 28,
+        fontSize: 26,
         height: 1.3,
         fontWeight: FontWeight.w700,
         color: ink,
@@ -48,36 +63,40 @@ ThemeData appTheme({String? fontFamily}) {
         fontWeight: FontWeight.w600,
         color: ink,
       ),
-      bodyLarge: TextStyle(fontSize: 16, height: 1.7, color: ink),
-      bodyMedium: TextStyle(fontSize: 14, height: 1.6, color: ink),
+      bodyLarge: TextStyle(fontSize: 16, height: 1.55, color: ink),
+      bodyMedium: TextStyle(fontSize: 14, height: 1.55, color: ink),
       bodySmall: TextStyle(fontSize: 12, height: 1.5, color: muted),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: Color(0xffdce4dc)),
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: outline),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: Color(0xffdce4dc)),
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: outline),
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: forest, width: 1.5),
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: forest,
         foregroundColor: Colors.white,
-        minimumSize: Size(0, 54),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        minimumSize: Size(0, 50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: Size(0, 54),
+        minimumSize: Size(0, 50),
         foregroundColor: forest,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         side: BorderSide(color: Color(0xffc9d9cf)),
       ),
     ),
@@ -85,6 +104,18 @@ ThemeData appTheme({String? fontFamily}) {
       backgroundColor: paper,
       indicatorColor: Color(0xffdceade),
       elevation: 0,
+      height: 68,
+    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: forest,
+      linearTrackColor: outline,
+      borderRadius: BorderRadius.circular(8),
+      linearMinHeight: 5,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: ink,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),
     dividerColor: Color(0xffdce4dc),
   );
@@ -135,17 +166,19 @@ class SurfaceCard extends StatelessWidget {
   const SurfaceCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(20),
+    this.padding = const EdgeInsets.all(16),
+    this.selected = false,
   });
   final Widget child;
   final EdgeInsetsGeometry padding;
+  final bool selected;
   @override
   Widget build(BuildContext context) => Container(
     padding: padding,
     decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: Color(0xffe2e7df)),
+      color: selected ? softForest : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: selected ? forest : outline),
     ),
     child: child,
   );

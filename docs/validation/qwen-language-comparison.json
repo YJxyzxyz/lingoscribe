@@ -1,0 +1,210 @@
+{
+  "experiments": [
+    {
+      "subset": "original",
+      "languageHint": "auto",
+      "sourceReportSha256": "b10dcaf7df6a0de8ac9ea381dc15a73b171d5fb33adaaa96db1a5d9182b739f5",
+      "manifestSha256": "d1f4b4bc6a5d24883b83b0142500154b3f1bc73d3357f882c337ad0b6b7f1ee7",
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 117.276,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 266,
+          "englishWER": 0.18421052631578946,
+          "rtfIncludingLoad": 0.193,
+          "rtfInferenceOnly": 0.193
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 112.27,
+          "chineseReferenceChars": 331,
+          "chineseCER": 0.1691842900302115,
+          "englishReferenceWords": 72,
+          "englishWER": 0.3333333333333333,
+          "rtfIncludingLoad": 0.195,
+          "rtfInferenceOnly": 0.195
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 87.06,
+          "chineseReferenceChars": 357,
+          "chineseCER": 0.08683473389355742,
+          "englishReferenceWords": 1,
+          "englishWER": 1.0,
+          "rtfIncludingLoad": 0.277,
+          "rtfInferenceOnly": 0.236
+        }
+      }
+    },
+    {
+      "subset": "original",
+      "languageHint": "Chinese",
+      "sourceReportSha256": "bf4add280de6a830515a12f763ef4559eabaab8e614441f834b6ed8989c121a2",
+      "manifestSha256": "d1f4b4bc6a5d24883b83b0142500154b3f1bc73d3357f882c337ad0b6b7f1ee7",
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 117.276,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 266,
+          "englishWER": 0.2894736842105263,
+          "rtfIncludingLoad": 0.175,
+          "rtfInferenceOnly": 0.175
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 112.27,
+          "chineseReferenceChars": 331,
+          "chineseCER": 0.17522658610271905,
+          "englishReferenceWords": 72,
+          "englishWER": 0.3333333333333333,
+          "rtfIncludingLoad": 0.177,
+          "rtfInferenceOnly": 0.177
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 87.06,
+          "chineseReferenceChars": 357,
+          "chineseCER": 0.0896358543417367,
+          "englishReferenceWords": 1,
+          "englishWER": 1.0,
+          "rtfIncludingLoad": 0.243,
+          "rtfInferenceOnly": 0.199
+        }
+      }
+    },
+    {
+      "subset": "original",
+      "languageHint": "English",
+      "sourceReportSha256": "6db896298716217ac430c5b7b7a14bc35eb434d92cd4fb522d1bf11e023e2d59",
+      "manifestSha256": "d1f4b4bc6a5d24883b83b0142500154b3f1bc73d3357f882c337ad0b6b7f1ee7",
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 117.276,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 266,
+          "englishWER": 0.17293233082706766,
+          "rtfIncludingLoad": 0.177,
+          "rtfInferenceOnly": 0.177
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 112.27,
+          "chineseReferenceChars": 331,
+          "chineseCER": 0.3413897280966767,
+          "englishReferenceWords": 72,
+          "englishWER": 0.9305555555555556,
+          "rtfIncludingLoad": 0.18,
+          "rtfInferenceOnly": 0.18
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 87.06,
+          "chineseReferenceChars": 357,
+          "chineseCER": 0.3865546218487395,
+          "englishReferenceWords": 1,
+          "englishWER": 89.0,
+          "rtfIncludingLoad": 0.266,
+          "rtfInferenceOnly": 0.227
+        }
+      }
+    },
+    {
+      "subset": "holdout",
+      "languageHint": "auto",
+      "sourceReportSha256": "a416d746dac408b8653e07b4758554a89f0fbbdf698fe90753259c482b5a1a64",
+      "manifestSha256": "a06d19a8a0dd809cce512f54246a650f48bb091fb6de82a7e66b9fdbe6718665",
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 144.25,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 339,
+          "englishWER": 0.1887905604719764,
+          "rtfIncludingLoad": 0.183,
+          "rtfInferenceOnly": 0.183
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 143.37,
+          "chineseReferenceChars": 327,
+          "chineseCER": 0.1743119266055046,
+          "englishReferenceWords": 158,
+          "englishWER": 0.3670886075949367,
+          "rtfIncludingLoad": 0.197,
+          "rtfInferenceOnly": 0.197
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 137.44,
+          "chineseReferenceChars": 611,
+          "chineseCER": 0.03764320785597381,
+          "englishReferenceWords": 2,
+          "englishWER": 1.0,
+          "rtfIncludingLoad": 0.224,
+          "rtfInferenceOnly": 0.197
+        }
+      }
+    },
+    {
+      "subset": "holdout",
+      "languageHint": "English",
+      "sourceReportSha256": "79f6eda6c700e06c0fcdb96c4cdb9177b4563486d2e9311fc1afb8558756d743",
+      "manifestSha256": "a06d19a8a0dd809cce512f54246a650f48bb091fb6de82a7e66b9fdbe6718665",
+      "aggregates": {
+        "en": {
+          "clips": 30,
+          "durationSeconds": 144.25,
+          "chineseReferenceChars": 0,
+          "chineseCER": null,
+          "englishReferenceWords": 339,
+          "englishWER": 0.18584070796460178,
+          "rtfIncludingLoad": 0.164,
+          "rtfInferenceOnly": 0.164
+        },
+        "mixed": {
+          "clips": 30,
+          "durationSeconds": 143.37,
+          "chineseReferenceChars": 327,
+          "chineseCER": 0.3302752293577982,
+          "englishReferenceWords": 158,
+          "englishWER": 0.6708860759493671,
+          "rtfIncludingLoad": 0.17,
+          "rtfInferenceOnly": 0.17
+        },
+        "zh": {
+          "clips": 30,
+          "durationSeconds": 137.44,
+          "chineseReferenceChars": 611,
+          "chineseCER": 0.37152209492635024,
+          "englishReferenceWords": 2,
+          "englishWER": 77.0,
+          "rtfIncludingLoad": 0.22,
+          "rtfInferenceOnly": 0.193
+        }
+      }
+    }
+  ],
+  "decision": "Keep auto detection as default. English hint only for known English-only audio; Chinese hint did not improve mixed speech. No default accuracy improvement claim.",
+  "scope": "Five real 90-clip fixed-hint runs, 180 unique reused licensed clips. No reference words supplied to the model.",
+  "knownEnglishOnly": {
+    "auto": {
+      "clips": 60,
+      "referenceWords": 605,
+      "wordErrors": 113,
+      "WER": 0.18677685950413223
+    },
+    "English": {
+      "clips": 60,
+      "referenceWords": 605,
+      "wordErrors": 109,
+      "WER": 0.18016528925619835
+    }
+  }
+}

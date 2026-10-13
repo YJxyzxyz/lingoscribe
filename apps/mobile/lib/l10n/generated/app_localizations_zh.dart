@@ -251,7 +251,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get transcriptionPreferences => '转写偏好';
 
   @override
-  String get yourAudioLibrary => '你的声音资料库';
+  String get yourAudioLibrary => '声音资料库';
+
+  @override
+  String get clearSearch => '清除搜索';
+
+  @override
+  String get showAllSegments => '显示全部语音段';
+
+  @override
+  String get bundleImportExplanation =>
+      '选择三个模型文件和 tokenizer 文件夹中的三个文件。可以分多次从不同文件夹补齐，六项校验通过后才会安装。';
+
+  @override
+  String get removeSelectedFile => '移除已选文件';
+
+  @override
+  String get addModelFiles => '补充模型文件';
+
+  @override
+  String get verifyAndInstall => '校验并安装';
+
+  @override
+  String bundleFilesSelected(int selected, int total) {
+    return '已选择 $selected / $total 个文件';
+  }
+
+  @override
+  String get applyOptions => '保存选项';
+
+  @override
+  String get audioLanguageAdvice => '中英混合请选自动识别。仅含英文或中文时，可指定录音语言。';
+
+  @override
+  String get recordOptionsExplanation => '仅应用于这份音频。术语提示不能保证识别结果；不会修改默认偏好。';
 
   @override
   String get searchLibrary => '搜索标题或转写内容';
@@ -314,8 +347,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get modelsDescription => '下载一次，离线使用。\n模型只处理本地音频，录音不会上传。';
 
   @override
-  String get modelVerificationExplanation =>
-      '每个模型安装前都会验证 SHA-256。转写前再次检查文件，确保模型完整。';
+  String get modelVerificationExplanation => '安装和转写前检查模型完整性，让离线使用更安心。';
 
   @override
   String get importOfficialModel => '从文件导入官方模型';
@@ -527,4 +559,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String revisionTitle(String title) {
     return '$title · 新转写';
   }
+
+  @override
+  String get qwenModel => '双语 · Qwen3';
+
+  @override
+  String get qwenModelDescription =>
+      '更强的中文与双语候选模型。约 987 MB 下载，需要较多内存；时间戳按检测到的语音区间生成。';
+
+  @override
+  String qwenModelDetail(String size) {
+    return '$size · Apache-2.0 · 至少 6 GB 设备内存';
+  }
+
+  @override
+  String get qwenMemoryRequired => 'Qwen3 需要至少 6 GB 设备内存及足够可用内存，请选择轻量模型';
+
+  @override
+  String get completeModelFilesRequired => '请选择一个官方模型文件，或完整的 Qwen3 六个文件';
+
+  @override
+  String get cancellingTranscription => '正在取消转写';
 }

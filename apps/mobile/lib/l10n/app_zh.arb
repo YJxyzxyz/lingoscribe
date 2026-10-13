@@ -80,7 +80,18 @@
   "settings": "设置",
   "brandName": "聆写",
   "transcriptionPreferences": "转写偏好",
-  "yourAudioLibrary": "你的声音资料库",
+  "yourAudioLibrary": "声音资料库",
+  "clearSearch": "清除搜索",
+  "showAllSegments": "显示全部语音段",
+  "bundleImportExplanation": "选择三个模型文件和 tokenizer 文件夹中的三个文件。可以分多次从不同文件夹补齐，六项校验通过后才会安装。",
+  "removeSelectedFile": "移除已选文件",
+  "addModelFiles": "补充模型文件",
+  "verifyAndInstall": "校验并安装",
+  "bundleFilesSelected": "已选择 {selected} / {total} 个文件",
+  "@bundleFilesSelected": {"placeholders": {"selected": {"type": "int"}, "total": {"type": "int"}}},
+  "applyOptions": "保存选项",
+  "audioLanguageAdvice": "中英混合请选自动识别。仅含英文或中文时，可指定录音语言。",
+  "recordOptionsExplanation": "仅应用于这份音频。术语提示不能保证识别结果；不会修改默认偏好。",
   "searchLibrary": "搜索标题或转写内容",
   "allRecords": "全部记录",
   "searchResults": "搜索结果",
@@ -101,7 +112,7 @@
   "deleteModel": "删除模型",
   "modelsHeadline": "把 AI 留在本机",
   "modelsDescription": "下载一次，离线使用。\n模型只处理本地音频，录音不会上传。",
-  "modelVerificationExplanation": "每个模型安装前都会验证 SHA-256。转写前再次检查文件，确保模型完整。",
+  "modelVerificationExplanation": "安装和转写前检查模型完整性，让离线使用更安心。",
   "importOfficialModel": "从文件导入官方模型",
   "useModelMirror": "使用备用模型下载站",
   "modelSourceExplanation": "默认 Hugging Face；备用 hf-mirror.com。下载站会收到 IP 和模型请求，不会收到录音。",
@@ -163,5 +174,18 @@
   "recordingTitle": "录音 {date} {time}",
   "revisionTitle": "{title} · 新转写",
   "recordingRequiresForeground": "请回到应用后开始录音。",
-  "recordingStartFailedAudioKept": "录音启动失败，已保留音频，请在资料库中检查。"
+  "recordingStartFailedAudioKept": "录音启动失败，已保留音频，请在资料库中检查。",
+  "qwenModel": "双语 · Qwen3",
+  "qwenModelDescription": "更强的中文与双语候选模型。约 987 MB 下载，需要较多内存；时间戳按检测到的语音区间生成。",
+  "qwenModelDetail": "{size} · Apache-2.0 · 至少 6 GB 设备内存",
+  "qwenMemoryRequired": "Qwen3 需要至少 6 GB 设备内存及足够可用内存，请选择轻量模型",
+  "completeModelFilesRequired": "请选择一个官方模型文件，或完整的 Qwen3 六个文件",
+  "cancellingTranscription": "正在取消转写",
+  "@qwenModelDetail": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  }
 }

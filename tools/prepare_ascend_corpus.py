@@ -16,6 +16,7 @@ SHA = 'a4c81d2b5ed6124f052089a695972808c16e0ce0c365ec9773c5d1a8fcf043a7'
 SOURCE = f'https://huggingface.co/datasets/CAiRE/ASCEND/tree/{REVISION}'
 parser = argparse.ArgumentParser()
 parser.add_argument('parquet')
+parser.add_argument('--split', choices=['test', 'validation'], default='test')
 parser.add_argument('--output', default='build/corpus/ascend')
 parser.add_argument('--ffmpeg', default=shutil.which('ffmpeg'))
 parser.add_argument('--clips-per-language', type=int,
@@ -24,6 +25,8 @@ args = parser.parse_args()
 assert args.ffmpeg, 'FFmpeg is required on the test host'
 assert args.clips_per_language is None or args.clips_per_language > 0
 source = Path(args.parquet)
+if args.split == 'validation':
+    SHA = '3bdec53d2abfd3dd4f0d86a6df4e27e60f20660edc9b66055ae0ef8ec05cf7e2'
 assert hashlib.sha256(source.read_bytes()).hexdigest() == SHA, 'Unexpected corpus bytes'
 rows = pq.read_table(source).to_pylist()
 speakers = sorted({row['original_speaker_id'] for row in rows})[:3]
@@ -52,6 +55,7 @@ else:
     selection = (f'First {args.clips_per_language} rows per language with duration >= 2 seconds; '
                  'round-robin across first up to three numeric speaker IDs in test split, preserving '
                  'source row order per speaker; exhausted speakers skipped; chosen before inference')
+selection = selection.replace('in test split', f'in {args.split} split')
 output = Path(args.output)
 output.mkdir(parents=True, exist_ok=True)
 clips = []
@@ -69,7 +73,7 @@ for row in selected:
                   'sourceAudioSha256': hashlib.sha256(raw.read_bytes()).hexdigest()})
 manifest = {'dataset': 'ASCEND', 'attribution': 'HKUST CAiRE; Lovenia et al., ASCEND (LREC 2022)',
             'datasetLicense': 'https://creativecommons.org/licenses/by-sa/4.0/',
-            'sourceRevision': REVISION, 'parquetSha256': SHA,
+            'sourceRevision': REVISION, 'parquetSha256': SHA, 'split': args.split,
             'selection': selection,
             'transform': 'FFmpeg mono PCM16 16 kHz; original reference text retained',
             'scope': 'Small deterministic regression subset, not a representative accuracy benchmark', 'clips': clips}

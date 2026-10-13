@@ -81,6 +81,17 @@
   "brandName": "LingoScribe",
   "transcriptionPreferences": "Transcription preferences",
   "yourAudioLibrary": "Your audio library",
+  "clearSearch": "Clear search",
+  "showAllSegments": "Show all segments",
+  "bundleImportExplanation": "Select the three model files and the three tokenizer files. You can add files from different folders in several steps. Installation starts only after all six files pass verification.",
+  "removeSelectedFile": "Remove selected file",
+  "addModelFiles": "Add model files",
+  "verifyAndInstall": "Verify and install",
+  "bundleFilesSelected": "{selected} of {total} files selected",
+  "@bundleFilesSelected": {"placeholders": {"selected": {"type": "int"}, "total": {"type": "int"}}},
+  "applyOptions": "Save options",
+  "audioLanguageAdvice": "Use automatic detection for mixed speech. For English-only or Chinese-only audio, you can specify the language.",
+  "recordOptionsExplanation": "Only for this audio. Vocabulary hints do not guarantee recognition and do not change your defaults.",
   "searchLibrary": "Search titles or transcripts",
   "allRecords": "All records",
   "searchResults": "Search results",
@@ -101,7 +112,7 @@
   "deleteModel": "Delete model",
   "modelsHeadline": "Keep AI on your device",
   "modelsDescription": "Download once. Use offline.\nModels process local audio; recordings are never uploaded.",
-  "modelVerificationExplanation": "Each model is checked with SHA-256 before installation, then checked again before transcription.",
+  "modelVerificationExplanation": "Models are checked before installation and transcription to keep your offline setup reliable.",
   "importOfficialModel": "Import an official model file",
   "useModelMirror": "Use an alternative download source",
   "modelSourceExplanation": "Default: Hugging Face. Alternative: hf-mirror.com. The source receives your IP and model request, never your recordings.",
@@ -233,6 +244,19 @@
   "@revisionTitle": {
     "placeholders": {
       "title": {
+        "type": "String"
+      }
+    }
+  },
+  "qwenModel": "Bilingual · Qwen3",
+  "qwenModelDescription": "A stronger candidate for Chinese and bilingual speech. About 987 MB to download; needs substantial memory. Timestamps use detected speech intervals.",
+  "qwenModelDetail": "{size} · Apache-2.0 · At least 6 GB device memory",
+  "qwenMemoryRequired": "Qwen3 requires at least 6 GB device memory and sufficient available memory. Please choose a smaller model.",
+  "completeModelFilesRequired": "Select one official model file, or all six Qwen3 files.",
+  "cancellingTranscription": "Cancelling transcription",
+  "@qwenModelDetail": {
+    "placeholders": {
+      "size": {
         "type": "String"
       }
     }

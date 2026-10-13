@@ -1,0 +1,63 @@
+{
+  "implementationCommit": "cbfde89b6e3c1206bcfbe97e4d1da06b38a2c203",
+  "inputPolicy": "qwen_context_v1 with original floor-ms PCM reader",
+  "sourceReports": {
+    "baselineOriginal": "qwen-dart-native-evaluation.json",
+    "baselineAdditional": "qwen-dart-holdout-evaluation.json",
+    "contextOriginal": "qwen-context-original-evaluation.json",
+    "contextAdditional": "qwen-context-holdout-evaluation.json"
+  },
+  "baseline": {
+    "zh": {
+      "clips": 60,
+      "speakers": 5,
+      "chineseCER": 0.058884297520661155,
+      "englishWER": 1.3333333333333333,
+      "chineseReferenceChars": 968,
+      "englishReferenceWords": 3
+    },
+    "en": {
+      "clips": 60,
+      "speakers": 5,
+      "chineseCER": null,
+      "englishWER": 0.21487603305785125,
+      "chineseReferenceChars": 0,
+      "englishReferenceWords": 605
+    },
+    "mixed": {
+      "clips": 60,
+      "speakers": 5,
+      "chineseCER": 0.22036474164133737,
+      "englishWER": 0.4043478260869565,
+      "chineseReferenceChars": 658,
+      "englishReferenceWords": 230
+    }
+  },
+  "context": {
+    "zh": {
+      "clips": 60,
+      "speakers": 5,
+      "chineseCER": 0.056818181818181816,
+      "englishWER": 1.0,
+      "chineseReferenceChars": 968,
+      "englishReferenceWords": 3
+    },
+    "en": {
+      "clips": 60,
+      "speakers": 5,
+      "chineseCER": null,
+      "englishWER": 0.19008264462809918,
+      "chineseReferenceChars": 0,
+      "englishReferenceWords": 605
+    },
+    "mixed": {
+      "clips": 60,
+      "speakers": 5,
+      "chineseCER": 0.1717325227963526,
+      "englishWER": 0.3565217391304348,
+      "chineseReferenceChars": 658,
+      "englishReferenceWords": 230
+    }
+  },
+  "scope": "180 fixed licensed clips / five speakers reused for diagnosis and regression. Not a new independent acceptance set, phone accuracy or phone performance. All errors retained; one original subset has mixed-English regression."
+}

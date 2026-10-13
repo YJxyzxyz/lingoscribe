@@ -584,6 +584,66 @@ abstract class AppLocalizations {
   /// **'Your audio library'**
   String get yourAudioLibrary;
 
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @showAllSegments.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all segments'**
+  String get showAllSegments;
+
+  /// No description provided for @bundleImportExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the three model files and the three tokenizer files. You can add files from different folders in several steps. Installation starts only after all six files pass verification.'**
+  String get bundleImportExplanation;
+
+  /// No description provided for @removeSelectedFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove selected file'**
+  String get removeSelectedFile;
+
+  /// No description provided for @addModelFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add model files'**
+  String get addModelFiles;
+
+  /// No description provided for @verifyAndInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify and install'**
+  String get verifyAndInstall;
+
+  /// No description provided for @bundleFilesSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{selected} of {total} files selected'**
+  String bundleFilesSelected(int selected, int total);
+
+  /// No description provided for @applyOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Save options'**
+  String get applyOptions;
+
+  /// No description provided for @audioLanguageAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Use automatic detection for mixed speech. For English-only or Chinese-only audio, you can specify the language.'**
+  String get audioLanguageAdvice;
+
+  /// No description provided for @recordOptionsExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for this audio. Vocabulary hints do not guarantee recognition and do not change your defaults.'**
+  String get recordOptionsExplanation;
+
   /// No description provided for @searchLibrary.
   ///
   /// In en, this message translates to:
@@ -707,7 +767,7 @@ abstract class AppLocalizations {
   /// No description provided for @modelVerificationExplanation.
   ///
   /// In en, this message translates to:
-  /// **'Each model is checked with SHA-256 before installation, then checked again before transcription.'**
+  /// **'Models are checked before installation and transcription to keep your offline setup reliable.'**
   String get modelVerificationExplanation;
 
   /// No description provided for @importOfficialModel.
@@ -1081,6 +1141,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{title} · New transcription'**
   String revisionTitle(String title);
+
+  /// No description provided for @qwenModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bilingual · Qwen3'**
+  String get qwenModel;
+
+  /// No description provided for @qwenModelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A stronger candidate for Chinese and bilingual speech. About 987 MB to download; needs substantial memory. Timestamps use detected speech intervals.'**
+  String get qwenModelDescription;
+
+  /// No description provided for @qwenModelDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} · Apache-2.0 · At least 6 GB device memory'**
+  String qwenModelDetail(String size);
+
+  /// No description provided for @qwenMemoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Qwen3 requires at least 6 GB device memory and sufficient available memory. Please choose a smaller model.'**
+  String get qwenMemoryRequired;
+
+  /// No description provided for @completeModelFilesRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select one official model file, or all six Qwen3 files.'**
+  String get completeModelFilesRequired;
+
+  /// No description provided for @cancellingTranscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelling transcription'**
+  String get cancellingTranscription;
 }
 
 class _AppLocalizationsDelegate

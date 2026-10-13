@@ -275,6 +275,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourAudioLibrary => 'Your audio library';
 
   @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get showAllSegments => 'Show all segments';
+
+  @override
+  String get bundleImportExplanation =>
+      'Select the three model files and the three tokenizer files. You can add files from different folders in several steps. Installation starts only after all six files pass verification.';
+
+  @override
+  String get removeSelectedFile => 'Remove selected file';
+
+  @override
+  String get addModelFiles => 'Add model files';
+
+  @override
+  String get verifyAndInstall => 'Verify and install';
+
+  @override
+  String bundleFilesSelected(int selected, int total) {
+    return '$selected of $total files selected';
+  }
+
+  @override
+  String get applyOptions => 'Save options';
+
+  @override
+  String get audioLanguageAdvice =>
+      'Use automatic detection for mixed speech. For English-only or Chinese-only audio, you can specify the language.';
+
+  @override
+  String get recordOptionsExplanation =>
+      'Only for this audio. Vocabulary hints do not guarantee recognition and do not change your defaults.';
+
+  @override
   String get searchLibrary => 'Search titles or transcripts';
 
   @override
@@ -338,7 +373,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get modelVerificationExplanation =>
-      'Each model is checked with SHA-256 before installation, then checked again before transcription.';
+      'Models are checked before installation and transcription to keep your offline setup reliable.';
 
   @override
   String get importOfficialModel => 'Import an official model file';
@@ -576,4 +611,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String revisionTitle(String title) {
     return '$title · New transcription';
   }
+
+  @override
+  String get qwenModel => 'Bilingual · Qwen3';
+
+  @override
+  String get qwenModelDescription =>
+      'A stronger candidate for Chinese and bilingual speech. About 987 MB to download; needs substantial memory. Timestamps use detected speech intervals.';
+
+  @override
+  String qwenModelDetail(String size) {
+    return '$size · Apache-2.0 · At least 6 GB device memory';
+  }
+
+  @override
+  String get qwenMemoryRequired =>
+      'Qwen3 requires at least 6 GB device memory and sufficient available memory. Please choose a smaller model.';
+
+  @override
+  String get completeModelFilesRequired =>
+      'Select one official model file, or all six Qwen3 files.';
+
+  @override
+  String get cancellingTranscription => 'Cancelling transcription';
 }

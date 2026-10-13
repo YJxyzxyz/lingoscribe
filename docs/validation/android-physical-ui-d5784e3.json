@@ -1,0 +1,48 @@
+{
+  "checkedOn": "2026-10-13",
+  "deviceId": "physical-android-01",
+  "deviceModel": "V2073A",
+  "androidRelease": "13",
+  "packageId": "io.github.yjxyzxyz.lingoscribe.qa",
+  "buildMode": "debug",
+  "applicationSourceCommit": "d5784e3d09b4e97841664bcb7a26ea51abfd2b48",
+  "nativeSourceCommit": "1c07d6ca9c7f042e14b455400cf9e81dc81b13c3",
+  "nativeCacheSourceInputsAndLibraryHashesVerified": true,
+  "installationMode": "non-streaming",
+  "apkSha256": "90fd894c975d7d3250bdbce76b513c04097b2480a4d4d08609c38d5824c922bb",
+  "installedApkSha256Verified": true,
+  "foregroundActivity": "io.github.yjxyzxyz.lingoscribe.qa/io.github.yjxyzxyz.lingoscribe.MainActivity",
+  "finalScreen": "Complete application library; no native test harness",
+  "modelDirectoryEntries": [
+    "ggml-base-q5_1.bin",
+    "ggml-silero-v6.2.0.bin",
+    "qwen3-asr-0.6b-int8"
+  ],
+  "screenshotSha256": {
+    "01-library.png": "8475ccf7b0994d1736c9cbff7d88c0bc69354a33409cba6f696bcd9479854a80",
+    "02-models.png": "d870049ef9f6bde90c94fa26ad907c21adc80ee051c2478c38da341629a26545",
+    "03-settings.png": "d311a521dc52e363139af3be007bcd531ae421876d3ef6dddd069bdec488dd6c",
+    "04-detail.png": "95f03f908f4bd41ce1f20154f8c71de895453796e37e06c54ce88c235311c50e",
+    "05-detail-search.png": "3c81d885c5212132e7a9fbf1dcf8a343343982adad85839f49b84de4e884cb1c",
+    "06-record-options.png": "1a90024e181f5ca3313b5ddd6d93110c7e37fb5cbc4cd398cf227db1b275fd38",
+    "07-options-persisted.png": "a534f8bb1786a1b3a2458254784034c79ee7d2b30b9df2b2cd4e366f2f24b018"
+  },
+  "checks": [
+    "system_install_success",
+    "installed_apk_hash",
+    "complete_ui_navigation",
+    "current_model_first",
+    "retained_test_records_and_models",
+    "literal_search_highlight",
+    "clear_search_restores_text",
+    "record_language_saved_after_process_restart",
+    "global_default_language_unchanged"
+  ],
+  "recordOptionCheck": {
+    "fixture": "Qwen native integration revision",
+    "savedLanguage": "en",
+    "globalDefaultLanguage": "auto",
+    "prompt": ""
+  },
+  "scope": "Real phone UI and listed interactions using public QA fixtures. Not complete accessibility, physical iPhone, model file-picker import, release performance, power or commercial acceptance."
+}

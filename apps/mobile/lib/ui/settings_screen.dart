@@ -21,14 +21,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) => ListView(
-    padding: EdgeInsets.all(24),
+    padding: EdgeInsets.all(20),
     children: [
-      SizedBox(height: 20),
+      SizedBox(height: 12),
       Text(
         l10n(context).settingsHeadline,
         style: Theme.of(context).textTheme.headlineMedium,
       ),
-      SizedBox(height: 24),
+      SizedBox(height: 20),
       DropdownButtonFormField<String>(
         initialValue: widget.controller.displayLanguage.value,
         decoration: InputDecoration(labelText: l10n(context).interfaceLanguage),
@@ -73,6 +73,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onChanged: (value) {
                 if (value != null) widget.controller.settings(language: value);
               },
+            ),
+            SizedBox(height: 16),
+            Text(
+              l10n(context).audioLanguageAdvice,
+              style: TextStyle(fontSize: 12, color: muted),
             ),
             SizedBox(height: 16),
             TextField(

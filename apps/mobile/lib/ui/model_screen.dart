@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../application/app_controller.dart';
 import '../services/model_manager.dart';
 import 'theme.dart';
+import 'model_bundle_import_dialog.dart';
+import 'package:path/path.dart' as p;
 
 class ModelScreen extends StatefulWidget {
   const ModelScreen({super.key, required this.controller});
@@ -17,16 +19,62 @@ class _ModelScreenState extends State<ModelScreen> {
   AppController get app => widget.controller;
   Future<void> _import() async {
     try {
-      final selected = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['bin'],
-        withData: false,
-      );
-      if (selected?.files.single.path != null) {
-        await app.models.importFile(selected!.files.single.path!);
+      final selected = await _pickModelFiles();
+      if (selected == null || selected.isEmpty || !mounted || app.busy) return;
+      List<String>? paths = selected;
+      if (selected.length != 1 ||
+          p.extension(selected.single).toLowerCase() != '.bin') {
+        await app.engine.ensureAdvancedModelCapacity();
+        if (!mounted || app.busy) return;
+        paths = await showDialog<List<String>>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => ModelBundleImportDialog(
+            model: models.singleWhere((model) => model.engine == 'qwen3'),
+            initialPaths: selected,
+            pickMore: _pickModelFiles,
+          ),
+        );
       }
+      if (paths != null && !app.busy) await app.models.importFiles(paths);
     } catch (e) {
       if (mounted) showError(context, e);
+    }
+  }
+
+  Future<List<String>?> _pickModelFiles() async {
+    final selected = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['bin', 'onnx', 'json', 'txt'],
+      allowMultiple: true,
+      withData: false,
+    );
+    if (selected != null && selected.files.every((file) => file.path != null)) {
+      return selected.files.map((file) => file.path!).toList();
+    }
+    return null;
+  }
+
+  Future<void> _download(ModelSpec model) async {
+    try {
+      if (model.engine == 'qwen3') {
+        await app.engine.ensureAdvancedModelCapacity();
+      }
+      if (app.busy) return;
+      await app.models.download(model, mirror: mirror);
+    } catch (error) {
+      if (mounted) showError(context, error);
+    }
+  }
+
+  Future<void> _select(ModelSpec model) async {
+    try {
+      if (model.engine == 'qwen3') {
+        await app.engine.ensureAdvancedModelCapacity();
+      }
+      if (!app.busy) app.models.select(model.id);
+    } catch (error) {
+      if (mounted) showError(context, error);
     }
   }
 
@@ -61,9 +109,9 @@ class _ModelScreenState extends State<ModelScreen> {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: app.models,
     builder: (context, _) => ListView(
-      padding: EdgeInsets.all(24),
+      padding: EdgeInsets.all(20),
       children: [
-        SizedBox(height: 20),
+        SizedBox(height: 12),
         Text(
           l10n(context).modelsHeadline,
           style: Theme.of(context).textTheme.headlineMedium,
@@ -73,24 +121,27 @@ class _ModelScreenState extends State<ModelScreen> {
           l10n(context).modelsDescription,
           style: TextStyle(color: muted, height: 1.8),
         ),
-        SizedBox(height: 24),
-        SurfaceCard(
+        SizedBox(height: 20),
+        for (final model in [
+          ...models.where((model) => app.models.activeId == model.id),
+          ...models.where((model) => app.models.activeId != model.id),
+        ]) ...[_model(model), SizedBox(height: 12)],
+        Padding(
+          padding: EdgeInsets.only(bottom: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.verified_user_outlined, color: forest),
-              SizedBox(width: 12),
+              Icon(Icons.verified_user_outlined, color: forest, size: 18),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   l10n(context).modelVerificationExplanation,
-                  style: TextStyle(color: muted, fontSize: 13),
+                  style: TextStyle(color: muted, fontSize: 12),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 20),
-        for (final model in models) ...[_model(model), SizedBox(height: 16)],
         if (app.models.error != null)
           Padding(
             padding: EdgeInsets.only(bottom: 16),
@@ -132,6 +183,7 @@ class _ModelScreenState extends State<ModelScreen> {
     final selected = app.models.activeId == model.id && installed;
     final downloading = app.models.downloadingId == model.id;
     return SurfaceCard(
+      selected: selected,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -145,7 +197,11 @@ class _ModelScreenState extends State<ModelScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              if (selected) Icon(Icons.check_circle, color: forest),
+              if (selected)
+                Tooltip(
+                  message: l10n(context).currentModel,
+                  child: Icon(Icons.check_circle, color: forest),
+                ),
             ],
           ),
           SizedBox(height: 12),
@@ -155,7 +211,9 @@ class _ModelScreenState extends State<ModelScreen> {
           ),
           SizedBox(height: 12),
           Text(
-            l10n(context).modelLanguagesAndLicense(model.sizeLabel),
+            model.engine == 'qwen3'
+                ? l10n(context).qwenModelDetail(model.sizeLabel)
+                : l10n(context).modelLanguagesAndLicense(model.sizeLabel),
             style: TextStyle(color: forest, fontSize: 12),
           ),
           SizedBox(height: 18),
@@ -188,9 +246,16 @@ class _ModelScreenState extends State<ModelScreen> {
               children: [
                 Expanded(
                   child: OutlinedButton(
+                    style: selected
+                        ? OutlinedButton.styleFrom(
+                            disabledForegroundColor: forest,
+                            disabledBackgroundColor: Color(0xffdceade),
+                            side: BorderSide.none,
+                          )
+                        : null,
                     onPressed: selected || app.busy
                         ? null
-                        : () => app.models.select(model.id),
+                        : () => _select(model),
                     child: Text(
                       selected
                           ? l10n(context).currentModel
@@ -214,7 +279,7 @@ class _ModelScreenState extends State<ModelScreen> {
               child: FilledButton.icon(
                 onPressed: app.busy || app.models.downloadingId != null
                     ? null
-                    : () => app.models.download(model, mirror: mirror),
+                    : () => _download(model),
                 icon: Icon(Icons.download_outlined),
                 label: Text(l10n(context).downloadModelSize(model.sizeLabel)),
               ),
